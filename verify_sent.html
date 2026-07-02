@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Verify Your Email — BloodBridge</title>
+<link rel="icon" type="image/png" href="blood_bridge_favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{--red:#C0162C;--red-light:#E8294A;--bg:#0e0a0b;--text:#F5F0EE;--text-muted:rgba(245,240,238,0.55);}
+[data-theme="light"]{--bg:#faf7f8;--text:#1a0508;--text-muted:rgba(30,10,15,0.5);}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  overflow-x:hidden;transition:background 0.4s,color 0.4s;padding:20px;
+}
+.bg-scene{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+  background:radial-gradient(ellipse 60% 40% at 50% 30%,rgba(192,22,44,0.1) 0%,transparent 70%),
+    radial-gradient(ellipse 70% 50% at 80% 90%,rgba(80,5,20,0.15) 0%,transparent 55%);
+}
+.card{
+  position:relative;z-index:2;max-width:480px;width:100%;
+  background:rgba(255,255,255,0.04);backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.08);border-radius:24px;
+  padding:48px 36px;text-align:center;
+  box-shadow:0 24px 80px rgba(0,0,0,0.4);
+  animation:fadeUp 0.7s ease both;
+}
+[data-theme="light"] .card{background:rgba(255,255,255,0.7);border-color:rgba(192,22,44,0.1);}
+.icon-wrap{
+  width:72px;height:72px;border-radius:50%;
+  background:linear-gradient(135deg,rgba(192,22,44,0.15),rgba(192,22,44,0.05));
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 20px;font-size:32px;
+  border:1px solid rgba(192,22,44,0.15);
+  animation:iconBounce 1s ease 0.3s both;
+}
+h1{font-size:1.6rem;font-weight:800;margin-bottom:10px;line-height:1.3;}
+h1 span{background:linear-gradient(135deg,var(--red),var(--red-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+p{font-size:0.92rem;color:var(--text-muted);line-height:1.7;margin-bottom:8px;}
+.email-display{
+  display:inline-block;padding:6px 18px;border-radius:50px;
+  background:rgba(192,22,44,0.1);color:var(--red-light);
+  font-size:0.88rem;font-weight:600;margin:12px 0 20px;
+}
+.alert-box{
+  padding:14px 18px;border-radius:14px;
+  background:rgba(234,179,8,0.08);border:1px solid rgba(234,179,8,0.15);
+  text-align:left;margin:20px 0;
+}
+.alert-box p{font-size:0.82rem;color:rgba(245,240,238,0.6);margin:0;line-height:1.6;}
+.alert-box p strong{color:#facc15;}
+[data-theme="light"] .alert-box p strong{color:#b45309;}
+[data-theme="light"] .alert-box{background:rgba(234,179,8,0.06);}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:14px 32px;border-radius:50px;font-size:0.9rem;font-weight:700;
+  background:linear-gradient(135deg,var(--red),#8B0020);color:#fff;
+  text-decoration:none;cursor:pointer;border:none;
+  box-shadow:0 4px 24px rgba(192,22,44,0.35);transition:all 0.3s;
+  font-family:'Outfit',sans-serif;margin-top:8px;
+}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(192,22,44,0.5);}
+.btn-outline{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:10px 24px;border-radius:50px;font-size:0.82rem;font-weight:600;
+  color:var(--text-muted);text-decoration:none;border:1px solid rgba(255,255,255,0.1);
+  transition:all 0.3s;background:transparent;margin-top:16px;font-family:'Outfit',sans-serif;
+}
+.btn-outline:hover{color:var(--text);border-color:rgba(255,255,255,0.2);}
+[data-theme="light"] .btn-outline{border-color:rgba(192,22,44,0.15);color:var(--text-muted);}
+[data-theme="light"] .btn-outline:hover{color:var(--text);border-color:rgba(192,22,44,0.3);}
+.resend{font-size:0.8rem;color:var(--text-muted);margin-top:18px;}
+.resend a{color:var(--red-light);text-decoration:none;font-weight:600;}
+.resend a:hover{text-decoration:underline;}
+.theme-toggle{
+  position:fixed;top:20px;right:20px;z-index:10;
+  cursor:pointer;width:44px;height:24px;border-radius:12px;
+  background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);
+  position:relative;transition:all 0.3s;
+}
+[data-theme="light"] .theme-toggle{background:rgba(192,22,44,0.1);border-color:rgba(192,22,44,0.15);}
+.toggle-knob{
+  width:18px;height:18px;border-radius:50%;
+  background:linear-gradient(135deg,var(--red),#8B0020);
+  position:absolute;top:2px;left:2px;
+  transition:all 0.4s cubic-bezier(0.68,-0.55,0.265,1.55);
+  display:flex;align-items:center;justify-content:center;font-size:10px;
+}
+[data-theme="light"] .toggle-knob{left:22px;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+@keyframes iconBounce{0%{transform:scale(0);}50%{transform:scale(1.15);}100%{transform:scale(1);}}
+@media(max-width:500px){.card{padding:32px 20px;}h1{font-size:1.3rem;}}
+</style>
+</head>
+<body>
+<div class="bg-scene"></div>
+<div class="theme-toggle" id="themeToggle" title="Toggle theme">
+  <div class="toggle-knob" id="toggleKnob">🌙</div>
+</div>
+
+<div class="card">
+  <div class="icon-wrap">✉️</div>
+  <h1>Check Your <span>Inbox</span></h1>
+  <p>We've sent a verification email to:</p>
+  <div class="email-display" id="emailDisplay"></div>
+  <p style="font-size:0.85rem;">Click the link in the email to activate your account and start saving lives.</p>
+
+  <div class="alert-box">
+    <p><strong>⏳ Didn't receive it?</strong> Check your Spam or Promotions folder. The link expires in 24 hours.</p>
+  </div>
+
+  <a href="login.html" class="btn">Go to Login →</a>
+  <div class="resend">
+    Didn't get the email? <a href="#" id="resendLink">Send again</a>
+  </div>
+  <a href="landing_page.html" class="btn-outline">← Back to Home</a>
+</div>
+
+<script>
+const html = document.documentElement;
+const saved = localStorage.getItem('bb-theme') || 'dark';
+html.setAttribute('data-theme', saved);
+
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const cur = html.getAttribute('data-theme');
+  const next = cur === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('bb-theme', next);
+  document.getElementById('toggleKnob').textContent = next === 'dark' ? '🌙' : '☀️';
+});
+document.getElementById('toggleKnob').textContent = saved === 'dark' ? '🌙' : '☀️';
+
+const params = new URLSearchParams(window.location.search);
+const email = params.get('email') || 'your email';
+document.getElementById('emailDisplay').textContent = email;
+
+document.getElementById('resendLink').addEventListener('click', async (e) => {
+  e.preventDefault();
+  const link = e.target;
+  link.textContent = 'Sending...';
+  try {
+    const res = await fetch('resend_verification.php', { method:'POST', body: new URLSearchParams({ email }) });
+    const data = await res.json();
+    if (data.success) {
+      link.textContent = '✓ Sent!';
+      setTimeout(() => { link.textContent = 'Send again'; }, 3000);
+    } else {
+      link.textContent = 'Failed — try again';
+    }
+  } catch {
+    link.textContent = 'Network error';
+  }
+});
+</script>
+</body>
+</html>

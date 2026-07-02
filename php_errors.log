@@ -1,0 +1,24 @@
+<?php exit; ?>
+-- BloodBridge Error Log (cleared for fresh diagnostics) --
+
+[11-Jun-2026 15:58:05 Europe/Berlin] PHP Warning:  session_start(): Session cannot be started after headers have already been sent in C:\xampp\htdocs\Blood_Merged\Final_Updated_Blood_Bridge_1\diagnostic.php on line 145
+[11-Jun-2026 16:03:34 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: No connection could be made because the target machine actively refused it in C:\xampp\htdocs\Blood_Merged\Final_Updated_Blood_Bridge_1\config.php:22
+Stack trace:
+#0 C:\xampp\htdocs\Blood_Merged\Final_Updated_Blood_Bridge_1\config.php(22): mysqli->__construct('localhost', 'root', Object(SensitiveParameterValue), 'blood_bridge')
+#1 C:\xampp\htdocs\Blood_Merged\Final_Updated_Blood_Bridge_1\login.php(6): require_once('C:\\xampp\\htdocs...')
+#2 {main}
+  thrown in C:\xampp\htdocs\Blood_Merged\Final_Updated_Blood_Bridge_1\config.php on line 22
+[13-Jun-2026 09:12:31 Europe/Berlin] PHP Warning:  mysqli::__construct(): Error while reading greeting packet. PID=4380 in C:\xampp\htdocs\BloodBridge\final\config.php on line 23
+[13-Jun-2026 09:12:31 Europe/Berlin] PHP Warning:  mysqli::__construct(): Error while reading greeting packet. PID=4380 in C:\xampp\htdocs\BloodBridge\final\config.php on line 23
+[13-Jun-2026 15:39:51 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'user_id' in 'field list' in C:\xampp\htdocs\BloodBridge\final\bank_api.php:508
+Stack trace:
+#0 C:\xampp\htdocs\BloodBridge\final\bank_api.php(508): mysqli->query('SELECT user_id ...')
+#1 C:\xampp\htdocs\BloodBridge\final\bank_api.php(489): handleEmergencyRequestsList()
+#2 {main}
+  thrown in C:\xampp\htdocs\BloodBridge\final\bank_api.php on line 508
+[13-Jun-2026 15:39:51 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'user_id' in 'field list' in C:\xampp\htdocs\BloodBridge\final\bank_api.php:508
+Stack trace:
+#0 C:\xampp\htdocs\BloodBridge\final\bank_api.php(508): mysqli->query('SELECT user_id ...')
+#1 C:\xampp\htdocs\BloodBridge\final\bank_api.php(489): handleEmergencyRequestsList()
+#2 {main}
+  thrown in C:\xampp\htdocs\BloodBridge\final\bank_api.php on line 508

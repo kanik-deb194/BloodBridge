@@ -1,0 +1,1483 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    />
+    <title>BloodBridge — Hospital Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="hospital_dash.css" />
+    <link rel="stylesheet" href="raktosathi_floating.css" />
+
+  </head>
+  <body>
+    <div class="bg-scene">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+    </div>
+    <div class="grid-overlay"></div>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <img
+            src="blood1.png"
+            alt="BloodBridge"
+            class="sidebar-logo-img"
+            onerror="this.style.display = 'none'"
+          />
+          <span class="sidebar-logo-text">Hospital Portal</span>
+        </div>
+        <button
+          class="sidebar-close"
+          id="sidebarClose"
+          aria-label="Close sidebar"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div class="sidebar-section-label">Main</div>
+      <nav class="sidebar-nav">
+        <a href="javascript:void(0)" class="sidebar-link active" data-section="dashboard"
+          ><span class="sidebar-icon">📊</span><span>Dashboard</span></a
+        >
+        <a href="javascript:void(0)" class="sidebar-link" data-section="requests"
+          ><span class="sidebar-icon">📝</span><span>Blood Requests</span></a
+        >
+        <a href="javascript:void(0)" class="sidebar-link" data-section="deliveries"
+          ><span class="sidebar-icon">🚚</span
+          ><span>Pending Deliveries</span></a
+        >
+        <a href="javascript:void(0)" class="sidebar-link" data-section="patients"
+          ><span class="sidebar-icon">👥</span
+          ><span>Registered Patients</span></a
+        >
+      </nav>
+
+      <div class="sidebar-section-label">Operations</div>
+      <nav class="sidebar-nav">
+        <a href="javascript:void(0)" class="sidebar-link" data-section="ratings"
+          ><span class="sidebar-icon">⭐</span><span>Rate Blood Bank</span></a
+        >
+        <a href="javascript:void(0)" class="sidebar-link" data-section="emergency"
+          ><span class="sidebar-icon">🆘</span><span>Emergency Broadcast</span></a
+        >
+        <a href="javascript:void(0)" class="sidebar-link" data-section="promises"
+          ><span class="sidebar-icon">🤝</span><span>Donation Promises</span></a
+        >
+        <a href="javascript:void(0)" class="sidebar-link" data-section="inventory"
+          ><span class="sidebar-icon">🩸</span><span>Inventory</span></a
+        >
+      </nav>
+
+      <div class="sidebar-section-label">Account</div>
+      <nav class="sidebar-nav">
+        <a href="javascript:void(0)" class="sidebar-link" data-section="profile"
+          ><span class="sidebar-icon">👤</span><span>Profile</span></a
+        >
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-avatar" id="sidebarAvatar">--</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name" id="sidebarName">Loading...</div>
+            <div class="sidebar-user-role" id="sidebarRole">Hospital Admin</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN WRAPPER -->
+    <div class="main-wrapper" id="mainWrapper">
+      <nav class="topnav">
+        <div class="topnav-left">
+          <button class="hamburger" id="hamburger" aria-label="Open sidebar">
+            <span></span><span></span><span></span>
+          </button>
+          <div class="topnav-brand">
+            <img
+              src="blood1.png"
+              alt="BloodBridge"
+              class="topnav-logo-img"
+              onerror="this.style.display = 'none'"
+            />
+            <span class="topnav-title">Hospital Dashboard</span>
+          </div>
+        </div>
+        <div class="topnav-right">
+          <div
+            class="theme-toggle"
+            id="themeToggle"
+            title="Toggle Light/Dark Mode"
+          >
+            <div class="toggle-track">
+              <span class="toggle-icon moon">🌙</span>
+              <span class="toggle-icon sun">☀️</span>
+              <div class="toggle-thumb"></div>
+            </div>
+          </div>
+          <div class="hospital-badge">
+            <span class="verified-badge">🏥 Verified Facility</span>
+          </div>
+          <button
+            class="logout-btn"
+            id="logoutBtn"
+            onclick="localStorage.removeItem('bbHospPage');window.location.href='login.html'"
+          >
+            Logout
+          </button>
+        </div>
+      </nav>
+
+      <main class="content" id="pageContent">
+        <!-- ══════════════════ DASHBOARD ══════════════════ -->
+        <div class="dashboard-view active" id="dashboardView">
+          <div class="greeting-section reveal">
+            <div class="greeting-text">
+              <h1>
+                Welcome back,
+                <span class="hospital-name" id="greetName">...</span>
+              </h1>
+              <p class="hospital-id">
+                License: <span id="hospitalLicense">...</span> · BloodBridge
+                Partner · Member since <span id="memberSince">...</span>
+              </p>
+            </div>
+            <div class="status-badge large">
+              <span class="status-dot"></span>
+              <span id="hospitalStatus">Active</span> | 24/7 Blood Desk
+            </div>
+          </div>
+
+          <div class="stats-grid reveal">
+            <div class="stat-card glass-card">
+              <div class="stat-icon">📋</div>
+              <div class="stat-info">
+                <span class="stat-value" id="statOpenRequests">0</span>
+                <span class="stat-label">Open Requests</span>
+              </div>
+            </div>
+            <div class="stat-card glass-card">
+              <div class="stat-icon">🚚</div>
+              <div class="stat-info">
+                <span class="stat-value" id="statPendingDeliveries">0</span>
+                <span class="stat-label">Pending Deliveries</span>
+              </div>
+            </div>
+            <div class="stat-card glass-card">
+              <div class="stat-icon">👥</div>
+              <div class="stat-info">
+                <span class="stat-value" id="statRegisteredPatients">0</span>
+                <span class="stat-label">Patients Registered</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Critical Alerts -->
+          <div id="dashCriticalAlerts"></div>
+
+          <!-- Actions Grid -->
+          <div class="section-header reveal">
+            <h2>Hospital Operations</h2>
+            <p>
+              Request blood, manage patients, track deliveries, and evaluate
+              services
+            </p>
+          </div>
+          <div class="actions-grid reveal">
+            <div class="action-card glass-card" data-action="submitRequest">
+              <div class="action-icon">📝🩸</div>
+              <h3>Submit Blood Request</h3>
+              <p>Create new transfusion request</p>
+            </div>
+            <div class="action-card glass-card" data-action="registerPatients">
+              <div class="action-icon">👤📝</div>
+              <h3>Register Patients</h3>
+              <p>Add to hospital blood bank system</p>
+            </div>
+            <div class="action-card glass-card" data-action="incomingStatus">
+              <div class="action-icon">🚚📡</div>
+              <h3>View Incoming Blood Bag Status</h3>
+              <p>Live tracking of deliveries</p>
+            </div>
+            <div class="action-card glass-card" data-action="rateBank">
+              <div class="action-icon">⭐🏥</div>
+              <h3>Rate Blood Bank Service</h3>
+              <p>Provide feedback on providers</p>
+            </div>
+            <div class="action-card glass-card" data-action="inventoryManager">
+              <div class="action-icon">🩸📦</div>
+              <h3>Inventory Manager</h3>
+              <p>Stock tracking & batch control</p>
+            </div>
+          </div>
+
+          <!-- Blood Requests Table -->
+          <div class="glass-card table-card reveal" style="margin-top:20px;">
+            <div class="card-header">
+              <div class="card-title">
+                <span class="card-title-icon">📋</span> Open Blood Requests
+              </div>
+              <button class="btn-ghost-sm" data-nav="requests">
+                View All
+              </button>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Request ID</th>
+                    <th>Patient</th>
+                    <th>Blood Type</th>
+                    <th>Units</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="dashRequestsBody">
+                  <tr>
+                    <td
+                      colspan="6"
+                      style="
+                        text-align: center;
+                        color: var(--text-muted);
+                        padding: 20px;
+                      "
+                    >
+                      Loading...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Expiring Soon -->
+          <div class="glass-card alerts-card reveal" style="margin-top:20px;">
+              <div class="card-header">
+                <div class="card-title">
+                  <span class="card-title-icon">⚠️</span> Expiring Soon (≤7d)
+                </div>
+                <button class="btn-ghost-sm" onclick="navigateTo('inventory')">View All</button>
+              </div>
+              <div id="expiringList" style="max-height:320px;overflow-y:auto;">
+                <div style="padding:14px;color:var(--text-muted);font-size:.82rem;text-align:center;">Loading…</div>
+              </div>
+            </div>
+
+          <div class="footer-note reveal">
+            <p>
+              🏥 For emergency blood needs, dial *911 from registered hospital
+              extension.
+            </p>
+          </div>
+        </div>
+
+        <!-- ══════════════════ BLOOD REQUESTS ══════════════════ -->
+        <div class="dashboard-view" id="requestsView">
+          <div class="page-header reveal">
+            <div>
+              <h1 class="page-title">📋 Blood Requests</h1>
+              <p class="page-subtitle">Manage incoming blood requests from hospitals and donors</p>
+            </div>
+          </div>
+
+          <div class="glass-card reveal" style="padding:22px;">
+            <div class="card-header">
+              <div class="card-title">🩸 All Requests</div>
+              <select class="filter-select" id="reqFilterStatus">
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+                <option value="all">All</option>
+              </select>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>ID</th><th>Requester</th><th>Phone</th><th>Blood Group</th>
+                    <th>Units</th><th>Urgency</th><th>Visible To</th><th>Date</th><th>Status</th><th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="requestsTableBody">
+                  <tr><td colspan="10" style="text-align:center;color:var(--text-muted);padding:20px;">Loading...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ══════════════════ DELIVERIES ══════════════════ -->
+        <div class="dashboard-view" id="deliveriesView">
+          <div class="page-header reveal">
+            <div>
+              <h1 class="page-title">🚚 Delivery Simulation</h1>
+              <p class="page-subtitle">Real-time tracking and simulation of blood bag shipments to your facility</p>
+            </div>
+            <div style="display:flex;gap:10px;align-items:center;">
+              <div class="live-pill" id="simStatusPill">
+                <span class="dot"></span> <span id="simStatusText">Active</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="sim-controls glass-card reveal">
+            <div class="sim-controls-left">
+              <button class="btn-primary btn-sm" id="simStartBtn" onclick="startSimulation()">▶ Start Simulation</button>
+              <button class="btn-secondary btn-sm" id="simPauseBtn" disabled onclick="pauseSimulation()">⏸ Pause</button>
+              <button class="btn-secondary btn-sm" id="simResetPageBtn" onclick="resetSimulation()">⟳ Reset</button>
+            </div>
+            <div class="sim-controls-right">
+              <label style="font-size:0.78rem;color:var(--text-muted);">Speed:</label>
+              <select id="simSpeedSelect" class="filter-select" style="width:auto;min-width:80px;">
+                <option value="1">1×</option>
+                <option value="2">2×</option>
+                <option value="3">3×</option>
+                <option value="5">5×</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="sim-stats-row reveal" style="margin-top:16px;">
+            <div class="sim-stat glass-card">
+              <div class="sim-stat-icon">🚚</div>
+              <div class="sim-stat-val" id="delTotal">0</div>
+              <div class="sim-stat-lbl">Total Shipments</div>
+            </div>
+            <div class="sim-stat glass-card">
+              <div class="sim-stat-icon">🔄</div>
+              <div class="sim-stat-val" id="delInTransit">0</div>
+              <div class="sim-stat-lbl">In Transit</div>
+            </div>
+            <div class="sim-stat glass-card">
+              <div class="sim-stat-icon">✅</div>
+              <div class="sim-stat-val" id="delDelivered">0</div>
+              <div class="sim-stat-lbl">Delivered</div>
+            </div>
+            <div class="sim-stat glass-card">
+              <div class="sim-stat-icon">⏱️</div>
+              <div class="sim-stat-val" id="delAvgEta">—</div>
+              <div class="sim-stat-lbl">Avg ETA</div>
+            </div>
+          </div>
+
+          <div id="simPageDeliveryList" class="sim-delivery-list reveal" style="margin-top:16px;">
+            <div style="padding:28px;text-align:center;color:var(--text-muted);">
+              <div class="loader-spin" style="margin:0 auto 10px;"></div>
+              Loading delivery simulation...
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════ PATIENTS ══════════════════ -->
+        <div class="dashboard-view" id="patientsView">
+          <div class="section-header reveal">
+            <h2>Registered Patients</h2>
+            <p>Patient blood type registry and transfusion history</p>
+          </div>
+          <div
+            class="glass-card reveal"
+            style="
+              display: flex;
+              align-items: flex-end;
+              gap: 16px;
+              padding: 16px 20px;
+              margin-bottom: 20px;
+              flex-wrap: wrap;
+            "
+          >
+            <button
+              id="newPatientBtn"
+              style="
+                background: linear-gradient(135deg, #c0162c, #8b0020);
+                color: #fff;
+                border: none;
+                padding: 9px 18px;
+                border-radius: 40px;
+                font-size: 0.82rem;
+                font-weight: 600;
+                cursor: pointer;
+                font-family: Outfit, sans-serif;
+              "
+            >
+              + Register Patient
+            </button>
+          </div>
+          <div class="glass-card table-card reveal">
+            <div class="card-header">
+              <div class="card-title">
+                <span class="card-title-icon">👥</span> Patient Registry
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>National ID</th>
+                    <th>Blood Group</th>
+                    <th>DOB</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                    <th>Registered</th>
+                  </tr>
+                </thead>
+                <tbody id="patientsTableBody">
+                  <tr>
+                    <td
+                      colspan="8"
+                      style="
+                        text-align: center;
+                        color: var(--text-muted);
+                        padding: 24px;
+                      "
+                    >
+                      Loading...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════ RATINGS ══════════════════ -->
+        <div class="dashboard-view" id="ratingsView">
+          <div class="section-header reveal">
+            <h2>Rate a Blood Bank</h2>
+            <p>Share your experience to help improve blood bank services</p>
+          </div>
+          <div
+            class="glass-card reveal"
+            style="padding: 28px; max-width: 600px"
+          >
+            <div class="card-title" style="margin-bottom: 20px">
+              <span>⭐</span> Submit a Review
+            </div>
+            <div style="margin-bottom: 16px">
+              <label
+                style="
+                  font-size: 0.78rem;
+                  font-weight: 600;
+                  color: var(--text-muted);
+                  display: block;
+                  margin-bottom: 6px;
+                "
+                >Blood Bank</label
+              >
+              <select
+                id="ratingBankSelect"
+                style="
+                  width: 100%;
+                  background: var(--input-bg);
+                  border: 1px solid var(--input-border);
+                  color: var(--text-primary);
+                  padding: 10px;
+                  border-radius: 10px;
+                  font-family: Outfit, sans-serif;
+                "
+              >
+                <option value="">Loading blood banks...</option>
+              </select>
+            </div>
+            <div style="margin-bottom: 16px">
+              <label
+                style="
+                  font-size: 0.78rem;
+                  font-weight: 600;
+                  color: var(--text-muted);
+                  display: block;
+                  margin-bottom: 8px;
+                "
+                >Rating</label
+              >
+              <div
+                id="starRatingWidget"
+                data-rating="5"
+                style="
+                  display: flex;
+                  gap: 8px;
+                  font-size: 1.8rem;
+                  cursor: pointer;
+                "
+              >
+                <span data-star="1">⭐</span><span data-star="2">⭐</span
+                ><span data-star="3">⭐</span><span data-star="4">⭐</span
+                ><span data-star="5">⭐</span>
+              </div>
+              <div
+                id="starRatingLabel"
+                style="
+                  font-size: 0.78rem;
+                  color: var(--text-muted);
+                  margin-top: 4px;
+                "
+              >
+                5 stars — Excellent
+              </div>
+            </div>
+            <div style="margin-bottom: 20px">
+              <label
+                style="
+                  font-size: 0.78rem;
+                  font-weight: 600;
+                  color: var(--text-muted);
+                  display: block;
+                  margin-bottom: 6px;
+                "
+                >Your Feedback</label
+              >
+              <textarea
+                id="ratingFeedbackText"
+                rows="4"
+                placeholder="Share your experience..."
+                style="
+                  width: 100%;
+                  background: var(--input-bg);
+                  border: 1px solid var(--input-border);
+                  border-radius: 10px;
+                  padding: 10px;
+                  color: var(--text-primary);
+                  font-family: Outfit, sans-serif;
+                  resize: vertical;
+                "
+              ></textarea>
+            </div>
+            <button
+              id="submitRatingBtn"
+              style="
+                background: linear-gradient(135deg, #c0162c, #8b0020);
+                color: #fff;
+                border: none;
+                padding: 12px 28px;
+                border-radius: 10px;
+                font-family: Outfit, sans-serif;
+                font-size: 0.9rem;
+                font-weight: 600;
+                cursor: pointer;
+                width: 100%;
+              "
+            >
+              ⭐ Submit Review
+            </button>
+          </div>
+        </div>
+
+        <!-- ══════════════════ PROFILE ══════════════════ -->
+        <div class="dashboard-view" id="profileView">
+          <div class="section-header reveal">
+            <h2>Hospital Profile</h2>
+            <p>View and update your facility information</p>
+          </div>
+          <div
+            class="profile-layout reveal"
+            style="
+              display: grid;
+              grid-template-columns: 300px 1fr;
+              gap: 24px;
+              align-items: start;
+            "
+          >
+            <div
+              class="profile-avatar-card glass-card"
+              style="
+                padding: 28px 20px;
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 14px;
+                position: sticky;
+                top: 88px;
+              "
+            >
+              <div
+                class="profile-avatar-circle"
+                id="profAvatar"
+                style="
+                  width: 100px;
+                  height: 100px;
+                  border-radius: 50%;
+                  background: linear-gradient(135deg, var(--red), #8b0020);
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 2rem;
+                  font-weight: 800;
+                  color: #fff;
+                  box-shadow: 0 0 32px rgba(192, 22, 44, 0.45);
+                "
+              >
+                --
+              </div>
+              <div
+                class="profile-name-display"
+                id="profNameDisplay"
+                style="font-size: 1.15rem; font-weight: 700"
+              >
+                Loading...
+              </div>
+              <div
+                class="profile-role-display"
+                style="font-size: 0.8rem; color: var(--text-muted)"
+              >
+                Hospital Partner
+              </div>
+              <div
+                class="profile-id-display"
+                id="profIdDisplay"
+                style="
+                  font-size: 0.72rem;
+                  color: var(--text-sub);
+                  background: var(--badge-bg);
+                  padding: 3px 10px;
+                  border-radius: 50px;
+                  border: 1px solid var(--badge-border);
+                "
+              >
+                ID: --
+              </div>
+              <div
+                id="profCityDisplay"
+                style="font-size: 0.72rem; color: var(--text-muted); margin-top: -4px;"
+              >
+                City: --
+              </div>
+              <div
+                class="profile-quick-stats"
+                style="
+                  display: flex;
+                  gap: 0;
+                  width: 100%;
+                  border: 1px solid var(--glass-border);
+                  border-radius: 14px;
+                  overflow: hidden;
+                "
+              >
+                <div
+                  style="
+                    flex: 1;
+                    padding: 12px 4px;
+                    text-align: center;
+                    border-right: 1px solid var(--table-border);
+                  "
+                >
+                  <div
+                    style="
+                      font-size: 1.2rem;
+                      font-weight: 800;
+                      font-family:
+                        Playfair Display,
+                        serif;
+                    "
+                    id="pqsRequests"
+                  >
+                    --
+                  </div>
+                  <div
+                    style="
+                      font-size: 0.65rem;
+                      color: var(--text-muted);
+                      margin-top: 2px;
+                    "
+                  >
+                    Requests
+                  </div>
+                </div>
+                <div
+                  style="
+                    flex: 1;
+                    padding: 12px 4px;
+                    text-align: center;
+                    border-right: 1px solid var(--table-border);
+                  "
+                >
+                  <div
+                    style="
+                      font-size: 1.2rem;
+                      font-weight: 800;
+                      font-family:
+                        Playfair Display,
+                        serif;
+                    "
+                    id="pqsRating"
+                  >
+                    --
+                  </div>
+                  <div
+                    style="
+                      font-size: 0.65rem;
+                      color: var(--text-muted);
+                      margin-top: 2px;
+                    "
+                  >
+                    Rating
+                  </div>
+                </div>
+                <div style="flex: 1; padding: 12px 4px; text-align: center">
+                  <div
+                    style="
+                      font-size: 1.2rem;
+                      font-weight: 800;
+                      font-family:
+                        Playfair Display,
+                        serif;
+                    "
+                    id="pqsPatients"
+                  >
+                    --
+                  </div>
+                  <div
+                    style="
+                      font-size: 0.65rem;
+                      color: var(--text-muted);
+                      margin-top: 2px;
+                    "
+                  >
+                    Patients
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="glass-card" style="padding: 28px">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 24px;
+                  flex-wrap: wrap;
+                  gap: 12px;
+                "
+              >
+                <h3 style="font-size: 1.15rem; font-weight: 700">
+                  Facility Information
+                </h3>
+                <div style="display: flex; gap: 10px; align-items: center">
+                  <button
+                    class="btn-ghost-sm"
+                    id="cancelProfBtn"
+                    style="display: none"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    class="btn-primary-sm"
+                    id="editProfBtn"
+                    style="
+                      background: linear-gradient(135deg, var(--red), #8b0020);
+                      color: #fff;
+                      border: none;
+                      padding: 7px 16px;
+                      border-radius: 40px;
+                      font-size: 0.78rem;
+                      font-weight: 600;
+                      cursor: pointer;
+                      font-family: Outfit, sans-serif;
+                    "
+                  >
+                    ✏️ Edit
+                  </button>
+                  <button
+                    class="btn-primary-sm"
+                    id="saveProfBtn"
+                    style="
+                      display: none;
+                      background: linear-gradient(135deg, var(--red), #8b0020);
+                      color: #fff;
+                      border: none;
+                      padding: 7px 16px;
+                      border-radius: 40px;
+                      font-size: 0.78rem;
+                      font-weight: 600;
+                      cursor: pointer;
+                      font-family: Outfit, sans-serif;
+                    "
+                  >
+                    💾 Save
+                  </button>
+                </div>
+              </div>
+              <form id="profileForm" novalidate>
+                <div
+                  style="
+                    font-size: 0.72rem;
+                    font-weight: 700;
+                    letter-spacing: 0.1em;
+                    text-transform: uppercase;
+                    color: var(--text-sub);
+                    margin: 20px 0 14px;
+                    padding-bottom: 8px;
+                    border-bottom: 1px solid var(--table-border);
+                  "
+                >
+                  System Information
+                </div>
+                <div
+                  style="
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 16px;
+                  "
+                >
+                  <div style="display: flex; flex-direction: column; gap: 7px">
+                    <label
+                      style="
+                        font-size: 0.78rem;
+                        font-weight: 600;
+                        color: var(--text-muted);
+                      "
+                      >Hospital ID</label
+                    >
+                    <input
+                      type="text"
+                      id="profId"
+                      readonly
+                      style="
+                        width: 100%;
+                        padding: 10px 14px;
+                        background: var(--input-bg);
+                        border: 1px solid var(--input-border);
+                        border-radius: 10px;
+                        color: var(--text-primary);
+                        font-size: 0.85rem;
+                        font-family: Outfit, sans-serif;
+                        opacity: 0.6;
+                        cursor: not-allowed;
+                      "
+                    />
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 7px">
+                    <label
+                      style="
+                        font-size: 0.78rem;
+                        font-weight: 600;
+                        color: var(--text-muted);
+                      "
+                      >Registration No</label
+                    >
+                    <input
+                      type="text"
+                      id="profRegNo"
+                      readonly
+                      style="
+                        width: 100%;
+                        padding: 10px 14px;
+                        background: var(--input-bg);
+                        border: 1px solid var(--input-border);
+                        border-radius: 10px;
+                        color: var(--text-primary);
+                        font-size: 0.85rem;
+                        font-family: Outfit, sans-serif;
+                        opacity: 0.6;
+                        cursor: not-allowed;
+                      "
+                    />
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 7px">
+                    <label
+                      style="
+                        font-size: 0.78rem;
+                        font-weight: 600;
+                        color: var(--text-muted);
+                      "
+                      >Account Created</label
+                    >
+                    <input
+                      type="text"
+                      id="profCreated"
+                      readonly
+                      style="
+                        width: 100%;
+                        padding: 10px 14px;
+                        background: var(--input-bg);
+                        border: 1px solid var(--input-border);
+                        border-radius: 10px;
+                        color: var(--text-primary);
+                        font-size: 0.85rem;
+                        font-family: Outfit, sans-serif;
+                        opacity: 0.6;
+                        cursor: not-allowed;
+                      "
+                    />
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 7px">
+                    <label
+                      style="
+                        font-size: 0.78rem;
+                        font-weight: 600;
+                        color: var(--text-muted);
+                      "
+                      >Current Rating</label
+                    >
+                    <input
+                      type="text"
+                      id="profRating"
+                      readonly
+                      style="
+                        width: 100%;
+                        padding: 10px 14px;
+                        background: var(--input-bg);
+                        border: 1px solid var(--input-border);
+                        border-radius: 10px;
+                        color: var(--text-primary);
+                        font-size: 0.85rem;
+                        font-family: Outfit, sans-serif;
+                        opacity: 0.6;
+                        cursor: not-allowed;
+                      "
+                    />
+                  </div>
+                </div>
+                <div
+                  style="
+                    font-size: 0.72rem;
+                    font-weight: 700;
+                    letter-spacing: 0.1em;
+                    text-transform: uppercase;
+                    color: var(--text-sub);
+                    margin: 20px 0 14px;
+                    padding-bottom: 8px;
+                    border-bottom: 1px solid var(--table-border);
+                  "
+                >
+                  Facility Details
+                </div>
+                <div
+                  style="
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 16px;
+                  "
+                >
+                  <div style="display: flex; flex-direction: column; gap: 7px">
+                    <label
+                      style="
+                        font-size: 0.78rem;
+                        font-weight: 600;
+                        color: var(--text-muted);
+                      "
+                      >Hospital Name
+                      <span style="color: var(--red-light)">*</span></label
+                    >
+                    <input
+                      type="text"
+                      id="profName"
+                      name="name"
+                      disabled
+                      style="
+                        width: 100%;
+                        padding: 10px 14px;
+                        background: var(--input-bg);
+                        border: 1px solid var(--input-border);
+                        border-radius: 10px;
+                        color: var(--text-primary);
+                        font-size: 0.85rem;
+                        font-family: Outfit, sans-serif;
+                      "
+                    />
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 7px">
+                    <label
+                      style="
+                        font-size: 0.78rem;
+                        font-weight: 600;
+                        color: var(--text-muted);
+                      "
+                      >Email
+                      <span style="color: var(--red-light)">*</span></label
+                    >
+                    <input
+                      type="email"
+                      id="profEmail"
+                      name="email"
+                      disabled
+                      style="
+                        width: 100%;
+                        padding: 10px 14px;
+                        background: var(--input-bg);
+                        border: 1px solid var(--input-border);
+                        border-radius: 10px;
+                        color: var(--text-primary);
+                        font-size: 0.85rem;
+                        font-family: Outfit, sans-serif;
+                      "
+                    />
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 7px">
+                    <label
+                      style="
+                        font-size: 0.78rem;
+                        font-weight: 600;
+                        color: var(--text-muted);
+                      "
+                      >Phone</label
+                    >
+                    <input
+                      type="tel"
+                      id="profPhone"
+                      name="phone"
+                      disabled
+                      style="
+                        width: 100%;
+                        padding: 10px 14px;
+                        background: var(--input-bg);
+                        border: 1px solid var(--input-border);
+                        border-radius: 10px;
+                        color: var(--text-primary);
+                        font-size: 0.85rem;
+                        font-family: Outfit, sans-serif;
+                      "
+                    />
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 7px">
+                    <label
+                      style="
+                        font-size: 0.78rem;
+                        font-weight: 600;
+                        color: var(--text-muted);
+                      "
+                      >City</label
+                    >
+                    <input
+                      type="text"
+                      id="profCity"
+                      name="city"
+                      disabled
+                      style="
+                        width: 100%;
+                        padding: 10px 14px;
+                        background: var(--input-bg);
+                        border: 1px solid var(--input-border);
+                        border-radius: 10px;
+                        color: var(--text-primary);
+                        font-size: 0.85rem;
+                        font-family: Outfit, sans-serif;
+                      "
+                    />
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 7px">
+                    <label
+                      style="
+                        font-size: 0.78rem;
+                        font-weight: 600;
+                        color: var(--text-muted);
+                      "
+                      >State</label
+                    >
+                    <input
+                      type="text"
+                      id="profState"
+                      name="state"
+                      disabled
+                      style="
+                        width: 100%;
+                        padding: 10px 14px;
+                        background: var(--input-bg);
+                        border: 1px solid var(--input-border);
+                        border-radius: 10px;
+                        color: var(--text-primary);
+                        font-size: 0.85rem;
+                        font-family: Outfit, sans-serif;
+                      "
+                    />
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 7px">
+                    <label
+                      style="
+                        font-size: 0.78rem;
+                        font-weight: 600;
+                        color: var(--text-muted);
+                      "
+                      >Postal Code</label
+                    >
+                    <input
+                      type="text"
+                      id="profPostal"
+                      name="postal_code"
+                      disabled
+                      style="
+                        width: 100%;
+                        padding: 10px 14px;
+                        background: var(--input-bg);
+                        border: 1px solid var(--input-border);
+                        border-radius: 10px;
+                        color: var(--text-primary);
+                        font-size: 0.85rem;
+                        font-family: Outfit, sans-serif;
+                      "
+                    />
+                  </div>
+                  <div
+                    style="
+                      display: flex;
+                      flex-direction: column;
+                      gap: 7px;
+                      grid-column: 1/-1;
+                    "
+                  >
+                    <label
+                      style="
+                        font-size: 0.78rem;
+                        font-weight: 600;
+                        color: var(--text-muted);
+                      "
+                      >Address</label
+                    >
+                    <input
+                      type="text"
+                      id="profAddress"
+                      name="address"
+                      disabled
+                      style="
+                        width: 100%;
+                        padding: 10px 14px;
+                        background: var(--input-bg);
+                        border: 1px solid var(--input-border);
+                        border-radius: 10px;
+                        color: var(--text-primary);
+                        font-size: 0.85rem;
+                        font-family: Outfit, sans-serif;
+                      "
+                    />
+                  </div>
+                </div>
+                <div
+                  id="formBottomActions"
+                  style="
+                    display: none;
+                    justify-content: flex-end;
+                    margin-top: 24px;
+                    padding-top: 20px;
+                    border-top: 1px solid var(--table-border);
+                    gap: 12px;
+                  "
+                >
+                  <button
+                    type="button"
+                    class="btn-ghost-sm"
+                    id="cancelProfBtn2"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    class="btn-primary-sm"
+                    style="
+                      background: linear-gradient(135deg, var(--red), #8b0020);
+                      color: #fff;
+                      border: none;
+                      padding: 10px 28px;
+                      border-radius: 10px;
+                      cursor: pointer;
+                      font-family: Outfit, sans-serif;
+                      font-size: 0.88rem;
+                      font-weight: 600;
+                    "
+                  >
+                    💾 Save Profile
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- ═══ EMERGENCY REQUESTS ═══ -->
+        <div class="dashboard-view" id="emergencyRequestsView">
+          <div class="page-header reveal">
+            <div>
+              <h1 class="page-title">🆘 Emergency Broadcast</h1>
+              <p class="page-subtitle">Send urgent blood requests to all available blood banks, hospitals, medical colleges & donors</p>
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="em-stats-grid reveal">
+            <div class="glass-card em-stat">
+              <div class="em-stat-icon active">📡</div>
+              <div class="em-stat-val" id="emStatActive">0</div>
+              <div class="em-stat-lbl">Active Broadcasts</div>
+            </div>
+            <div class="glass-card em-stat">
+              <div class="em-stat-icon total">📋</div>
+              <div class="em-stat-val" id="emStatTotal">0</div>
+              <div class="em-stat-lbl">Total Sent</div>
+            </div>
+            <div class="glass-card em-stat">
+              <div class="em-stat-icon reached">👥</div>
+              <div class="em-stat-val" id="emStatReached">0</div>
+              <div class="em-stat-lbl">Total Recipients Reached</div>
+            </div>
+            <div class="glass-card em-stat">
+              <div class="em-stat-icon incoming">🆘</div>
+              <div class="em-stat-val" id="emStatIncoming">0</div>
+              <div class="em-stat-lbl">Incoming Requests</div>
+            </div>
+          </div>
+
+          <!-- Create Broadcast Form -->
+          <div class="glass-card em-broadcast-form reveal">
+            <div class="card-header">
+              <div class="card-title">🚀 Create Emergency Broadcast</div>
+            </div>
+            <div class="em-form-body">
+              <div class="em-form-row">
+                <div class="em-form-group">
+                  <label class="form-lbl">Blood Group <span style="color:#f87171;">*</span></label>
+                  <select id="emBloodGroup" class="form-select">
+                    <option value="">Select Blood Group</option>
+                    <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+                    <option>O+</option><option>O-</option><option>AB+</option><option>AB-</option>
+                  </select>
+                </div>
+                <div class="em-form-group">
+                  <label class="form-lbl">Units Needed</label>
+                  <input type="number" id="emUnits" class="form-input" value="2" min="1" max="50" style="max-width:120px;">
+                </div>
+              </div>
+              <div class="em-form-group">
+                <label class="form-lbl">Location / Notes</label>
+                <textarea id="emNotes" class="form-textarea" rows="2" placeholder="e.g. Emergency at City Hospital, need immediate delivery to ICU"></textarea>
+              </div>
+              <div class="em-form-group">
+                <label class="form-lbl">Send To</label>
+                <div class="em-targets-grid">
+                  <label class="em-target-chip">
+                    <input type="checkbox" value="blood_bank" checked>
+                    <span>🏦 Other Blood Banks</span>
+                  </label>
+                  <label class="em-target-chip">
+                    <input type="checkbox" value="hospital" checked>
+                    <span>🏥 Hospitals</span>
+                  </label>
+                  <label class="em-target-chip">
+                    <input type="checkbox" value="medical_college" checked>
+                    <span>🎓 Medical Colleges</span>
+                  </label>
+                  <label class="em-target-chip">
+                    <input type="checkbox" value="donor_recipient" checked>
+                    <span>🩸 Donor Recipients</span>
+                  </label>
+                </div>
+              </div>
+              <button class="btn-emergency" id="sendEmergencyBtn">🚨 Send Emergency Broadcast</button>
+            </div>
+          </div>
+
+          <!-- Sent Broadcasts History -->
+          <div class="glass-card reveal" style="margin-top:20px;">
+            <div class="card-header">
+              <div class="card-title">📡 Sent Broadcasts</div>
+              <button class="btn-ghost-sm" id="refreshSentBroadcastsBtn">🔄 Refresh</button>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Blood Group</th>
+                    <th>Units</th>
+                    <th>Notes</th>
+                    <th>Recipients</th>
+                    <th>Status</th>
+                    <th>Sent At</th>
+                  </tr>
+                </thead>
+                <tbody id="sentBroadcastsBody">
+                  <tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:20px;">Loading...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Incoming Emergency Requests -->
+          <div class="glass-card reveal" style="margin-top:20px;">
+            <div class="card-header">
+              <div class="card-title">🆘 Incoming Emergency Broadcasts</div>
+              <button class="btn-ghost-sm" id="refreshIncomingEmergBtn">🔄 Refresh</button>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Requester</th>
+                    <th>Blood Group</th>
+                    <th>Location</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                    <th>Received</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="emergencyRequestsBody">
+                  <tr><td colspan="8" style="text-align:center;color:var(--text-muted);padding:20px;">Loading...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ PROMISES ═══ -->
+        <div class="dashboard-view" id="promisesView">
+          <div class="page-header reveal">
+            <div>
+              <h1 class="page-title">🔗 Verify Donation Promises</h1>
+              <p class="page-subtitle">Check and verify donor commitment codes for this blood bank</p>
+            </div>
+          </div>
+
+          <div class="glass-card reveal" style="padding:28px;max-width:600px;margin-bottom:24px;">
+            <div class="card-title" style="margin-bottom:16px;">🔍 Verify a Code</div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <input type="text" id="promiseCodeInput" class="search-input"
+                     style="flex:1;min-width:200px;" placeholder="Enter confirmation code e.g. CONF123ABC"/>
+              <button class="btn-primary" id="verifyPromiseBtn">Verify</button>
+            </div>
+            <div id="promiseResult" style="margin-top:16px;"></div>
+          </div>
+
+          <div class="glass-card reveal" style="padding:22px;">
+            <div class="card-header">
+              <div class="card-title">📋 All Donor Promises to This Bank</div>
+              <select class="filter-select" id="promiseStatusFilter">
+                <option value="">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="fulfilled">Fulfilled</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Code</th><th>Donor</th><th>Blood Group</th>
+                    <th>Promised Date</th><th>Status</th><th>Fulfilled</th>
+                  </tr>
+                </thead>
+                <tbody id="promiseTbody">
+                  <tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:20px;">Loading...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div><!-- /promisesView -->
+
+        <!-- ═══ INVENTORY ═══ -->
+        <div class="dashboard-view" id="inventoryView">
+          <div class="page-header reveal">
+            <div>
+              <h1 class="page-title">🩸 Inventory Management</h1>
+              <p class="page-subtitle">Complete blood stock tracking & availability analytics</p>
+            </div>
+            <div class="page-header-actions">
+              <button class="btn-primary" id="addBagBtn">+ Add New Bag</button>
+              <button class="btn-ghost-sm" id="invRefreshBtn">🔄 Refresh</button>
+            </div>
+          </div>
+          <div class="inv-type-grid reveal" id="invTypeGrid">Loading…</div>
+          <div class="inv-analytics-row reveal">
+            <div class="glass-card inv-analytic-card">
+              <div class="inv-analytic-icon">📦</div>
+              <div class="inv-analytic-val" id="invTotalUnits">0</div>
+              <div class="inv-analytic-lbl">Total Units</div>
+            </div>
+            <div class="glass-card inv-analytic-card">
+              <div class="inv-analytic-icon">⚠️</div>
+              <div class="inv-analytic-val" id="invExpiring7">0</div>
+              <div class="inv-analytic-lbl">Expiring ≤7 Days</div>
+            </div>
+            <div class="glass-card inv-analytic-card">
+              <div class="inv-analytic-icon">🚫</div>
+              <div class="inv-analytic-val" id="invQuarantined">0</div>
+              <div class="inv-analytic-lbl">Quarantined</div>
+            </div>
+            <div class="glass-card inv-analytic-card">
+              <div class="inv-analytic-icon">✅</div>
+              <div class="inv-analytic-val" id="invReady">0</div>
+              <div class="inv-analytic-lbl">Ready for Use</div>
+            </div>
+          </div>
+          <div class="glass-card inv-table-card reveal">
+            <div class="card-header">
+              <div class="card-title">🗂️ Blood Bag Inventory</div>
+              <div class="inv-controls">
+                <input type="text" class="search-input" id="invSearchInput" placeholder="Search bag ID, type..." />
+                <select class="filter-select" id="invTypeFilter">
+                  <option value="">All Types</option>
+                  <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+                  <option>O+</option><option>O-</option><option>AB+</option><option>AB-</option>
+                </select>
+                <select class="filter-select" id="invStatusFilter">
+                  <option value="">All Status</option>
+                  <option>available</option><option>quarantined</option>
+                  <option>discarded</option><option>allocated</option>
+                </select>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Bag ID</th><th>Blood Type</th><th>Donor</th>
+                    <th>Collected</th>
+                    <th>Expiry Date</th><th>Storage Unit</th><th>Volume</th>
+                    <th>Status</th><th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="inventoryTbody">
+                  <tr><td colspan="9" style="text-align:center;padding:24px">Loading…</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-footer">
+              <span id="invTableCount">—</span>
+              <div class="inv-pagination" id="invPagination"></div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+
+    <!-- GLOBAL MODAL -->
+    <div id="globalModal" class="modal-overlay">
+      <div class="modal-container glass-card">
+        <div class="modal-header">
+          <h3 id="modalTitle">Action</h3>
+          <button class="modal-close" id="closeModalBtn">&times;</button>
+        </div>
+        <div class="modal-body" id="modalBody"></div>
+        <div class="modal-footer">
+          <button class="btn-secondary modal-action-btn" id="modalConfirmBtn">Confirm</button>
+          <button class="btn-ghost-sm" id="modalCancelBtn">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toastMessage" class="toast-message"></div>
+
+    <script>
+      window._RAK_CONFIG = { auth: true, api: 'chat_api.php' };
+    </script>
+    <script src="raktosathi_floating.js"></script>
+    <script src="hospital_dash.js"></script>
+
+  </body>
+</html>

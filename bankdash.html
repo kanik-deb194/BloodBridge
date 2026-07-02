@@ -1,0 +1,1480 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    />
+    <title>BloodBridge — Blood Bank Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="bankdash.css" />
+    <link rel="stylesheet" href="raktosathi_floating.css" />
+  </head>
+  <body>
+    <div class="bg-scene">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+    </div>
+    <div class="grid-overlay"></div>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <img
+            src="blood1.png"
+            alt="BloodBridge"
+            class="sidebar-logo-img"
+            onerror="
+              this.style.display = 'none';
+              this.nextElementSibling.style.display = 'flex';
+            "
+          />
+          <span class="sidebar-logo-text-fallback" style="display: none"
+            >🩸</span
+          >
+          <span class="sidebar-logo-text">Blood Bank Portal</span>
+        </div>
+        <button
+          class="sidebar-close"
+          id="sidebarClose"
+          aria-label="Close sidebar"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div class="sidebar-section-label">Main</div>
+      <nav class="sidebar-nav">
+        <a href="#" class="sidebar-link active" data-section="dashboard"
+          ><span class="sidebar-icon">📊</span><span>Dashboard</span></a
+        >
+        <a href="#" class="sidebar-link" data-section="inventory"
+          ><span class="sidebar-icon">🩸</span><span>Inventory</span></a
+        >
+        <a href="#" class="sidebar-link" data-section="expiry"
+          ><span class="sidebar-icon">📅</span><span>Expiry Alerts</span></a
+        >
+        <a href="#" class="sidebar-link" data-section="coldchain"
+          ><span class="sidebar-icon">❄️</span><span>Cold Chain</span></a
+        >
+        <a href="#" class="sidebar-link" data-section="quarantine"
+          ><span class="sidebar-icon">🚫</span><span>Quarantine</span></a
+        >
+      </nav>
+
+      <div class="sidebar-section-label">Operations</div>
+      <nav class="sidebar-nav">
+        <a href="#" class="sidebar-link" data-section="ratings"
+          ><span class="sidebar-icon">⭐</span><span>Ratings & Reviews</span></a
+        >
+        <a href="#" class="sidebar-link" data-section="drones"
+          ><span class="sidebar-icon">🚁</span><span>Drone Management</span></a
+        >
+        <a href="#" class="sidebar-link" data-section="leaderboard"
+          ><span class="sidebar-icon">🏆</span><span>Donor Leaderboard</span></a
+        >
+        <a href="#" class="sidebar-link" data-section="promises"
+          ><span class="sidebar-icon">🤝</span><span>Promises</span></a
+        >
+         <a href="#" class="sidebar-link" data-section="requests"
+          ><span class="sidebar-icon">📋</span><span>Blood Requests</span></a
+        >
+        <a href="#" class="sidebar-link" data-section="emergency"
+          ><span class="sidebar-icon">🆘</span><span>Emergency Broadcast</span></a
+        >
+      </nav>
+
+      <div class="sidebar-section-label">Account</div>
+      <nav class="sidebar-nav">
+        <a href="#" class="sidebar-link" data-section="profile"
+          ><span class="sidebar-icon">👤</span><span>Profile</span></a
+        >
+      </nav>
+
+      <div class="sidebar-footer">
+          <div class="sidebar-user">
+            <div class="sidebar-avatar" id="sidebarAvatar">BB</div>
+            <div class="sidebar-user-info">
+              <div class="sidebar-user-name" id="sidebarName">Dhaka Central</div>
+              <div class="sidebar-user-role" id="sidebarRole">Blood Bank Admin</div>
+            </div>
+          </div>
+      </div>
+    </aside>
+
+    <div class="main-wrapper" id="mainWrapper">
+      <nav class="topnav">
+        <div class="topnav-left">
+          <button class="hamburger" id="hamburger" aria-label="Toggle sidebar" aria-expanded="false">
+            <span></span><span></span><span></span>
+          </button>
+          <div class="topnav-brand">
+            <img
+              src="blood1.png"
+              alt="BloodBridge"
+              class="topnav-logo-img"
+              onerror="
+                this.style.display = 'none';
+                this.nextElementSibling.style.display = 'inline';
+              "
+            />
+            <span class="topnav-logo-fallback" style="display: none">🩸</span>
+            <span class="topnav-title">Blood Bank Dashboard</span>
+          </div>
+        </div>
+        <div class="topnav-right">
+          <div
+            class="theme-toggle"
+            id="themeToggle"
+            role="button" tabindex="0"
+          >
+            <div class="toggle-track">
+              <span class="toggle-icon moon">🌙</span
+              ><span class="toggle-icon sun">☀️</span>
+              <div class="toggle-thumb"></div>
+            </div>
+          </div>
+          <div class="bank-badge">
+            <span class="gold-badge" id="topBadge">🏆 Gold Status</span>
+          </div>
+          <button
+            class="logout-btn"
+            id="logoutBtn"
+            onclick="localStorage.removeItem('bbBankPage');window.location.href='login.html'"
+          >
+            Logout
+          </button>
+        </div>
+      </nav>
+
+      <main class="content" id="pageContent">
+        <!-- ═══ DASHBOARD ═══ -->
+        <div class="dashboard-view active" id="dashboardView">
+          <div class="greeting-section reveal">
+            <div class="greeting-text">
+              <h1>
+                Welcome back,
+                <span class="bank-name" id="greetName">Loading…</span>
+              </h1>
+              <p class="bank-id">License: <span id="bankLicense">—</span> · <span id="bankCity">—</span></p>
+            </div>
+            <div class="gold-status-pill">
+              <span class="gold-icon">🏆</span>
+              <span id="goldPillText">Gold Badge Status</span> · Trusted
+              Partner
+            </div>
+          </div>
+
+          <div class="stats-grid reveal">
+            <div class="stat-card glass-card">
+              <div class="stat-icon">🩸</div>
+              <div class="stat-info">
+                <span class="stat-value" id="unitsInStock">0</span
+                ><span class="stat-label">Units in Stock</span>
+              </div>
+            </div>
+            <div class="stat-card glass-card">
+              <div class="stat-icon">⭐</div>
+              <div class="stat-info">
+                <span class="stat-value" id="avgRating">0.0</span
+                ><span class="stat-label">Avg Rating</span>
+              </div>
+            </div>
+            <div class="stat-card glass-card">
+              <div class="stat-icon">⚠️</div>
+              <div class="stat-info">
+                <span class="stat-value" id="expiryAlerts">0</span
+                ><span class="stat-label">Expiry Alerts</span>
+              </div>
+            </div>
+            <div class="stat-card glass-card">
+              <div class="stat-icon">🏆</div>
+              <div class="stat-info">
+                <span class="stat-value" id="badgeStatus">—</span
+                ><span class="stat-label">Badge Status</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="alerts-grid reveal" id="criticalAlertsGrid">
+            <div class="alert-critical-card glass-card" style="text-align:center;padding:16px;color:var(--text-muted);">Loading alerts...</div>
+          </div>
+
+          <div class="section-header reveal">
+            <h2>Quick Actions</h2>
+            <p>Manage key operations across the blood bank system</p>
+          </div>
+          <div class="actions-grid reveal">
+            <div class="action-card glass-card" data-action="coldchain">
+              <div class="action-icon">🌡️❄️</div>
+              <h3>Cold Chain Monitor</h3>
+              <p>Live temperature & sensor feed</p>
+            </div>
+            <div class="action-card glass-card" data-action="expiry">
+              <div class="action-icon">📅⚠️</div>
+              <h3>Expiry Alert Dashboard</h3>
+              <p>Near-expiry blood bag alerts</p>
+            </div>
+            <div class="action-card glass-card" data-action="inventory">
+              <div class="action-icon">🩸📦</div>
+              <h3>Inventory Manager</h3>
+              <p>Stock tracking & batch control</p>
+            </div>
+            <div class="action-card glass-card" data-action="quarantine">
+              <div class="action-icon">🧫🚫</div>
+              <h3>Quarantine & Culture</h3>
+              <p>Quality control dashboard</p>
+            </div>
+            <div class="action-card glass-card" data-action="ratings">
+              <div class="action-icon">⭐📋</div>
+              <h3>View Ratings & Reviews</h3>
+              <p>Patient & donor feedback</p>
+            </div>
+            <div class="action-card glass-card" data-action="drones">
+              <div class="action-icon">🚁📡</div>
+              <h3>Manage Drones</h3>
+              <p>Dispatch and track deliveries</p>
+            </div>
+            <div class="action-card glass-card" data-action="leaderboard">
+              <div class="action-icon">🏆👥</div>
+              <h3>Donor Leaderboard</h3>
+              <p>Top donor recognition</p>
+            </div>
+            <div class="action-card glass-card" data-action="profile">
+              <div class="action-icon">👤⚙️</div>
+              <h3>Edit Profile</h3>
+              <p>Bank settings & accreditation</p>
+            </div>
+          </div>
+
+          <div class="two-col-grid reveal">
+            <div class="glass-card table-card">
+              <div class="card-header">
+                <div class="card-title">
+                  <span class="card-title-icon">🩸</span> Inventory by Blood
+                  Type
+                </div>
+                <button class="btn-ghost-sm" id="refreshDashInvBtn">
+                  Refresh
+                </button>
+              </div>
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Blood Type</th>
+                      <th>Units Available</th>
+                      <th>Expiring ≤7d</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dashInventoryTbody">
+                  <tr>
+                    <td colspan="7" style="text-align: center; padding: 24px">
+                      Loading…
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="card-footer">
+                <a href="#" class="card-footer-link" id="viewFullInventoryLink"
+                  >View full inventory →</a
+                >
+              </div>
+            </div>
+            <div class="glass-card alerts-card">
+              <div class="card-header">
+                <div class="card-title">
+                  <span class="card-title-icon">⚠️</span> Expiring Soon
+                </div>
+                <div class="live-pill small">
+                  <span class="dot"></span> Auto-alert active
+                </div>
+              </div>
+              <div class="alert-list" id="expiringList">Loading…</div>
+              <div class="card-footer">
+                <a href="#" class="card-footer-link" id="viewAllExpiryLink"
+                  >View all expiry alerts →</a
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="two-col-grid reveal" style="margin-top: 20px">
+            <div class="glass-card ratings-preview">
+              <div class="card-header">
+                <div class="card-title">
+                  <span class="card-title-icon">⭐</span> Recent Ratings
+                </div>
+                <button class="btn-ghost-sm" id="viewAllRatingsBtn">
+                  View All
+                </button>
+              </div>
+              <div class="review-list" id="dashReviewsList">Loading…</div>
+            </div>
+            <div class="glass-card drone-status">
+              <div class="card-header">
+                <div class="card-title">
+                  <span class="card-title-icon">🚁</span> Active Drone Fleet
+                </div>
+                <button class="btn-ghost-sm" id="manageDronesQuickBtn">
+                  Manage
+                </button>
+              </div>
+              <div class="drone-list" id="dashDroneList">Loading…</div>
+            </div>
+          </div>
+
+          <div class="footer-note reveal">
+            <p>
+              🏥 Accredited by National Blood Authority · Next inspection:
+              <span id="dashInspection">—</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- ═══ INVENTORY ═══ -->
+        <div class="dashboard-view" id="inventoryView">
+          <div class="page-header reveal">
+            <div>
+              <h1 class="page-title">🩸 Inventory Management</h1>
+              <p class="page-subtitle">
+                Complete blood stock tracking & availability analytics
+              </p>
+            </div>
+            <div class="page-header-actions">
+              <button class="btn-primary" id="addBagBtn">+ Add New Bag</button>
+              <button class="btn-ghost-sm" id="invRefreshBtn">
+                🔄 Refresh
+              </button>
+            </div>
+          </div>
+          <div class="inv-type-grid reveal" id="invTypeGrid">Loading…</div>
+          <div class="inv-analytics-row reveal">
+            <div class="glass-card inv-analytic-card">
+              <div class="inv-analytic-icon">📦</div>
+              <div class="inv-analytic-val" id="invTotalUnits">0</div>
+              <div class="inv-analytic-lbl">Total Units</div>
+            </div>
+            <div class="glass-card inv-analytic-card">
+              <div class="inv-analytic-icon">⚠️</div>
+              <div class="inv-analytic-val" id="invExpiring7">0</div>
+              <div class="inv-analytic-lbl">Expiring ≤7 Days</div>
+            </div>
+            <div class="glass-card inv-analytic-card">
+              <div class="inv-analytic-icon">🚫</div>
+              <div class="inv-analytic-val" id="invQuarantined">0</div>
+              <div class="inv-analytic-lbl">Quarantined</div>
+            </div>
+            <div class="glass-card inv-analytic-card">
+              <div class="inv-analytic-icon">✅</div>
+              <div class="inv-analytic-val" id="invReady">0</div>
+              <div class="inv-analytic-lbl">Ready for Use</div>
+            </div>
+          </div>
+          <div class="glass-card inv-table-card reveal">
+            <div class="card-header">
+              <div class="card-title">🗂️ Blood Bag Inventory</div>
+              <div class="inv-controls">
+                <input
+                  type="text"
+                  class="search-input"
+                  id="invSearchInput"
+                  placeholder="Search bag ID, type..."
+                />
+                <select class="filter-select" id="invTypeFilter">
+                  <option value="">All Types</option>
+                  <option>A+</option>
+                  <option>A-</option>
+                  <option>B+</option>
+                  <option>B-</option>
+                  <option>O+</option>
+                  <option>O-</option>
+                  <option>AB+</option>
+                  <option>AB-</option>
+                </select>
+                <select class="filter-select" id="invStatusFilter">
+                  <option value="">All Status</option>
+                  <option>available</option>
+                  <option>quarantined</option>
+                  <option>discarded</option>
+                  <option>allocated</option>
+                </select>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Bag ID</th>
+                    <th>Blood Type</th>
+                    <th>Collected</th>
+                    <th>Expiry Date</th>
+                    <th>Storage Unit</th>
+                    <th>Volume</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="inventoryTbody">
+                  <tr>
+                    <td colspan="8" style="text-align: center; padding: 24px">
+                      Loading…
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-footer">
+              <span id="invTableCount">—</span>
+              <div class="pagination" id="invPagination"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ EXPIRY ALERTS ═══ -->
+        <div class="dashboard-view" id="expiryView">
+
+          <!-- ── PAGE HEADER ── -->
+          <div class="page-header reveal">
+            <div>
+              <h1 class="page-title">🩸 Expiry Alert Dashboard</h1>
+              <p class="page-subtitle">Real-time FEFO monitoring — bags sorted by nearest expiry first</p>
+            </div>
+            <div class="page-header-actions">
+              <div class="live-pill"><span class="dot"></span> Auto-refresh: 60s</div>
+              <button class="btn-ghost-sm" id="ackAllAlertsBtn">✓ Acknowledge All</button>
+            </div>
+          </div>
+
+          <!-- ── STAT CARDS ── -->
+          <div class="exp-stat-grid reveal">
+            <div class="exp-stat-card exp-stat-critical">
+              <div class="exp-stat-left">
+                <div class="exp-stat-icon-wrap exp-ic-critical">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                </div>
+                <div>
+                  <div class="exp-stat-num" id="expCriticalCount">0</div>
+                  <div class="exp-stat-label">Critical</div>
+                  <div class="exp-stat-sub">≤ 2 days left</div>
+                </div>
+              </div>
+              <div class="exp-stat-bar exp-bar-critical"></div>
+            </div>
+            <div class="exp-stat-card exp-stat-warning">
+              <div class="exp-stat-left">
+                <div class="exp-stat-icon-wrap exp-ic-warning">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                </div>
+                <div>
+                  <div class="exp-stat-num" id="expWarningCount">0</div>
+                  <div class="exp-stat-label">Warning</div>
+                  <div class="exp-stat-sub">3 – 5 days left</div>
+                </div>
+              </div>
+              <div class="exp-stat-bar exp-bar-warning"></div>
+            </div>
+            <div class="exp-stat-card exp-stat-notice">
+              <div class="exp-stat-left">
+                <div class="exp-stat-icon-wrap exp-ic-notice">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <div>
+                  <div class="exp-stat-num" id="expNoticeCount">0</div>
+                  <div class="exp-stat-label">Notice</div>
+                  <div class="exp-stat-sub">6 – 7 days left</div>
+                </div>
+              </div>
+              <div class="exp-stat-bar exp-bar-notice"></div>
+            </div>
+            <div class="exp-stat-card exp-stat-allocated">
+              <div class="exp-stat-left">
+                <div class="exp-stat-icon-wrap exp-ic-allocated">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div>
+                  <div class="exp-stat-num" id="expAllocatedToday">0</div>
+                  <div class="exp-stat-label">Allocated</div>
+                  <div class="exp-stat-sub">Today</div>
+                </div>
+              </div>
+              <div class="exp-stat-bar exp-bar-allocated"></div>
+            </div>
+          </div>
+
+          <!-- ── FILTER TABS ── -->
+          <div class="exp-filter-bar reveal">
+            <button class="exp-filter-btn active" data-urgency="all">
+              <span class="exp-fb-dot" style="background:#94a3b8;"></span> All Alerts
+            </button>
+            <button class="exp-filter-btn" data-urgency="critical">
+              <span class="exp-fb-dot" style="background:#f87171;"></span> Critical
+            </button>
+            <button class="exp-filter-btn" data-urgency="warning">
+              <span class="exp-fb-dot" style="background:#fbbf24;"></span> Warning
+            </button>
+            <button class="exp-filter-btn" data-urgency="notice">
+              <span class="exp-fb-dot" style="background:#facc15;"></span> Notice
+            </button>
+          </div>
+
+          <!-- ── ALERTS TABLE ── -->
+          <div class="glass-card exp-table-card reveal">
+            <div class="exp-table-header">
+              <div class="exp-th">#</div>
+              <div class="exp-th">Blood Group</div>
+              <div class="exp-th">Bag Barcode</div>
+              <div class="exp-th">Location</div>
+              <div class="exp-th">Collected</div>
+              <div class="exp-th">Expires</div>
+              <div class="exp-th exp-th-center">Days Left</div>
+              <div class="exp-th exp-th-center">Status</div>
+              <div class="exp-th exp-th-center">Action</div>
+            </div>
+            <div id="expiryAlertsList">
+              <div class="exp-loading">
+                <div class="loader-spin" style="margin:0 auto 8px;"></div> Loading alerts…
+              </div>
+            </div>
+          </div>
+
+          <!-- ── HOSPITAL AUTO-NOTIFICATION ── -->
+          <div class="glass-card hospital-notify-card reveal">
+            <div class="card-header">
+              <div class="card-title">🏥 Hospital Auto-Notification</div>
+              <button class="btn-primary btn-sm" id="sendAllNotificationsBtn">📤 Send All</button>
+            </div>
+            <div class="hospital-notify-list" id="hospitalNotifyList">Loading…</div>
+          </div>
+
+        </div>
+
+        <!-- ═══ COLD CHAIN ═══ -->
+        <div class="dashboard-view" id="coldchainView">
+          <div class="page-header reveal">
+            <div>
+              <h1 class="page-title">❄️ Cold Chain Monitoring</h1>
+              <p class="page-subtitle">
+                Live temperature surveillance & sensor health
+              </p>
+            </div>
+            <div class="page-header-actions">
+              <div class="live-pill">
+                <span class="dot"></span> Live — updating every 30s
+              </div>
+              <button class="btn-ghost-sm" id="scheduleMaintenanceBtn">
+                🔧 Schedule Maintenance
+              </button>
+            </div>
+          </div>
+          <div class="coldchain-stats reveal">
+            <div class="glass-card cc-stat-card">
+              <div
+                class="cc-stat-icon"
+                style="color: #4ade80; font-weight: 800"
+              >
+                2–6°C
+              </div>
+              <div class="cc-stat-val" id="ccNormalCount">0</div>
+              <div class="cc-stat-lbl">Units Normal</div>
+            </div>
+            <div class="glass-card cc-stat-card">
+              <div class="cc-stat-icon">⚠️</div>
+              <div class="cc-stat-val cc-warn" id="ccWarningCount">0</div>
+              <div class="cc-stat-lbl">Units Warning</div>
+            </div>
+            <div class="glass-card cc-stat-card">
+              <div class="cc-stat-icon">🚨</div>
+              <div class="cc-stat-val cc-critical" id="ccCriticalCount">0</div>
+              <div class="cc-stat-lbl">Critical Alert</div>
+            </div>
+            <div class="glass-card cc-stat-card">
+              <div class="cc-stat-icon">🔋</div>
+              <div class="cc-stat-val" id="ccEfficiency">0%</div>
+              <div class="cc-stat-lbl">Avg Efficiency</div>
+            </div>
+          </div>
+          <div class="freezer-grid reveal" id="freezerGrid">Loading…</div>
+          <div class="glass-card cc-log-card reveal">
+            <div class="card-header">
+              <div class="card-title">📋 Temperature Log — Last 24 Hours</div>
+              <div class="cc-log-controls">
+                <select class="filter-select" id="ccUnitFilter">
+                  <option value="">All Units</option></select
+                ><button class="btn-ghost-sm" id="exportTempLogBtn">
+                  Export CSV
+                </button>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Unit</th>
+                    <th>Temperature</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="tempLogTbody">
+                  <tr>
+                    <td colspan="4" style="text-align: center; padding: 24px">
+                      Loading…
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ QUARANTINE ═══ -->
+        <div class="dashboard-view" id="quarantineView">
+          <div class="page-header reveal">
+            <div>
+              <h1 class="page-title">🚫 Quarantine & Culture Tests</h1>
+              <p class="page-subtitle">Lab test tracking & approval workflow</p>
+            </div>
+            <div class="page-header-actions">
+              <button class="btn-primary" id="addQuarantineBtn">
+                + New Quarantine
+              </button>
+              <button class="btn-ghost-sm" id="labReportBtn">
+                📋 Lab Report
+              </button>
+            </div>
+          </div>
+          <div class="quarantine-stats reveal">
+            <div class="glass-card q-stat">
+              <div class="q-stat-icon">🔬</div>
+              <div class="q-stat-val" id="qActiveCount">0</div>
+              <div class="q-stat-lbl">Active Quarantine</div>
+            </div>
+            <div class="glass-card q-stat">
+              <div class="q-stat-icon">⏳</div>
+              <div class="q-stat-val" id="qPendingCount">0</div>
+              <div class="q-stat-lbl">Pending Tests</div>
+            </div>
+            <div class="glass-card q-stat">
+              <div class="q-stat-icon">✅</div>
+              <div class="q-stat-val" id="qClearedCount">0</div>
+              <div class="q-stat-lbl">Cleared This Month</div>
+            </div>
+            <div class="glass-card q-stat">
+              <div class="q-stat-icon">❌</div>
+              <div class="q-stat-val" id="qDisposedCount">0</div>
+              <div class="q-stat-lbl">Disposed</div>
+            </div>
+          </div>
+          <div class="filter-bar reveal" id="quarantineFilterBar">
+            <button class="filter-btn active" data-risk="all">All Cases</button>
+            <button class="filter-btn" data-risk="high">🔴 High Risk</button>
+            <button class="filter-btn" data-risk="medium">🟠 Medium</button>
+            <button class="filter-btn" data-risk="low">🟢 Low Risk</button>
+          </div>
+          <div class="glass-card reveal">
+            <div class="card-header">
+              <div class="card-title">🧫 Quarantine Register</div>
+              <input
+                type="text"
+                class="search-input"
+                id="quarantineSearch"
+                placeholder="Search bag ID..."
+              />
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Bag ID</th>
+                    <th>Blood Type</th>
+                    <th>Test Type</th>
+                    <th>Risk Level</th>
+                    <th>Status</th>
+                    <th>Initiated</th>
+                    <th>Lab Tech</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="quarantineTbody">
+                  <tr>
+                    <td colspan="8" style="text-align: center; padding: 24px">
+                      Loading…
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="glass-card q-workflow-card reveal">
+            <div class="card-header">
+              <div class="card-title">🔄 Clearance Progress Tracker</div>
+            </div>
+            <div class="q-workflow-grid" id="qWorkflowGrid">Loading…</div>
+          </div>
+        </div>
+
+        <!-- ═══ RATINGS ═══ -->
+        <div class="dashboard-view" id="ratingsView">
+          <div class="page-header reveal">
+            <div>
+              <h1 class="page-title">⭐ Ratings & Reviews</h1>
+              <p class="page-subtitle">Patient & hospital feedback analytics</p>
+            </div>
+            <div class="page-header-actions">
+              <button class="btn-ghost-sm" id="openGiveReviewBtn">
+                ✍️ Give Review
+              </button>
+              <button class="btn-ghost-sm" id="exportReviewsBtn">
+                📊 Export Report
+              </button>
+            </div>
+          </div>
+          <div class="ratings-overview reveal">
+            <div class="glass-card rating-summary-card">
+              <div class="rating-big-number" id="ratingBigNumber">0.0</div>
+              <div class="rating-stars-big" id="ratingStarsBig">—</div>
+              <div class="rating-total" id="ratingTotalCount">
+                Based on 0 reviews
+              </div>
+              <div class="rating-breakdown" id="ratingBreakdown">
+                <div class="rating-row"><span>5★</span><div class="rating-bar-wrap"><div class="rating-bar-fill" id="rb5" style="width:0%"></div></div><span id="rp5">0%</span></div>
+                <div class="rating-row"><span>4★</span><div class="rating-bar-wrap"><div class="rating-bar-fill" id="rb4" style="width:0%"></div></div><span id="rp4">0%</span></div>
+                <div class="rating-row"><span>3★</span><div class="rating-bar-wrap"><div class="rating-bar-fill" id="rb3" style="width:0%"></div></div><span id="rp3">0%</span></div>
+                <div class="rating-row"><span>2★</span><div class="rating-bar-wrap"><div class="rating-bar-fill" id="rb2" style="width:0%"></div></div><span id="rp2">0%</span></div>
+                <div class="rating-row"><span>1★</span><div class="rating-bar-wrap"><div class="rating-bar-fill" id="rb1" style="width:0%"></div></div><span id="rp1">0%</span></div>
+              </div>
+            </div>
+
+          </div>
+          <div class="filter-bar reveal">
+            <input
+              type="text"
+              class="search-input"
+              id="reviewSearch"
+              placeholder="Search reviews..."
+            />
+            <select class="filter-select" id="reviewRatingFilter">
+              <option value="">All Ratings</option>
+              <option value="5">5 Stars</option>
+              <option value="4">4 Stars</option>
+              <option value="3">3 Stars</option>
+              <option value="2">2 Stars</option>
+              <option value="1">1 Star</option>
+            </select>
+
+          </div>
+          <div class="reviews-list reveal" id="reviewsList">Loading…</div>
+        </div>
+
+        <!-- ═══ DRONES ═══ -->
+        <div class="dashboard-view" id="dronesView">
+          <div class="page-header reveal">
+            <div>
+              <h1 class="page-title">🚁 Drone Management</h1>
+              <p class="page-subtitle">
+                Fleet tracking, dispatch control & delivery analytics
+              </p>
+            </div>
+            <div class="page-header-actions">
+              <button class="btn-primary" id="dispatchDronePageBtn">
+                🚁 Dispatch Drone
+              </button>
+              <button class="btn-ghost-sm" id="droneMaintenanceBtn">
+                🔧 Maintenance Log
+              </button>
+            </div>
+          </div>
+          <div class="drone-fleet-stats reveal">
+            <div class="glass-card drone-fleet-stat">
+              <div class="dfs-icon">✅</div>
+              <div class="dfs-val" id="droneAvail">0</div>
+              <div class="dfs-lbl">Available</div>
+            </div>
+            <div class="glass-card drone-fleet-stat">
+              <div class="dfs-icon">🚁</div>
+              <div class="dfs-val" id="dronesInFlight">0</div>
+              <div class="dfs-lbl">In Flight</div>
+            </div>
+            <div class="glass-card drone-fleet-stat">
+              <div class="dfs-icon">⚡</div>
+              <div class="dfs-val" id="droneCharging">0</div>
+              <div class="dfs-lbl">Charging</div>
+            </div>
+            <div class="glass-card drone-fleet-stat">
+              <div class="dfs-icon">🔧</div>
+              <div class="dfs-val" id="droneMaint">0</div>
+              <div class="dfs-lbl">Maintenance</div>
+            </div>
+            <div class="glass-card drone-fleet-stat">
+              <div class="dfs-icon">📦</div>
+              <div class="dfs-val" id="droneDelivToday">0</div>
+              <div class="dfs-lbl">Deliveries Today</div>
+            </div>
+          </div>
+          <div class="drone-fleet-grid reveal" id="droneFleetGrid">
+            Loading…
+          </div>
+
+          <!-- ══ DRONE DELIVERY SIMULATION ══ -->
+          <div class="glass-card drone-sim-card reveal" id="droneSimCard">
+            <div class="drone-sim-header">
+              <div>
+                <div class="card-title">🗺️ Delivery Simulation</div>
+                <div style="font-size:.72rem;color:var(--text-muted);margin-top:3px;">
+                  Animated real-time drone route from Blood Bank → Hospital
+                </div>
+              </div>
+              <div class="drone-sim-controls">
+                <button class="drone-sim-btn drone-sim-start" id="droneSimStartBtn">▶ Start</button>
+                <button class="drone-sim-btn drone-sim-pause" id="droneSimPauseBtn" disabled>⏸ Pause</button>
+                <button class="drone-sim-btn drone-sim-reset" id="droneSimResetBtn">↺ Reset</button>
+              </div>
+            </div>
+
+            <!-- Config row -->
+            <div class="drone-sim-config">
+              <div class="drone-sim-cfg-item">
+                <label>From</label>
+                <input type="text" id="simFrom" value="BloodBridge Bank, Dhaka" class="drone-sim-input" placeholder="Origin">
+              </div>
+              <div class="drone-sim-cfg-arrow">✈</div>
+              <div class="drone-sim-cfg-item">
+                <label>To</label>
+                <input type="text" id="simTo" value="Dhaka Medical College Hospital" class="drone-sim-input" placeholder="Destination">
+              </div>
+              <div class="drone-sim-cfg-item drone-sim-cfg-sm">
+                <label>Blood Type</label>
+                <select id="simBloodType" class="drone-sim-input">
+                  <option>O+</option><option>A+</option><option>B+</option>
+                  <option>AB+</option><option>O-</option><option>A-</option>
+                  <option>B-</option><option>AB-</option>
+                </select>
+              </div>
+              <div class="drone-sim-cfg-item drone-sim-cfg-sm">
+                <label>Units</label>
+                <input type="number" id="simUnits" value="2" min="1" max="10" class="drone-sim-input">
+              </div>
+              <div class="drone-sim-cfg-item drone-sim-cfg-sm">
+                <label>Speed (km/h)</label>
+                <input type="number" id="simSpeed" value="80" min="20" max="200" class="drone-sim-input">
+              </div>
+            </div>
+
+            <!-- Map Canvas -->
+            <div class="drone-sim-map-wrap">
+              <canvas id="droneSimCanvas"></canvas>
+              <!-- Drone element (moves over canvas) -->
+              <div class="drone-icon-wrap" id="droneIconWrap">
+                <div class="drone-icon" id="droneIcon">🚁</div>
+                <div class="drone-shadow"></div>
+              </div>
+              <!-- Location labels -->
+              <div class="drone-loc-label drone-loc-origin"  id="simOriginLabel">🏥 Blood Bank</div>
+              <div class="drone-loc-label drone-loc-dest"    id="simDestLabel">🏨 Hospital</div>
+              <!-- Package drop effect -->
+              <div class="drone-package" id="dronePackage">🩸</div>
+            </div>
+
+            <!-- Live telemetry -->
+            <div class="drone-telemetry">
+              <div class="drone-tele-item">
+                <div class="drone-tele-icon">⚡</div>
+                <div class="drone-tele-val" id="simBattery">100%</div>
+                <div class="drone-tele-lbl">Battery</div>
+                <div class="drone-batt-bar">
+                  <div class="drone-batt-fill" id="simBattFill" style="width:100%;"></div>
+                </div>
+              </div>
+              <div class="drone-tele-item">
+                <div class="drone-tele-icon">🚀</div>
+                <div class="drone-tele-val" id="simSpeedVal">0 km/h</div>
+                <div class="drone-tele-lbl">Speed</div>
+              </div>
+              <div class="drone-tele-item">
+                <div class="drone-tele-icon">📏</div>
+                <div class="drone-tele-val" id="simDistance">0.0 km</div>
+                <div class="drone-tele-lbl">Distance</div>
+              </div>
+              <div class="drone-tele-item">
+                <div class="drone-tele-icon">⏱️</div>
+                <div class="drone-tele-val" id="simETA">--:--</div>
+                <div class="drone-tele-lbl">ETA</div>
+              </div>
+              <div class="drone-tele-item">
+                <div class="drone-tele-icon">🌡️</div>
+                <div class="drone-tele-val" id="simAltitude">0 m</div>
+                <div class="drone-tele-lbl">Altitude</div>
+              </div>
+              <div class="drone-tele-item">
+                <div class="drone-tele-icon">📦</div>
+                <div class="drone-tele-val" id="simStatus">Ready</div>
+                <div class="drone-tele-lbl">Status</div>
+              </div>
+            </div>
+
+            <!-- Progress bar -->
+            <div class="drone-progress-wrap">
+              <div class="drone-progress-label">
+                <span id="simFromShort">Bank</span>
+                <span id="simProgressPct">0%</span>
+                <span id="simToShort">Hospital</span>
+              </div>
+              <div class="drone-progress-track">
+                <div class="drone-progress-fill" id="simProgressFill" style="width:0%"></div>
+                <div class="drone-progress-dot" id="simProgressDot" style="left:0%"></div>
+              </div>
+            </div>
+
+            <!-- Log -->
+            <div class="drone-log" id="droneSimLog">
+              <div class="drone-log-entry">🟢 Simulation ready. Configure and press Start.</div>
+            </div>
+          </div>
+
+          <div class="glass-card reveal">
+            <div class="card-header">
+              <div class="card-title">📡 Active Deliveries</div>
+              <div class="live-pill">
+                <span class="dot"></span> Live tracking
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Delivery ID</th>
+                    <th>Drone</th>
+                    <th>Destination</th>
+                    <th>Blood Type</th>
+                    <th>Units</th>
+                    <th>Departed</th>
+                    <th>ETA</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="activeDeliveriesTbody">
+                  <tr>
+                    <td colspan="8" style="text-align: center; padding: 24px">
+                      Loading…
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ═══ LEADERBOARD ═══ -->
+        <div class="dashboard-view" id="leaderboardView">
+          <div class="page-header reveal">
+            <div>
+              <h1 class="page-title">🏆 Donor Leaderboard</h1>
+              <p class="page-subtitle">
+                Donors ranked by trust score & donation history
+              </p>
+            </div>
+            <div class="page-header-actions">
+              <div class="period-toggle">
+                <button class="period-btn active" data-period="monthly">
+                  Monthly</button
+                ><button class="period-btn" data-period="yearly">Yearly</button>
+              </div>
+              <button class="btn-ghost-sm" id="exportLeaderboardBtn">
+                🏅 Export
+              </button>
+            </div>
+          </div>
+          <div class="top3-showcase reveal" id="top3Showcase">Loading…</div>
+          <div class="glass-card reveal">
+            <div class="card-header">
+              <div class="card-title">📋 Full Rankings</div>
+              <div class="lb-controls">
+                <input
+                  type="text"
+                  class="search-input"
+                  id="lbSearch"
+                  placeholder="Search donor family..."
+                /><select class="filter-select" id="lbBloodFilter">
+                  <option value="">All Blood Types</option>
+                  <option>A+</option>
+                  <option>A-</option>
+                  <option>B+</option>
+                  <option>B-</option>
+                  <option>O+</option>
+                  <option>O-</option>
+                  <option>AB+</option>
+                  <option>AB-</option>
+                </select>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Family / Donor</th>
+                    <th>Blood Type</th>
+                    <th>Total Donations</th>
+                    <th>Trust Score</th>
+                    <th>This Period</th>
+                    <th>Achievement</th>
+                  </tr>
+                </thead>
+                <tbody id="leaderboardTbody">
+                  <tr>
+                    <td colspan="7" style="text-align: center; padding: 24px">
+                      Loading…
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="glass-card achievement-guide reveal">
+            <div class="card-header">
+              <div class="card-title">🎖️ Achievement Badge System</div>
+            </div>
+            <div class="achievement-badges-grid">
+              <div class="achievement-item">
+                <span class="ach-icon">🩸</span><strong>First Drop</strong>
+                <p>First donation</p>
+              </div>
+              <div class="achievement-item">
+                <span class="ach-icon">💪</span><strong>Regular Hero</strong>
+                <p>10+ donations</p>
+              </div>
+              <div class="achievement-item">
+                <span class="ach-icon">🔥</span><strong>Streak Master</strong>
+                <p>6-month streak</p>
+              </div>
+              <div class="achievement-item">
+                <span class="ach-icon">🌟</span><strong>Life Saver</strong>
+                <p>25+ donations</p>
+              </div>
+              <div class="achievement-item">
+                <span class="ach-icon">🏆</span><strong>Legend</strong>
+                <p>50+ donations</p>
+              </div>
+              <div class="achievement-item">
+                <span class="ach-icon">👑</span><strong>Dynasty</strong>
+                <p>Family 100+ total</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ PROFILE ═══ -->
+        <div class="dashboard-view" id="profileView">
+          <div class="profile-hero reveal">
+            <div class="profile-hero-bg"></div>
+            <div class="profile-hero-content">
+              <div class="profile-hero-avatar">
+                <img src="blood1.png" alt="" class="profile-hero-img" id="profileAvatarImg"
+                  onerror="this.style.display='none';var fb=document.getElementById('profileAvatarFallback');if(fb){fb.style.display='flex'}">
+                <div class="profile-hero-fallback" id="profileAvatarFallback">BB</div>
+                <div class="profile-hero-badge" id="profileBadgeIcon">🏆</div>
+              </div>
+              <div class="profile-hero-info">
+                <h1 id="profileBankName">Loading…</h1>
+                <div class="profile-hero-meta">
+                  <span class="profile-hero-role" id="profileRole">Blood Bank</span>
+                  <span class="profile-hero-divider">•</span>
+                  <span id="profileUID">UID: —</span>
+                  <span class="profile-hero-divider">•</span>
+                  <span class="profile-hero-status" id="profileStatusPill">Active</span>
+                </div>
+                <div class="profile-hero-badge-row">
+                  <span class="gold-status-pill" id="profileBadgePill">🏆 Gold Badge — Verified Partner</span>
+                </div>
+              </div>
+              <div class="profile-hero-actions">
+                <button class="btn-primary" id="editProfileBtn">✏️ Edit Profile</button>
+                <button class="btn-ghost-sm" id="changePasswordBtn">🔒 Password</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Stat Row -->
+          <div class="profile-stats-row reveal">
+            <div class="psr-card">
+              <div class="psr-icon psr-bags">🩸</div>
+              <div class="psr-body">
+                <div class="psr-val" id="psrBags">0</div>
+                <div class="psr-lbl">Bags Processed</div>
+              </div>
+            </div>
+            <div class="psr-card">
+              <div class="psr-icon psr-drones">🛸</div>
+              <div class="psr-body">
+                <div class="psr-val" id="psrDrones">0</div>
+                <div class="psr-lbl">Active Drones</div>
+              </div>
+            </div>
+            <div class="psr-card">
+              <div class="psr-icon psr-promises">🔗</div>
+              <div class="psr-body">
+                <div class="psr-val" id="psrPromises">0</div>
+                <div class="psr-lbl">Donor Promises</div>
+              </div>
+            </div>
+            <div class="psr-card">
+              <div class="psr-icon psr-rating">⭐</div>
+              <div class="psr-body">
+                <div class="psr-val" id="psrRating">0.0</div>
+                <div class="psr-lbl">Rating</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Details Grid -->
+          <div class="profile-details-grid reveal">
+            <div class="glass-card profile-section-card">
+              <div class="profile-section-header">
+                <span class="profile-section-icon">📋</span>
+                <span>Accreditation</span>
+              </div>
+              <div class="profile-section-body">
+                <div class="ps-field">
+                  <span class="psf-label">License Number</span>
+                  <span class="psf-val" id="profileLicense">—</span>
+                </div>
+                <div class="ps-field">
+                  <span class="psf-label">Registration</span>
+                  <span class="psf-val" id="profileRegNo">—</span>
+                </div>
+                <div class="ps-field">
+                  <span class="psf-label">Accreditation</span>
+                  <span class="psf-val"><span class="status-badge badge-ok" id="profileAccredStatus">Active</span></span>
+                </div>
+                <div class="ps-field">
+                  <span class="psf-label">Established</span>
+                  <span class="psf-val" id="profileEstYear">—</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="glass-card profile-section-card">
+              <div class="profile-section-header">
+                <span class="profile-section-icon">📞</span>
+                <span>Contact</span>
+              </div>
+              <div class="profile-section-body">
+                <div class="ps-field">
+                  <span class="psf-label">📧 Email</span>
+                  <span class="psf-val" id="profileEmail">—</span>
+                </div>
+                <div class="ps-field">
+                  <span class="psf-label">📱 Phone</span>
+                  <span class="psf-val" id="profilePhone">—</span>
+                </div>
+                <div class="ps-field">
+                  <span class="psf-label">📍 Address</span>
+                  <span class="psf-val" id="profileAddress">—</span>
+                </div>
+                <div class="ps-field">
+                  <span class="psf-label">🌍 Country</span>
+                  <span class="psf-val" id="profileCountry">Bangladesh</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="glass-card profile-section-card">
+              <div class="profile-section-header">
+                <span class="profile-section-icon">📊</span>
+                <span>Performance</span>
+              </div>
+              <div class="profile-section-body">
+                <div class="ps-metric">
+                  <div class="ps-metric-row">
+                    <span class="psf-label">Quality Pass Rate</span>
+                    <span class="psf-val" id="psmQuality">98%</span>
+                  </div>
+                  <div class="ps-bar"><div class="ps-bar-fill" style="width:98%"></div></div>
+                </div>
+                <div class="ps-metric">
+                  <div class="ps-metric-row">
+                    <span class="psf-label">Avg Delivery Time</span>
+                    <span class="psf-val" id="psmDelivery">—</span>
+                  </div>
+                  <div class="ps-bar"><div class="ps-bar-fill ps-bar-green" id="psmDeliveryBar" style="width:0%"></div></div>
+                </div>
+                <div class="ps-metric">
+                  <div class="ps-metric-row">
+                    <span class="psf-label">Inventory Utilization</span>
+                    <span class="psf-val" id="psmUtilization">—</span>
+                  </div>
+                  <div class="ps-bar"><div class="ps-bar-fill ps-bar-blue" id="psmUtilBar" style="width:0%"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+<div class="dashboard-view" id="promisesView">
+      <div class="page-header reveal">
+        <div>
+          <h1 class="page-title">🔗 Verify Donation Promises</h1>
+          <p class="page-subtitle">Check and verify donor commitment codes for this blood bank</p>
+        </div>
+      </div>
+
+      <div class="glass-card reveal" style="padding:28px;max-width:600px;margin-bottom:24px;">
+        <div class="card-title" style="margin-bottom:16px;">🔍 Verify a Code</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <input type="text" id="promiseCodeInput" class="search-input"
+                 style="flex:1;min-width:200px;" placeholder="Enter confirmation code e.g. CONF123ABC"/>
+          <button class="btn-primary" id="verifyPromiseBtn">Verify</button>
+        </div>
+        <div id="promiseResult" style="margin-top:16px;"></div>
+      </div>
+
+      <div class="glass-card reveal" style="padding:22px;">
+        <div class="card-header">
+          <div class="card-title">📋 All Donor Promises to This Bank</div>
+          <select class="filter-select" id="promiseStatusFilter">
+            <option value="">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="fulfilled">Fulfilled</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Code</th><th>Donor</th><th>Blood Group</th>
+                <th>Promised Date</th><th>Status</th><th>Fulfilled</th>
+              </tr>
+            </thead>
+            <tbody id="promiseTbody">
+              <tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:20px;">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div><!-- /promisesView -->
+
+
+    <!-- ══════════════════════════════════════
+         RATINGS & REVIEWS
+    ══════════════════════════════════════ -->
+    
+
+
+
+
+    <!-- ══════════════════════════════════════
+         BLOOD REQUESTS
+    ══════════════════════════════════════ -->
+
+<div class="dashboard-view" id="requestsView">
+      <div class="page-header reveal">
+        <div>
+          <h1 class="page-title">📋 Blood Requests</h1>
+          <p class="page-subtitle">Manage incoming blood requests from hospitals and donors</p>
+        </div>
+      </div>
+
+      <div class="glass-card reveal" style="padding:22px;">
+        <div class="card-header">
+          <div class="card-title">🩸 All Requests</div>
+          <select class="filter-select" id="reqStatusFilter">
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+            <option value="all">All</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th><th>Requester</th><th>Phone</th><th>Blood Group</th>
+                <th>Units</th><th>Urgency</th><th>Visible To</th><th>Date</th><th>Status</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="reqTbody">
+              <tr><td colspan="10" style="text-align:center;color:var(--text-muted);padding:20px;">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /requestsView -->
+
+    <!-- ═══ EMERGENCY REQUESTS ═══ -->
+    <div class="dashboard-view" id="emergencyRequestsView">
+      <div class="page-header reveal">
+        <div>
+          <h1 class="page-title">🆘 Emergency Broadcast</h1>
+          <p class="page-subtitle">Send urgent blood requests to all available blood banks, hospitals, medical colleges & donors</p>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="em-stats-grid reveal">
+        <div class="glass-card em-stat">
+          <div class="em-stat-icon active">📡</div>
+          <div class="em-stat-val" id="emStatActive">0</div>
+          <div class="em-stat-lbl">Active Broadcasts</div>
+        </div>
+        <div class="glass-card em-stat">
+          <div class="em-stat-icon total">📋</div>
+          <div class="em-stat-val" id="emStatTotal">0</div>
+          <div class="em-stat-lbl">Total Sent</div>
+        </div>
+        <div class="glass-card em-stat">
+          <div class="em-stat-icon reached">👥</div>
+          <div class="em-stat-val" id="emStatReached">0</div>
+          <div class="em-stat-lbl">Total Recipients Reached</div>
+        </div>
+        <div class="glass-card em-stat">
+          <div class="em-stat-icon incoming">🆘</div>
+          <div class="em-stat-val" id="emStatIncoming">0</div>
+          <div class="em-stat-lbl">Incoming Requests</div>
+        </div>
+      </div>
+
+      <!-- Create Broadcast Form -->
+      <div class="glass-card em-broadcast-form reveal">
+        <div class="card-header">
+          <div class="card-title">🚀 Create Emergency Broadcast</div>
+        </div>
+        <div class="em-form-body">
+          <div class="em-form-row">
+            <div class="em-form-group">
+              <label class="form-lbl">Blood Group <span style="color:#f87171;">*</span></label>
+              <select id="emBloodGroup" class="form-select">
+                <option value="">Select Blood Group</option>
+                <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+                <option>O+</option><option>O-</option><option>AB+</option><option>AB-</option>
+              </select>
+            </div>
+            <div class="em-form-group">
+              <label class="form-lbl">Units Needed</label>
+              <input type="number" id="emUnits" class="form-input" value="2" min="1" max="50" style="max-width:120px;">
+            </div>
+          </div>
+          <div class="em-form-group">
+            <label class="form-lbl">Location / Notes</label>
+            <textarea id="emNotes" class="form-textarea" rows="2" placeholder="e.g. Emergency at City Hospital, need immediate delivery to ICU"></textarea>
+          </div>
+          <div class="em-form-group">
+            <label class="form-lbl">Send To</label>
+            <div class="em-targets-grid">
+              <label class="em-target-chip">
+                <input type="checkbox" value="blood_bank" checked>
+                <span>🏦 Other Blood Banks</span>
+              </label>
+              <label class="em-target-chip">
+                <input type="checkbox" value="hospital" checked>
+                <span>🏥 Hospitals</span>
+              </label>
+              <label class="em-target-chip">
+                <input type="checkbox" value="medical_college" checked>
+                <span>🎓 Medical Colleges</span>
+              </label>
+              <label class="em-target-chip">
+                <input type="checkbox" value="donor_recipient" checked>
+                <span>🩸 Donor Recipients</span>
+              </label>
+            </div>
+          </div>
+          <button class="btn-emergency" id="sendEmergencyBtn">🚨 Send Emergency Broadcast</button>
+        </div>
+      </div>
+
+      <!-- Sent Broadcasts History -->
+      <div class="glass-card reveal" style="margin-top:20px;">
+        <div class="card-header">
+          <div class="card-title">📡 Sent Broadcasts</div>
+          <button class="btn-ghost-sm" id="refreshSentBroadcastsBtn">🔄 Refresh</button>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Blood Group</th>
+                <th>Units</th>
+                <th>Notes</th>
+                <th>Recipients</th>
+                <th>Status</th>
+                <th>Sent At</th>
+              </tr>
+            </thead>
+            <tbody id="sentBroadcastsBody">
+              <tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:20px;">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Incoming Emergency Requests -->
+      <div class="glass-card reveal" style="margin-top:20px;">
+        <div class="card-header">
+          <div class="card-title">🆘 Incoming Emergency Broadcasts</div>
+          <button class="btn-ghost-sm" id="refreshIncomingEmergBtn">🔄 Refresh</button>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Requester</th>
+                <th>Blood Group</th>
+                <th>Location</th>
+                <th>Phone</th>
+                <th>Status</th>
+                <th>Received</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="emergencyRequestsBody">
+              <tr><td colspan="8" style="text-align:center;color:var(--text-muted);padding:20px;">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+</main>
+    </div>
+
+    <!-- GLOBAL MODAL -->
+    <div id="globalModal" class="modal-overlay">
+      <div class="modal-container glass-card">
+        <div class="modal-header">
+          <h3 id="modalTitle">Action</h3>
+          <button class="modal-close" id="closeModalBtn">&times;</button>
+        </div>
+        <div class="modal-body" id="modalBody"></div>
+        <div class="modal-footer">
+          <button class="btn-secondary modal-action-btn" id="modalConfirmBtn">
+            Confirm
+          </button>
+          <button class="btn-ghost-sm" id="modalCancelBtn">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toastMessage" class="toast-message"></div>
+    <script>
+      window._RAK_CONFIG = { auth: true, api: 'chat_api.php' };
+    </script>
+    <script src="raktosathi_floating.js"></script>
+    <script src="bankdash.js"></script>
+  </body>
+</html>

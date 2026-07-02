@@ -1,0 +1,152 @@
+/* ============================================================
+   BloodBridge — loader.css
+   ============================================================ */
+
+*, *::before, *::after {
+  margin: 0; padding: 0; box-sizing: border-box;
+}
+
+html, body {
+  width: 100%; height: 100%;
+  background: #0e0a0b;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+}
+
+/* ── LOADER WRAPPER ── */
+#loader {
+  position: fixed; inset: 0; z-index: 9999;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  background: #0e0a0b;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+#loader.fade-out {
+  opacity: 0;
+  transform: scale(1.04);
+  pointer-events: none;
+}
+
+/* ── BACKGROUND EFFECTS ── */
+.bg-glow {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 60% at 20% 10%, rgba(160,10,30,0.22) 0%, transparent 55%),
+    radial-gradient(ellipse 55% 70% at 80% 90%, rgba(80,5,20,0.28) 0%, transparent 55%);
+}
+
+.grid-bg {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* ── INNER CONTENT ── */
+.loader-inner {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 28px;
+}
+
+/* ── BRAND ── */
+.brand {
+  font-size: 0.95rem; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(245,240,238,0.4);
+}
+.brand span { color: #E8294A; }
+
+/* ── BLOOD DROP WRAPPER ── */
+.drop-wrap {
+  position: relative;
+  width: 140px; height: 172px;
+}
+
+.drop-svg {
+  width: 100%; height: 100%;
+  filter: drop-shadow(0 0 20px rgba(192,22,44,0.55));
+  transition: filter 0.5s ease;
+}
+
+/* done state: brighter glow */
+.done .drop-svg {
+  filter: drop-shadow(0 0 35px rgba(232,41,74,0.9));
+}
+
+/* ── PULSE RINGS ── */
+.pulse-ring {
+  position: absolute;
+  left: 50%; top: 60%;
+  transform: translate(-50%, -50%);
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(232,41,74,0.35);
+  animation: ringPulse 2.1s ease-out infinite;
+  pointer-events: none;
+}
+.pulse-ring:nth-child(2) { animation-delay: 0.7s; }
+.pulse-ring:nth-child(3) { animation-delay: 1.4s; }
+
+@keyframes ringPulse {
+  0%   { transform: translate(-50%,-50%) scale(0.8); opacity: 0.6; }
+  100% { transform: translate(-50%,-50%) scale(2.6); opacity: 0; }
+}
+
+/* ── PERCENTAGE ── */
+.pct-block {
+  text-align: center; line-height: 1;
+}
+.pct-num {
+  font-size: clamp(2.6rem, 10vw, 3.6rem);
+  font-weight: 800; color: #fff;
+  letter-spacing: -0.03em;
+  transition: color 0.4s;
+}
+.done .pct-num { color: #FF8090; }
+
+.pct-sym {
+  font-size: 1.4rem; font-weight: 300;
+  color: rgba(255,255,255,0.35);
+}
+.pct-label {
+  margin-top: 8px;
+  font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: rgba(245,240,238,0.3);
+}
+
+/* ── STATUS TEXT ── */
+.status-line {
+  font-size: 0.82rem; font-weight: 400;
+  color: rgba(245,240,238,0.38);
+  letter-spacing: 0.04em;
+  min-height: 18px;
+  transition: opacity 0.3s;
+}
+
+/* ── PROGRESS BAR ── */
+.bar-wrap {
+  width: min(240px, 65vw);
+  height: 3px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 10px; overflow: hidden;
+}
+.bar-fill {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, #C0162C, #FF6B6B);
+  border-radius: 10px;
+  box-shadow: 0 0 8px rgba(232,41,74,0.55);
+  transition: width 0.08s linear;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 400px) {
+  .drop-wrap { width: 110px; height: 136px; }
+  .loader-inner { gap: 20px; }
+}

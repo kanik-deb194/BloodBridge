@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    />
+    <title>BloodBridge — Delivery Staff Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="delivery_staff_dash.css" />
+    <link rel="stylesheet" href="raktosathi_floating.css" />
+  </head>
+  <body>
+    <div class="bg-scene">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+    </div>
+    <div class="grid-overlay"></div>
+
+    <!-- SIDEBAR OVERLAY (mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- SIDEBAR (premium design) -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <img
+            src="blood1.png"
+            alt="BloodBridge"
+            class="sidebar-logo-img"
+            onerror="
+              this.style.display = 'none';
+              this.nextElementSibling.style.display = 'flex';
+            "
+          />
+          <span class="sidebar-logo-text-fallback" style="display: none"
+            >🩸 BloodBridge</span
+          >
+          <span class="sidebar-logo-text">Delivery Portal</span>
+        </div>
+        <button
+          class="sidebar-close"
+          id="sidebarClose"
+          aria-label="Close sidebar"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div class="sidebar-section-label">Main</div>
+      <nav class="sidebar-nav">
+        <a href="#" class="sidebar-link active" data-section="dashboard">
+          <span class="sidebar-icon">📊</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="#" class="sidebar-link" data-section="deliveries">
+          <span class="sidebar-icon">🚚</span>
+          <span>Active Deliveries</span>
+        </a>
+        <a href="#" class="sidebar-link" data-section="escorts">
+          <span class="sidebar-icon">👥</span>
+          <span>Escort Requests</span>
+        </a>
+        <a href="#" class="sidebar-link" data-section="drones">
+          <span class="sidebar-icon">🚁</span>
+          <span>Drone Assignments</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-section-label">Operations</div>
+      <nav class="sidebar-nav">
+        <a href="#" class="sidebar-link" data-section="completed">
+          <span class="sidebar-icon">✅</span>
+          <span>Completed Deliveries</span>
+        </a>
+        <a href="#" class="sidebar-link" data-section="profile">
+          <span class="sidebar-icon">👤</span>
+          <span>Profile</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-avatar">DS</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name">Md. Karim</div>
+            <div class="sidebar-user-role">Delivery Staff · Zone: Dhaka N</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN WRAPPER -->
+    <div class="main-wrapper" id="mainWrapper">
+      <!-- TOP NAVBAR -->
+      <nav class="topnav">
+        <div class="topnav-left">
+          <button class="hamburger" id="hamburger" aria-label="Open sidebar">
+            <span></span><span></span><span></span>
+          </button>
+          <div class="topnav-brand">
+            <img
+              src="blood1.png"
+              alt="BloodBridge"
+              class="topnav-logo-img"
+              onerror="
+                this.style.display = 'none';
+                this.nextElementSibling.style.display = 'inline';
+              "
+            />
+            <span class="topnav-logo-fallback" style="display: none">🩸</span>
+            <span class="topnav-title">Delivery Dashboard</span>
+          </div>
+        </div>
+        <div class="topnav-right">
+          <div
+            class="theme-toggle"
+            id="themeToggle"
+            title="Toggle Light/Dark Mode"
+          >
+            <div class="toggle-track">
+              <span class="toggle-icon moon">🌙</span>
+              <span class="toggle-icon sun">☀️</span>
+              <div class="toggle-thumb"></div>
+            </div>
+          </div>
+          <div class="delivery-badge">
+            <span class="online-badge">🟢 On Route</span>
+          </div>
+          <button
+            class="logout-btn"
+            id="logoutBtn"
+            onclick="localStorage.removeItem('bbDelPage');window.location.href='login.html'"
+          >
+            Logout
+          </button>
+        </div>
+      </nav>
+
+      <main class="content" id="pageContent">
+        <!-- DASHBOARD VIEW (default active) -->
+        <div class="dashboard-view active" id="dashboardView">
+          <!-- GREETING + ZONE BANNER -->
+          <div class="greeting-section reveal">
+            <div class="greeting-text">
+              <h1>
+                Welcome back, <span class="delivery-name">Md. Karim</span>
+              </h1>
+              <p class="delivery-id">
+                Staff ID: DLV-042 · BloodBridge Logistics
+              </p>
+            </div>
+            <div class="zone-badge">
+              <span class="zone-icon">📍</span> Assigned Zone:
+              <strong>Dhaka North</strong>
+            </div>
+          </div>
+
+          <!-- STATS GRID -->
+          <div class="stats-grid reveal">
+            <div class="stat-card glass-card">
+              <div class="stat-icon">🚚</div>
+              <div class="stat-info">
+                <span class="stat-value" data-target="3" id="activeDeliveries"
+                  >0</span
+                >
+                <span class="stat-label">Active Deliveries</span>
+              </div>
+            </div>
+            <div class="stat-card glass-card">
+              <div class="stat-icon">👥</div>
+              <div class="stat-info">
+                <span class="stat-value" data-target="1" id="escortRequests"
+                  >0</span
+                >
+                <span class="stat-label">Escort Requests</span>
+              </div>
+            </div>
+            <div class="stat-card glass-card">
+              <div class="stat-icon">✅</div>
+              <div class="stat-info">
+                <span class="stat-value" data-target="2" id="completedToday"
+                  >0</span
+                >
+                <span class="stat-label">Completed Today</span>
+              </div>
+            </div>
+            <div class="stat-card glass-card">
+              <div class="stat-icon">🏙️</div>
+              <div class="stat-info">
+                <span class="stat-value" id="assignedZone">Dhaka N</span>
+                <span class="stat-label">Assigned Zone</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- CRITICAL ALERTS -->
+          <div class="alerts-grid reveal">
+            <div class="alert-critical-card glass-card" id="escortAlertCard">
+              <div class="alert-icon-critical">👤</div>
+              <div class="alert-critical-content">
+                <div class="alert-critical-title" id="escortAlertTitle">
+                  Escort request <span class="highlight">#ER-047</span>
+                </div>
+                <p class="alert-critical-msg" id="escortAlertMsg">
+                  Female donor pickup at <strong>Mirpur 10</strong> at
+                  <strong>3:00 PM</strong> today
+                </p>
+              </div>
+              <button class="critical-btn" id="handleEscortBtn">
+                View Escort
+              </button>
+            </div>
+            <div class="alert-critical-card glass-card" id="droneAlertCard">
+              <div class="alert-icon-critical">🚁</div>
+              <div class="alert-critical-content">
+                <div class="alert-critical-title" id="droneAlertTitle">
+                  Drone dispatch <span class="highlight">#DD-012</span>
+                </div>
+                <p class="alert-critical-msg" id="droneAlertMsg">
+                  Requires manual handoff at destination —
+                  <strong>Dhaka North City Hospital</strong>
+                </p>
+              </div>
+              <button class="critical-btn" id="handleDroneBtn">
+                Confirm Handoff
+              </button>
+            </div>
+          </div>
+
+          <!-- FEATURES & ACTIONS GRID -->
+          <div class="section-header reveal">
+            <h2>Delivery Operations</h2>
+            <p>Manage escorts, drone handoffs, and delivery confirmations</p>
+          </div>
+          <div class="actions-grid reveal">
+            <div class="action-card glass-card" data-action="viewEscorts">
+              <div class="action-icon">📋👥</div>
+              <h3>View Escort Requests</h3>
+              <p>Inspect pending escort assignments</p>
+              <span class="action-tag">#14</span>
+            </div>
+            <div class="action-card glass-card" data-action="updateEscort">
+              <div class="action-icon">🔄👥</div>
+              <h3>Update Escort Status</h3>
+              <p>Mark pickup/dropoff complete</p>
+              <span class="action-tag">#14</span>
+            </div>
+            <div
+              class="action-card glass-card"
+              data-action="viewDroneAssignments"
+            >
+              <div class="action-icon">🚁📋</div>
+              <h3>View Drone Dispatch Assignments</h3>
+              <p>Drone delivery manifest</p>
+              <span class="action-tag">#05</span>
+            </div>
+            <div class="action-card glass-card" data-action="confirmDelivery">
+              <div class="action-icon">✅📦</div>
+              <h3>Confirm Blood Delivery</h3>
+              <p>Complete delivery verification</p>
+              <span class="action-tag">#16</span>
+            </div>
+          </div>
+
+          <!-- TWO COLUMN: Active Deliveries + Escort Requests -->
+          <div class="two-col-grid reveal">
+            <div class="glass-card table-card">
+              <div class="card-header">
+                <div class="card-title">
+                  <span class="card-title-icon">🚚</span> Active Deliveries
+                  (<span id="pendingCountLabel">...</span>)
+                </div>
+                <button class="btn-ghost-sm" id="refreshDeliveriesBtn">
+                  Refresh
+                </button>
+              </div>
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Delivery ID</th>
+                      <th>Destination</th>
+                      <th>Blood Type</th>
+                      <th>ETA</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="activeDeliveriesTable">
+                    <tr>
+                      <td colspan="5" style="text-align: center; padding: 20px">
+                        Loading…
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="card-footer">
+                <a href="#" class="card-footer-link" id="viewAllDeliveriesLink"
+                  >View all active →</a
+                >
+              </div>
+            </div>
+
+            <div class="glass-card alerts-card">
+              <div class="card-header">
+                <div class="card-title">
+                  <span class="card-title-icon">👥</span> Escort Requests
+                </div>
+                <div class="live-pill small">
+                  <span class="dot"></span> Live
+                </div>
+              </div>
+              <div class="alert-list" id="escortList">
+                <div
+                  style="
+                    padding: 12px;
+                    text-align: center;
+                    color: var(--text-muted);
+                    font-size: 0.82rem;
+                  "
+                >
+                  Loading…
+                </div>
+              </div>
+              <div class="card-footer">
+                <a href="#" class="card-footer-link" id="viewAllEscortsLink"
+                  >View all escort requests →</a
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- DRONE DISPATCH PREVIEW -->
+          <div class="glass-card drone-preview reveal">
+            <div class="card-header">
+              <div class="card-title">
+                <span class="card-title-icon">🚁</span> Drone Dispatch
+                Assignments
+              </div>
+              <button class="btn-ghost-sm" id="viewAllDronesBtn">
+                View All Drones
+              </button>
+            </div>
+            <div class="drone-list">
+              <div
+                style="
+                  padding: 16px;
+                  text-align: center;
+                  color: var(--text-muted);
+                "
+              >
+                Loading…
+              </div>
+            </div>
+          </div>
+
+          <div class="footer-note reveal">
+            <p>
+              🚚 For urgent delivery issues, contact Dispatch: +880-1234-567891
+            </p>
+          </div>
+        </div>
+
+        <!-- SECTION: Active Deliveries -->
+        <div class="dashboard-view" id="deliveriesView"></div>
+
+        <!-- SECTION: Escort Requests -->
+        <div class="dashboard-view" id="escortsView"></div>
+
+        <!-- SECTION: Drone Assignments -->
+        <div class="dashboard-view" id="dronesView"></div>
+
+        <!-- SECTION: Completed Deliveries -->
+        <div class="dashboard-view" id="completedView"></div>
+
+        <!-- SECTION: Profile -->
+        <div class="dashboard-view" id="profileView"></div>
+      </main>
+    </div>
+
+    <!-- GLOBAL MODAL -->
+    <div id="globalModal" class="modal-overlay">
+      <div class="modal-container glass-card">
+        <div class="modal-header">
+          <h3 id="modalTitle">Action</h3>
+          <button class="modal-close" id="closeModalBtn">&times;</button>
+        </div>
+        <div class="modal-body" id="modalBody"></div>
+        <div class="modal-footer">
+          <button class="btn-secondary modal-action-btn" id="modalConfirmBtn">
+            Confirm</button
+          ><button class="btn-ghost-sm" id="modalCancelBtn">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toastMessage" class="toast-message"></div>
+
+    <script>
+      window._RAK_CONFIG = { auth: true, api: 'chat_api.php' };
+    </script>
+    <script src="raktosathi_floating.js"></script>
+    <script src="delivery_staff_dash.js"></script>
+  </body>
+</html>

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>BloodBridge — Lab Technician Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="lab_technician_dash.css">
+  <link rel="stylesheet" href="raktosathi_floating.css">
+</head>
+<body>
+
+<div class="bg-scene">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+<div class="grid-overlay"></div>
+
+<!-- SIDEBAR OVERLAY (mobile) -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- SIDEBAR (premium design) -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">
+      <img src="blood1.png" alt="BloodBridge" class="sidebar-logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+      <span class="sidebar-logo-text-fallback" style="display:none;">🩸 BloodBridge</span>
+      <span class="sidebar-logo-text">Lab Portal</span>
+    </div>
+    <button class="sidebar-close" id="sidebarClose" aria-label="Close sidebar">✕</button>
+  </div>
+
+  <div class="sidebar-section-label">Main</div>
+  <nav class="sidebar-nav">
+    <a href="#" class="sidebar-link active" data-section="dashboard">
+      <span class="sidebar-icon">📊</span>
+      <span>Dashboard</span>
+    </a>
+    <a href="#" class="sidebar-link" data-section="tests">
+      <span class="sidebar-icon">🔬</span>
+      <span>Pending Tests</span>
+    </a>
+    <a href="#" class="sidebar-link" data-section="quarantine">
+      <span class="sidebar-icon">🚫</span>
+      <span>Quarantined Bags</span>
+    </a>
+    <a href="#" class="sidebar-link" data-section="antibody">
+      <span class="sidebar-icon">🛡️</span>
+      <span>Antibody Records</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-section-label">Quality</div>
+  <nav class="sidebar-nav">
+    <a href="#" class="sidebar-link" data-section="coldchain">
+      <span class="sidebar-icon">❄️</span>
+      <span>Cold Chain Logs</span>
+    </a>
+    <a href="#" class="sidebar-link" data-section="thalassemia">
+      <span class="sidebar-icon">🧬</span>
+      <span>Thalassemia Flagging</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-section-label">Account</div>
+  <nav class="sidebar-nav">
+    <a href="#" class="sidebar-link" data-section="profile">
+      <span class="sidebar-icon">👤</span>
+      <span>Profile</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" id="sidebarAvatar">LT</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name" id="sidebarName">Loading...</div>
+        <div class="sidebar-user-role" id="sidebarRole">Lab Technician</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN WRAPPER -->
+<div class="main-wrapper" id="mainWrapper">
+  <!-- TOP NAVBAR -->
+  <nav class="topnav">
+    <div class="topnav-left">
+      <button class="hamburger" id="hamburger" aria-label="Toggle sidebar" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="topnav-brand">
+        <img src="blood1.png" alt="BloodBridge" class="topnav-logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline'">
+        <span class="topnav-logo-fallback" style="display:none;">🩸</span>
+        <span class="topnav-title">Lab Dashboard</span>
+      </div>
+    </div>
+    <div class="topnav-right">
+      <div class="theme-toggle" id="themeToggle" title="Toggle Light/Dark Mode">
+        <div class="toggle-track">
+          <span class="toggle-icon moon">🌙</span>
+          <span class="toggle-icon sun">☀️</span>
+          <div class="toggle-thumb"></div>
+        </div>
+      </div>
+      <div class="lab-badge">
+        <span class="shift-badge">🟢 On Duty</span>
+      </div>
+      <button class="logout-btn" id="logoutBtn" onclick="localStorage.removeItem('bbLabPage');window.location.href='login.html'">Logout</button>
+    </div>
+  </nav>
+
+  <main class="content" id="pageContent">
+    <!-- DASHBOARD VIEW (default active) -->
+    <div class="dashboard-view active" id="dashboardView">
+
+      <!-- GREETING + ALERT BANNER -->
+      <div class="greeting-section reveal">
+        <div class="greeting-text">
+          <h1>Welcome back, <span class="lab-name" id="greetName">...</span></h1>
+          <p class="lab-id" id="labSubtitle">BloodBridge Lab Network</p>
+        </div>
+        <div class="alert-banner">
+          <span class="alert-icon-banner">⚠️</span> <span id="alertBannerText">Loading...</span>
+        </div>
+      </div>
+
+      <!-- STATS GRID (18 pending, 5 quarantined, 2 failed, 43 this month) -->
+      <div class="stats-grid reveal">
+        <div class="stat-card glass-card">
+          <div class="stat-icon">🧪</div>
+          <div class="stat-info">
+            <span class="stat-value" id="pendingTests">0</span>
+            <span class="stat-label">Tests Pending</span>
+          </div>
+        </div>
+        <div class="stat-card glass-card">
+          <div class="stat-icon">🚫</div>
+          <div class="stat-info">
+            <span class="stat-value" id="quarantinedBags">0</span>
+            <span class="stat-label">Quarantined Bags</span>
+          </div>
+        </div>
+        <div class="stat-card glass-card">
+          <div class="stat-icon">❌</div>
+          <div class="stat-info">
+            <span class="stat-value" id="failedCultures">0</span>
+            <span class="stat-label">Failed Cultures</span>
+          </div>
+        </div>
+        <div class="stat-card glass-card">
+          <div class="stat-icon">📅</div>
+          <div class="stat-info">
+            <span class="stat-value" id="testsThisMonth">0</span>
+            <span class="stat-label">Tests This Month</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CRITICAL ALERT (failed culture E. coli) -->
+      <div class="alert-critical-card glass-card reveal">
+        <div class="alert-icon-critical">🧫</div>
+        <div class="alert-critical-content" id="criticalAlertContent">
+          <div class="alert-critical-title" id="criticalAlertTitle">Checking for critical alerts...</div>
+          <p class="alert-critical-msg" id="criticalAlertMsg"></p>
+        </div>
+        <button class="critical-btn" id="handleCriticalBtn" style="display:none;">View Details</button>
+      </div>
+
+      <!-- FEATURES & ACTIONS GRID (6 items from jpeg) -->
+      <div class="section-header reveal">
+        <h2>Lab Operations & Tools</h2>
+        <p>Manage culture tests, quarantine, antibody records, and cold chain monitoring</p>
+      </div>
+      <div class="actions-grid reveal">
+        <div class="action-card glass-card" data-action="enterCulture">
+          <div class="action-icon">📝🧫</div>
+          <h3>Enter Culture Test Result</h3>
+          <p>Record sterility & contamination</p>
+          <span class="action-tag">#06</span>
+        </div>
+        <div class="action-card glass-card" data-action="viewQuarantine">
+          <div class="action-icon">🚫📋</div>
+          <h3>View Quarantined Bags</h3>
+          <p>Inspect discarded units</p>
+          <span class="action-tag">#06</span>
+        </div>
+        <div class="action-card glass-card" data-action="recordAntibody">
+          <div class="action-icon">🛡️📊</div>
+          <h3>Record Antibody Test Results</h3>
+          <p>Update patient/donor antibody profiles</p>
+          <span class="action-tag">#12</span>
+        </div>
+        <div class="action-card glass-card" data-action="preDonationCheck">
+          <div class="action-icon">🩺✅</div>
+          <h3>Record Pre-Donation Health Check</h3>
+          <p>Donor vitals & eligibility</p>
+          <span class="action-tag">#07</span>
+        </div>
+        <div class="action-card glass-card" data-action="flagThalassemia">
+          <div class="action-icon">🧬⚠️</div>
+          <h3>Flag Thalassemia Carrier</h3>
+          <p>Mark donor/patient as carrier</p>
+          <span class="action-tag">#13</span>
+        </div>
+        <div class="action-card glass-card" data-action="monitorColdChain">
+          <div class="action-icon">❄️📡</div>
+          <h3>Monitor Cold Chain Sensor Logs</h3>
+          <p>Temperature & storage compliance</p>
+          <span class="action-tag">#02</span>
+        </div>
+      </div>
+
+      <!-- TWO COLUMN: Pending Culture Tests + Quarantined Bags List -->
+      <div class="two-col-grid reveal">
+        <!-- Pending Culture Tests Table -->
+        <div class="glass-card table-card">
+          <div class="card-header">
+            <div class="card-title"><span class="card-title-icon">⏳</span> Pending Culture Tests (<span id="pendingCountLabel">...</span>)</div>
+            <button class="btn-ghost-sm" id="refreshTestsBtn">Refresh</button>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr><th>Bag ID</th><th>Blood Group</th><th>Collection Date</th><th>Due By</th><th>Action</th></tr>
+              </thead>
+              <tbody id="pendingTestsTable">
+                <tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:20px;">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card-footer"><a href="#" class="card-footer-link" id="viewAllPendingLink">View all 18 pending →</a></div>
+        </div>
+
+        <!-- Quarantined Bags List -->
+        <div class="glass-card alerts-card">
+          <div class="card-header">
+            <div class="card-title"><span class="card-title-icon">🚫</span> Quarantined Blood Bags (<span id="quarantineCountLabel">...</span>)</div>
+            <div class="live-pill small"><span class="dot"></span> Active</div>
+          </div>
+          <div class="alert-list" id="quarantineList">
+            <div id="quarantineListItems" style="padding:12px;text-align:center;color:var(--text-muted);font-size:.82rem;">Loading...</div>
+          </div>
+          <div class="card-footer"><a href="#" class="card-footer-link" id="viewAllQuarantineLink">View all quarantined items →</a></div>
+        </div>
+      </div>
+
+      <!-- COLD CHAIN MONITORING PREVIEW -->
+      <div class="glass-card coldchain-preview reveal">
+        <div class="card-header">
+          <div class="card-title"><span class="card-title-icon">❄️</span> Cold Chain Sensor Logs (Last 24h)</div>
+          <button class="btn-ghost-sm" id="viewAllColdChainBtn">View Full Logs</button>
+        </div>
+        <div class="coldchain-grid">
+          <div class="sensor-item"><span>Freezer Unit A1</span><span>4.2°C</span><span class="status-badge badge-ok">Normal</span></div>
+          <div class="sensor-item"><span>Freezer Unit B3</span><span>6.8°C</span><span class="status-badge badge-warn">Alert (above 6°C)</span></div>
+          <div class="sensor-item"><span>Transport Container #T-42</span><span>5.1°C</span><span class="status-badge badge-ok">Within range</span></div>
+          <div class="sensor-item"><span>Refrigerator R-12</span><span>3.9°C</span><span class="status-badge badge-ok">Optimal</span></div>
+        </div>
+      </div>
+
+      <div class="footer-note reveal">
+        <p>🔬 BSL-2 certified lab. All results validated by senior microbiologist.</p>
+      </div>
+    </div>
+
+
+    <!-- ══════════ PENDING TESTS ══════════ -->
+    <div class="dashboard-view" id="testsView">
+      <div class="section-header reveal"><h2>Pending Tests</h2><p>All culture tests awaiting processing</p></div>
+      <div class="glass-card reveal" style="display:flex;align-items:flex-end;gap:16px;padding:16px 20px;margin-bottom:20px;flex-wrap:wrap;">
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <label style="font-size:.72rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;">Filter</label>
+          <select id="testsFilterStatus" style="background:var(--input-bg);border:1px solid var(--input-border);color:var(--text-primary);padding:8px 12px;border-radius:10px;font-family:Outfit,sans-serif;font-size:.82rem;">
+            <option value="pending">Pending</option><option value="all">All</option>
+          </select>
+        </div>
+        <button id="refreshTestsPageBtn" style="background:var(--glass-bg);border:1px solid var(--glass-border);padding:9px 16px;border-radius:40px;font-size:.82rem;cursor:pointer;font-family:Outfit,sans-serif;color:var(--text-primary);">🔄 Refresh</button>
+      </div>
+      <div class="glass-card table-card reveal">
+        <div class="card-header"><div class="card-title"><span class="card-title-icon">🔬</span> Blood Culture Tests</div></div>
+        <div class="table-wrap"><table class="data-table">
+          <thead><tr><th>#</th><th>Bag ID</th><th>Blood Group</th><th>Test Date</th><th>Result</th><th>Pathogen</th><th>Comments</th><th>Technician</th></tr></thead>
+          <tbody id="testsTableBody"><tr><td colspan="8" style="text-align:center;color:var(--text-muted);padding:24px;">Loading...</td></tr></tbody>
+        </table></div>
+      </div>
+
+      <!-- Donor Acceptances Section -->
+      <div class="glass-card table-card reveal" id="donorTestsSection" style="margin-top:24px;">
+        <div class="card-header">
+          <div class="card-title"><span class="card-title-icon">🩸</span> Donor Acceptances</div>
+          <span style="font-size:.72rem;color:var(--text-muted);font-weight:400;">Donors who offered to donate &mdash; pending lab verification</span>
+        </div>
+        <div id="donorTestsBody" style="padding:4px 0;">
+          <div style="padding:20px;text-align:center;color:var(--text-muted);">Loading...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ QUARANTINED BAGS ══════════ -->
+    <div class="dashboard-view" id="quarantineView">
+      <div class="section-header reveal"><h2>Quarantined Bags</h2><p>All quarantined and discarded blood units</p></div>
+      <div class="glass-card table-card reveal">
+        <div class="card-header"><div class="card-title"><span class="card-title-icon">🚫</span> Quarantined Blood Bags</div></div>
+        <div class="table-wrap"><table class="data-table">
+          <thead><tr><th>#</th><th>Bag ID</th><th>Blood Group</th><th>Reason</th><th>Status</th><th>Quarantined At</th><th>Expiry</th></tr></thead>
+          <tbody id="quarantineTableBody"><tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:24px;">Loading...</td></tr></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- ══════════ ANTIBODY RECORDS ══════════ -->
+    <div class="dashboard-view" id="antibodyView">
+      <div class="section-header reveal"><h2>Antibody Records</h2><p>Patient and donor antibody test results</p></div>
+      <div class="glass-card table-card reveal">
+        <div class="card-header"><div class="card-title"><span class="card-title-icon">🛡️</span> Antibody Profiles</div></div>
+        <div class="table-wrap"><table class="data-table">
+          <thead><tr><th>#</th><th>Patient/Donor</th><th>Type</th><th>Antibody</th><th>Positive</th><th>Detected At</th></tr></thead>
+          <tbody id="antibodyTableBody"><tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:24px;">Loading...</td></tr></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- ══════════ COLD CHAIN LOGS ══════════ -->
+    <div class="dashboard-view" id="coldchainView">
+      <div class="section-header reveal">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;">
+          <div><h2>Cold Chain Logs</h2><p>All temperature sensor readings and alerts</p></div>
+          <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(192,22,44,.12);padding:3px 10px;border-radius:50px;font-size:.7rem;color:#FF6B6B;"><span style="width:6px;height:6px;background:#FF6B6B;border-radius:50%;animation:livePulse 1.3s infinite;display:inline-block;"></span> Live</div>
+        </div>
+      </div>
+      <div class="glass-card reveal" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:20px;margin-bottom:24px;">
+        <div style="text-align:center;"><div style="font-size:1.6rem;font-weight:800;" id="ccTotal">0</div><div style="font-size:.72rem;color:var(--text-muted);">Total Logs</div></div>
+        <div style="text-align:center;"><div style="font-size:1.6rem;font-weight:800;color:#f87171;" id="ccAlerts">0</div><div style="font-size:.72rem;color:var(--text-muted);">Alert Breaches</div></div>
+        <div style="text-align:center;"><div style="font-size:1.6rem;font-weight:800;color:#fbbf24;" id="ccBanks">0</div><div style="font-size:.72rem;color:var(--text-muted);">Banks Affected</div></div>
+      </div>
+      <div class="glass-card table-card reveal">
+        <div class="card-header"><div class="card-title"><span class="card-title-icon">❄️</span> Temperature Records</div></div>
+        <div class="table-wrap"><table class="data-table">
+          <thead><tr><th>#</th><th>Sensor</th><th>Temperature</th><th>Recorded At</th><th>Alert</th></tr></thead>
+          <tbody id="coldchainTableBody"><tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:24px;">Loading...</td></tr></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- ══════════ THALASSEMIA ══════════ -->
+    <div class="dashboard-view" id="thalassemiaView">
+      <div class="section-header reveal"><h2>Thalassemia Flagging</h2><p>Carrier records and genetic counseling referrals</p></div>
+      <div class="glass-card table-card reveal">
+        <div class="card-header"><div class="card-title"><span class="card-title-icon">🧬</span> Thalassemia Carrier Records</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button onclick="exportThalassemiaPDF()" style="background:transparent;border:1px solid var(--border);color:var(--text);padding:7px 14px;border-radius:40px;font-size:.78rem;font-weight:600;cursor:pointer;font-family:Outfit,sans-serif;">📄 Export PDF</button>
+            <button id="flagNewThalBtn" style="background:linear-gradient(135deg,#C0162C,#8B0020);color:#fff;border:none;padding:7px 14px;border-radius:40px;font-size:.78rem;font-weight:600;cursor:pointer;font-family:Outfit,sans-serif;">+ Flag New Carrier</button>
+          </div>
+        </div>
+        <div class="table-wrap"><table class="data-table">
+          <thead><tr><th>#</th><th>Patient/Donor</th><th>Email</th><th>Blood Group</th><th>Phone</th><th>Is Carrier</th><th>Confirmed By</th><th>Confirmed At</th><th>Actions</th></tr></thead>
+          <tbody id="thalassemiaTableBody"><tr><td colspan="9" style="text-align:center;color:var(--text-muted);padding:24px;">Loading...</td></tr></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- ══════════ PROFILE ══════════ -->
+    <div class="dashboard-view" id="profileView">
+      <div class="section-header reveal"><h2>My Profile</h2><p>Your lab technician account details</p></div>
+      <div class="reveal" style="display:grid;grid-template-columns:240px 1fr;gap:24px;align-items:start;">
+        <div class="glass-card" style="padding:28px 20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;">
+          <div id="profAvatar" style="width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#C0162C,#8B0020);display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:800;color:#fff;box-shadow:0 0 24px rgba(192,22,44,.4);">LT</div>
+          <div style="font-size:1.1rem;font-weight:700;" id="profNameDisplay">Loading...</div>
+          <div style="font-size:.78rem;color:var(--text-muted);" id="profRoleDisplay">Lab Technician</div>
+          <div style="font-size:.72rem;color:var(--text-sub);background:rgba(192,22,44,.12);padding:3px 10px;border-radius:50px;border:1px solid rgba(192,22,44,.3);" id="profIdDisplay">ID: --</div>
+        </div>
+        <div class="glass-card" style="padding:28px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;flex-wrap:wrap;gap:12px;">
+            <h3 style="font-size:1.1rem;font-weight:700;">Account Information</h3>
+            <div style="display:flex;gap:10px;">
+              <button style="background:none;border:1px solid var(--glass-border);padding:7px 14px;border-radius:40px;font-size:.78rem;cursor:pointer;font-family:Outfit,sans-serif;color:var(--text-muted);display:none;" id="cancelProfBtn">Cancel</button>
+              <button style="background:linear-gradient(135deg,#C0162C,#8B0020);color:#fff;border:none;padding:7px 16px;border-radius:40px;font-size:.78rem;font-weight:600;cursor:pointer;font-family:Outfit,sans-serif;" id="editProfBtn">✏️ Edit</button>
+              <button style="background:linear-gradient(135deg,#C0162C,#8B0020);color:#fff;border:none;padding:7px 16px;border-radius:40px;font-size:.78rem;font-weight:600;cursor:pointer;font-family:Outfit,sans-serif;display:none;" id="saveProfBtn">💾 Save</button>
+            </div>
+          </div>
+          <form id="profileForm" novalidate>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+              <div><label style="font-size:.78rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">User ID</label><input type="text" id="profId" readonly style="width:100%;padding:10px 14px;background:var(--input-bg);border:1px solid var(--input-border);border-radius:10px;color:var(--text-primary);font-size:.85rem;font-family:Outfit,sans-serif;opacity:.6;cursor:not-allowed;"></div>
+              <div><label style="font-size:.78rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Member Since</label><input type="text" id="profSince" readonly style="width:100%;padding:10px 14px;background:var(--input-bg);border:1px solid var(--input-border);border-radius:10px;color:var(--text-primary);font-size:.85rem;font-family:Outfit,sans-serif;opacity:.6;cursor:not-allowed;"></div>
+              <div><label style="font-size:.78rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Full Name *</label><input type="text" id="profFullName" name="full_name" disabled style="width:100%;padding:10px 14px;background:var(--input-bg);border:1px solid var(--input-border);border-radius:10px;color:var(--text-primary);font-size:.85rem;font-family:Outfit,sans-serif;"><div id="err-name" style="font-size:.72rem;color:#f87171;min-height:14px;"></div></div>
+              <div><label style="font-size:.78rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Email *</label><input type="email" id="profEmail" name="email" disabled style="width:100%;padding:10px 14px;background:var(--input-bg);border:1px solid var(--input-border);border-radius:10px;color:var(--text-primary);font-size:.85rem;font-family:Outfit,sans-serif;"><div id="err-email" style="font-size:.72rem;color:#f87171;min-height:14px;"></div></div>
+              <div><label style="font-size:.78rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Phone</label><input type="tel" id="profPhone" name="phone" disabled style="width:100%;padding:10px 14px;background:var(--input-bg);border:1px solid var(--input-border);border-radius:10px;color:var(--text-primary);font-size:.85rem;font-family:Outfit,sans-serif;"></div>
+              <div><label style="font-size:.78rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Blood Bank</label><input type="text" id="profBankName" readonly style="width:100%;padding:10px 14px;background:var(--input-bg);border:1px solid var(--input-border);border-radius:10px;color:var(--text-primary);font-size:.85rem;font-family:Outfit,sans-serif;opacity:.6;cursor:not-allowed;"></div>
+            </div>
+            <div id="profFormActions" style="display:none;margin-top:20px;padding-top:18px;border-top:1px solid var(--table-border);display:flex;gap:12px;justify-content:flex-end;">
+              <button type="button" id="cancelProfBtn2" style="background:none;border:1px solid var(--glass-border);padding:9px 20px;border-radius:10px;cursor:pointer;font-family:Outfit,sans-serif;font-size:.85rem;color:var(--text-muted);">Cancel</button>
+              <button type="submit" style="background:linear-gradient(135deg,#C0162C,#8B0020);color:#fff;border:none;padding:9px 24px;border-radius:10px;cursor:pointer;font-family:Outfit,sans-serif;font-size:.85rem;font-weight:600;">💾 Save</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- GLOBAL MODAL -->
+<div id="globalModal" class="modal-overlay">
+  <div class="modal-container glass-card">
+    <div class="modal-header"><h3 id="modalTitle">Action</h3><button class="modal-close" id="closeModalBtn">&times;</button></div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer"><button class="btn-secondary modal-action-btn" id="modalConfirmBtn">Confirm</button><button class="btn-ghost-sm" id="modalCancelBtn">Close</button></div>
+  </div>
+</div>
+
+<div id="toastMessage" class="toast-message"></div>
+
+<script>
+  window._RAK_CONFIG = { auth: true, api: 'chat_api.php' };
+</script>
+<script src="raktosathi_floating.js"></script>
+<script src="lab_technician_dash.js"></script>
+</body>
+</html>

@@ -1,0 +1,1529 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    />
+    <title>BloodBridge — Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="admindash.css" />
+    <link rel="stylesheet" href="raktosathi_floating.css" />
+
+  </head>
+  <body>
+    <!-- Background Scene -->
+    <div class="bg-scene">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+    </div>
+    <div class="grid-overlay"></div>
+
+    <!-- SIDEBAR OVERLAY (mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <span class="sidebar-logo-icon">🩸</span>
+          <span class="sidebar-logo-text">BloodBridge</span>
+        </div>
+        <button
+          class="sidebar-close"
+          id="sidebarClose"
+          aria-label="Close sidebar"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div class="sidebar-section-label">Main</div>
+      <nav class="sidebar-nav">
+        <a href="#" class="sidebar-link active" data-page="dashboard">
+          <span class="sidebar-icon">📊</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="#" class="sidebar-link" data-page="investigate">
+          <span class="sidebar-icon">🔍</span>
+          <span>Investigate Suspicious Activity</span>
+        </a>
+        <a href="#" class="sidebar-link" data-page="ratings">
+          <span class="sidebar-icon">⭐</span>
+          <span>Monitor Blood Bank Ratings</span>
+        </a>
+        <a href="#" class="sidebar-link" data-page="coldchain">
+          <span class="sidebar-icon">❄️</span>
+          <span>Cold Chain Breach Log</span>
+        </a>
+        <a href="#" class="sidebar-link" data-page="thalassemia">
+          <span class="sidebar-icon">🧬</span>
+          <span>Thalassemia Carrier Registry</span>
+        </a>
+        <a href="#" class="sidebar-link" data-page="users">
+          <span class="sidebar-icon">👥</span>
+          <span>User Management</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-section-label">Operations</div>
+      <nav class="sidebar-nav">
+        <a href="#" class="sidebar-link" data-page="expiry">
+          <span class="sidebar-icon">📅</span>
+          <span>System-wide Expiry Analytics</span>
+        </a>
+        <a href="#" class="sidebar-link" data-page="emergency">
+          <span class="sidebar-icon">🚨</span>
+          <span>Emergency Request Oversight</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-section-label">Account</div>
+      <nav class="sidebar-nav">
+        <a href="#" class="sidebar-link" data-page="profile">
+          <span class="sidebar-icon">👤</span>
+          <span>Profile</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-avatar" id="sidebarAvatar">AD</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name" id="sidebarName">Admin</div>
+            <div class="sidebar-user-role" id="sidebarRole">Super Admin</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN LAYOUT -->
+    <div class="main-wrapper" id="mainWrapper">
+      <!-- TOP NAVBAR -->
+      <nav class="topnav">
+        <div class="topnav-left">
+          <button class="hamburger" id="hamburger" aria-label="Open sidebar">
+            <span></span><span></span><span></span>
+          </button>
+          <div class="topnav-brand">
+            <span class="topnav-logo">🩸</span>
+            <span class="topnav-title">Admin Dashboard</span>
+          </div>
+        </div>
+
+        <div class="topnav-right">
+          <!-- Theme Toggle -->
+          <div
+            class="theme-toggle"
+            id="themeToggle"
+            title="Toggle Light/Dark Mode"
+          >
+            <div class="toggle-track">
+              <span class="toggle-icon moon">🌙</span>
+              <span class="toggle-icon sun">☀️</span>
+              <div class="toggle-thumb"></div>
+            </div>
+          </div>
+
+          <button class="nav-cta" onclick="localStorage.removeItem('bbAdminPage');window.location.href='login.html'">
+            Logout
+          </button>
+        </div>
+      </nav>
+
+      <!-- PAGE CONTENT -->
+      <main class="content" id="pageContent">
+        <!-- ── DASHBOARD PAGE ── -->
+        <div class="page-view active" id="page-dashboard">
+          <!-- Page Header -->
+          <div class="page-header reveal">
+            <div>
+              <div class="page-label">Overview</div>
+              <h1 class="page-title">Admin Dashboard</h1>
+              <p class="page-sub">
+                Real-time operational overview of the BloodBridge network.
+              </p>
+            </div>
+            <div class="header-actions">
+              <div class="live-pill"><span class="dot"></span> Live</div>
+              <button class="btn-primary-sm" onclick="exportDashboardPDF()">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="17 8 12 3 7 8" />
+                  <line x1="12" y1="3" x2="12" y2="15" />
+                </svg>
+                Export Report
+              </button>
+            </div>
+          </div>
+
+          <!-- METRIC CARDS -->
+          <div class="metrics-grid reveal">
+            <div class="metric-card glass-card" data-type="banks">
+              <div class="metric-icon-wrap metric-blue">
+                <svg
+                  width="26"
+                  height="26"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="2" y="7" width="20" height="14" rx="2" />
+                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                </svg>
+              </div>
+              <div class="metric-body">
+                <div class="metric-num" id="metricBanks">0</div>
+                <div class="metric-label">Blood Banks</div>
+                <div class="metric-sub">Registered & Active</div>
+              </div>
+            </div>
+
+            <div class="metric-card glass-card" data-type="flags">
+              <div class="metric-icon-wrap metric-orange">
+                <svg
+                  width="26"
+                  height="26"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+                  />
+                  <line x1="12" y1="9" x2="12" y2="13" />
+                  <line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
+              </div>
+              <div class="metric-body">
+                <div class="metric-num" id="metricFlags">0</div>
+                <div class="metric-label">Suspicious Flags</div>
+                <div class="metric-sub">Needs investigation</div>
+              </div>
+            </div>
+
+            <div class="metric-card glass-card" data-type="lowrating">
+              <div class="metric-icon-wrap metric-red">
+                <svg
+                  width="26"
+                  height="26"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polygon
+                    points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                  />
+                </svg>
+              </div>
+              <div class="metric-body">
+                <div class="metric-num" id="metricLowRating">0</div>
+                <div class="metric-label">Banks Below 3★</div>
+                <div class="metric-sub">Under-performing</div>
+              </div>
+            </div>
+
+            <div class="metric-card glass-card" data-type="audits">
+              <div class="metric-icon-wrap metric-purple">
+                <svg
+                  width="26"
+                  height="26"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M9 11l3 3L22 4" />
+                  <path
+                    d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"
+                  />
+                </svg>
+              </div>
+              <div class="metric-body">
+                <div class="metric-num" id="metricUsers">0</div>
+                <div class="metric-label">Total Donor_Recipient</div>
+                <div class="metric-sub">Awaiting review</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- QUICK ACTIONS ROW -->
+          <div class="two-col reveal">
+            <!-- Quick Stats Panel -->
+            <div class="quick-panel">
+              <!-- Blood Type Status -->
+              <div class="glass-card quick-card">
+                <div class="card-header">
+                  <div class="card-title">
+                    <span class="card-title-icon">🩸</span> Blood Stock Status
+                  </div>
+                </div>
+                <div class="blood-grid" id="bloodStockGrid">
+                  <div
+                    style="
+                      color: var(--text-muted);
+                      font-size: 0.78rem;
+                      padding: 8px;
+                      text-align: center;
+                    "
+                  >
+                    Loading...
+                  </div>
+                </div>
+              </div>
+
+              <!-- Network Activity -->
+              <div class="glass-card quick-card">
+                <div class="card-header">
+                  <div class="card-title">
+                    <span class="card-title-icon">📡</span> Network Activity
+                  </div>
+                </div>
+                <div class="activity-list" id="networkActivityList">
+                  <div class="activity-row">
+                    <span class="activity-label">Active Donors</span
+                    ><span class="activity-val" id="actDonors">—</span>
+                  </div>
+                  <div class="activity-row">
+                    <span class="activity-label">Active Banks</span
+                    ><span class="activity-val" id="actBanks">—</span>
+                  </div>
+                  <div class="activity-row">
+                    <span class="activity-label">Open Requests</span
+                    ><span class="activity-val activity-alert" id="actRequests"
+                      >—</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BANK RATINGS TABLE -->
+          <div class="glass-card table-card reveal">
+            <div class="card-header">
+              <div class="card-title">
+                <span class="card-title-icon">🏥</span> Blood Bank Ratings
+                Overview
+              </div>
+              <button class="btn-ghost-sm" onclick="openAllBanksModal()">View All</button>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Bank Name</th>
+                    <th>Location</th>
+                    <th>Rating</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="bankRatingsBody">
+                  <tr>
+                    <td
+                      colspan="6"
+                      style="
+                        text-align: center;
+                        color: var(--text-muted);
+                        padding: 20px;
+                      "
+                    >
+                      Loading...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <!-- END DASHBOARD PAGE -->
+
+        <!-- ══════════ INVESTIGATE ══════════ -->
+        <div class="page-view" id="page-investigate">
+          <div class="page-header reveal">
+            <div>
+              <div class="page-label">Security</div>
+              <h1 class="page-title">Investigate Suspicious Activity</h1>
+              <p class="page-sub">Flagged donors and unusual donation patterns. Send warnings, cool down, or block IDs.</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn-primary-sm" onclick="exportPagePDF('investigate')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Export Report
+              </button>
+            </div>
+          </div>
+          <div class="glass-card reveal" style="margin-bottom:20px;padding:16px 20px;">
+            <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+              <select id="investigateEntityFilter" style="background:var(--input-bg);border:1px solid var(--input-border);color:var(--text-primary);padding:6px 10px;border-radius:8px;font-family:Outfit,sans-serif;font-size:.78rem;">
+                <option value="user">Donors / Recipients</option>
+                <option value="blood_bank">Blood Banks</option>
+              </select>
+              <input type="text" id="investigateSearch" placeholder="Search by name, email, city, ID..." style="flex:1;min-width:180px;background:var(--input-bg);border:1px solid var(--input-border);color:var(--text-primary);padding:6px 12px;border-radius:8px;font-family:Outfit,sans-serif;font-size:.78rem;">
+              <span style="font-size:.78rem;color:var(--text-muted);font-weight:600;white-space:nowrap;" id="investigateMetricHead">Rating</span>
+              <span style="font-size:.72rem;color:var(--text-sub);flex:1;" id="investigateHelpText">Showing donor &amp; recipient users whose rating is below 50.</span>
+            </div>
+          </div>
+          <div class="glass-card table-card reveal">
+            <div class="card-header">
+              <div class="card-title">
+                <span class="card-title-icon">🔍</span> Warning / Investigation Queue
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Entity</th>
+                    <th id="investigateMetricHeader">Rating</th>
+                    <th>Status</th>
+                    <th>Warning Timeline</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="suspActivityBody">
+                  <tr>
+                    <td colspan="5" style="text-align:center;color:var(--text-muted);padding:20px;">Loading...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════ RATINGS ══════════ -->
+        <div class="page-view" id="page-ratings">
+          <div class="page-header reveal">
+            <div>
+              <div class="page-label">Quality</div>
+              <h1 class="page-title">Blood Bank Ratings</h1>
+              <p class="page-sub">
+                Track all bank ratings and trigger audits when needed.
+              </p>
+            </div>
+            <div class="header-actions">
+              <button class="btn-primary-sm" onclick="exportPagePDF('ratings')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Export Report
+              </button>
+            </div>
+          </div>
+          <div class="glass-card table-card reveal">
+            <div class="card-header">
+              <div class="card-title">
+                <span class="card-title-icon">⭐</span> All Blood Banks
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Bank Name</th>
+                    <th>Location</th>
+                    <th>Rating</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="ratingsTableBody">
+                  <tr>
+                    <td
+                      colspan="5"
+                      style="
+                        text-align: center;
+                        color: var(--text-muted);
+                        padding: 20px;
+                      "
+                    >
+                      Loading...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════ COLD CHAIN SIMULATION ══════════ -->
+        <div class="page-view" id="page-coldchain">
+          <div class="page-header reveal">
+            <div>
+              <div class="page-label">IoT Simulation</div>
+              <h1 class="page-title">Cold Chain Monitoring</h1>
+              <p class="page-sub">Real-time simulated temperature sensors across blood banks.</p>
+            </div>
+            <div class="header-actions">
+              <span class="sim-badge" id="ccSimStatus">● Live</span>
+              <button class="btn-primary-sm" onclick="exportPagePDF('coldchain')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Export Report
+              </button>
+            </div>
+          </div>
+
+          <!-- Sensor Cards -->
+          <div class="cc-sensor-grid reveal" id="ccSensorGrid"></div>
+
+          <!-- Metrics -->
+          <div class="metrics-grid reveal" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 24px">
+            <div class="metric-card glass-card">
+              <div class="metric-icon-wrap metric-red">
+                <span style="font-size: 1.4rem">🌡️</span>
+              </div>
+              <div class="metric-body">
+                <div class="metric-num" id="ccTotalBreaches">0</div>
+                <div class="metric-label">Total Breaches Today</div>
+              </div>
+            </div>
+            <div class="metric-card glass-card">
+              <div class="metric-icon-wrap metric-orange">
+                <span style="font-size: 1.4rem">⚠️</span>
+              </div>
+              <div class="metric-body">
+                <div class="metric-num" id="ccActiveBreaches">0</div>
+                <div class="metric-label">Active Breaches</div>
+              </div>
+            </div>
+            <div class="metric-card glass-card">
+              <div class="metric-icon-wrap metric-blue">
+                <span style="font-size: 1.4rem">📊</span>
+              </div>
+              <div class="metric-body">
+                <div class="metric-num" id="ccAvgTemp">0.0</div>
+                <div class="metric-label">Avg Temperature (°C)</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Breach Log -->
+          <div class="glass-card table-card reveal">
+            <div class="card-header">
+              <div class="card-title">
+                <span class="card-title-icon">📋</span> Temperature Log
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Blood Bank</th>
+                    <th>Sensor</th>
+                    <th>Temp (°C)</th>
+                    <th>Range</th>
+                    <th>Recorded</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="coldChainBody">
+                  <tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:20px;">Loading...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════ THALASSEMIA ══════════ -->
+        <div class="page-view" id="page-thalassemia">
+          <div class="page-header reveal">
+            <div>
+              <div class="page-label">Registry</div>
+              <h1 class="page-title">Thalassemia Carrier Registry</h1>
+              <p class="page-sub">
+                All confirmed carrier records across the network.
+              </p>
+            </div>
+            <div class="header-actions">
+              <button class="btn-primary-sm" onclick="exportPagePDF('thalassemia')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Export Report
+              </button>
+            </div>
+          </div>
+          <div class="glass-card table-card reveal">
+            <div class="card-header">
+              <div class="card-title">
+                <span class="card-title-icon">🧬</span> Carrier Records
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Patient</th>
+                    <th>Carrier Status</th>
+                    <th>Confirmed By</th>
+                    <th>Confirmed At</th>
+                  </tr>
+                </thead>
+                <tbody id="thalassemiaBody">
+                  <tr>
+                    <td
+                      colspan="5"
+                      style="
+                        text-align: center;
+                        color: var(--text-muted);
+                        padding: 20px;
+                      "
+                    >
+                      Loading...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════ ROTATIONS ══════════ -->
+        <div class="page-view" id="page-rotations">
+          <div class="page-header reveal">
+            <div>
+              <div class="page-label">International</div>
+              <h1 class="page-title">International Rotations</h1>
+              <p class="page-sub">
+                Cross-border blood transfers and logistics.
+              </p>
+            </div>
+          </div>
+          <div class="glass-card table-card reveal">
+            <div class="card-header">
+              <div class="card-title">
+                <span class="card-title-icon">🌍</span> Rotation Records
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Donor</th>
+                    <th>Source Bank</th>
+                    <th>Destination</th>
+                    <th>Blood Group</th>
+                    <th>Units</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="rotationsBody">
+                  <tr>
+                    <td
+                      colspan="8"
+                      style="
+                        text-align: center;
+                        color: var(--text-muted);
+                        padding: 20px;
+                      "
+                    >
+                      Loading...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════ AI MODELS ══════════ -->
+        <div class="page-view" id="page-ai">
+          <div class="page-header reveal">
+            <div>
+              <div class="page-label">Intelligence</div>
+              <h1 class="page-title">AI Model Management</h1>
+              <p class="page-sub">
+                Active models for demand prediction and donor matching.
+              </p>
+            </div>
+          </div>
+          <div class="glass-card table-card reveal">
+            <div class="card-header">
+              <div class="card-title">
+                <span class="card-title-icon">🤖</span> Registered AI Models
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Model Name</th>
+                    <th>Type</th>
+                    <th>Framework</th>
+                    <th>Version</th>
+                    <th>Accuracy</th>
+                    <th>Active</th>
+                    <th>Trained At</th>
+                  </tr>
+                </thead>
+                <tbody id="aiModelsBody">
+                  <tr>
+                    <td
+                      colspan="8"
+                      style="
+                        text-align: center;
+                        color: var(--text-muted);
+                        padding: 20px;
+                      "
+                    >
+                      Loading...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════ EXPIRY ANALYTICS SIMULATION ══════════ -->
+        <div class="page-view" id="page-expiry">
+          <div class="page-header reveal">
+            <div>
+              <div class="page-label">Waste Management</div>
+              <h1 class="page-title">Expiry Analytics</h1>
+              <p class="page-sub">Simulated blood unit expiry tracking system-wide.</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn-primary-sm" onclick="exportPagePDF('expiry')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Export Report
+              </button>
+            </div>
+          </div>
+
+          <!-- Metrics -->
+          <div class="metrics-grid reveal" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 24px">
+            <div class="metric-card glass-card">
+              <div class="metric-icon-wrap metric-red">
+                <span style="font-size: 1.4rem">🩸</span>
+              </div>
+              <div class="metric-body">
+                <div class="metric-num" id="expiryTotal">0</div>
+                <div class="metric-label">Total Units</div>
+              </div>
+            </div>
+            <div class="metric-card glass-card">
+              <div class="metric-icon-wrap metric-orange">
+                <span style="font-size: 1.4rem">⏰</span>
+              </div>
+              <div class="metric-body">
+                <div class="metric-num" id="expiryCritical">0</div>
+                <div class="metric-label">Critical (≤3 days)</div>
+              </div>
+            </div>
+            <div class="metric-card glass-card">
+              <div class="metric-icon-wrap metric-purple">
+                <span style="font-size: 1.4rem">✅</span>
+              </div>
+              <div class="metric-body">
+                <div class="metric-num" id="expiryResolved">0</div>
+                <div class="metric-label">Safe (>7 days)</div>
+              </div>
+            </div>
+            <div class="metric-card glass-card">
+              <div class="metric-icon-wrap metric-blue">
+                <span style="font-size: 1.4rem">📊</span>
+              </div>
+              <div class="metric-body">
+                <div class="metric-num" id="expiryWaste">0</div>
+                <div class="metric-label">Projected Waste</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Expiry Timeline -->
+          <div class="glass-card reveal" style="padding:24px;margin-bottom:24px;">
+            <div class="card-title" style="margin-bottom:16px;">
+              <span class="card-title-icon">📅</span> Expiry Timeline — Units expiring per day
+            </div>
+            <div class="expiry-timeline" id="expiryTimeline"></div>
+          </div>
+
+          <!-- Expiry Table -->
+          <div class="glass-card table-card reveal">
+            <div class="card-header">
+              <div class="card-title">
+                <span class="card-title-icon">📋</span> Blood Unit Expiry Records
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Blood Bank</th>
+                    <th>Bag ID</th>
+                    <th>Blood Type</th>
+                    <th>Expiry Date</th>
+                    <th>Days Left</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="expiryBody">
+                  <tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:20px;">Loading...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════ EMERGENCY ══════════ -->
+        <div class="page-view" id="page-emergency">
+          <div class="page-header reveal">
+            <div>
+              <div class="page-label">Urgent</div>
+              <h1 class="page-title">Request Oversight</h1>
+              <p class="page-sub">
+                Monitor and manage all blood &amp; emergency requests in one place.
+              </p>
+            </div>
+            <div class="header-actions">
+              <button class="btn-primary-sm" onclick="exportPagePDF('emergency')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Export Report
+              </button>
+            </div>
+          </div>
+          <div
+            class="metrics-grid reveal"
+            style="grid-template-columns: repeat(4, 1fr); margin-bottom: 24px"
+          >
+            <div class="metric-card glass-card">
+              <div class="metric-icon-wrap metric-red">
+                <span style="font-size: 1.4rem">📦</span>
+              </div>
+              <div class="metric-body">
+                <div class="metric-num" id="emergTotal">0</div>
+                <div class="metric-label">All Requests</div>
+              </div>
+            </div>
+            <div class="metric-card glass-card">
+              <div class="metric-icon-wrap metric-orange">
+                <span style="font-size: 1.4rem">⏳</span>
+              </div>
+              <div class="metric-body">
+                <div class="metric-num" id="emergPending">0</div>
+                <div class="metric-label">Pending</div>
+              </div>
+            </div>
+            <div class="metric-card glass-card">
+              <div class="metric-icon-wrap metric-blue">
+                <span style="font-size: 1.4rem">✅</span>
+              </div>
+              <div class="metric-body">
+                <div class="metric-num" id="emergProcessed">0</div>
+                <div class="metric-label">Processed</div>
+              </div>
+            </div>
+            <div class="metric-card glass-card">
+              <div class="metric-icon-wrap" style="background:rgba(99,102,241,.12);">
+                <span style="font-size: 1.4rem">🔴</span>
+              </div>
+              <div class="metric-body">
+                <div class="metric-num" id="emergEmergCount" style="color:#f87171;">0</div>
+                <div class="metric-label">Emergency</div>
+              </div>
+            </div>
+          </div>
+          <div class="glass-card table-card reveal">
+            <div class="card-header">
+              <div class="card-title">
+                <span class="card-title-icon">📋</span> All Requests
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <div class="filter-pills" id="emergFilterPills">
+                  <span class="pill active" data-filter="all">All</span>
+                  <span class="pill" data-filter="emergency">Emergency</span>
+                  <span class="pill" data-filter="blood_request">Blood Request</span>
+                </div>
+                <div class="live-pill small"><span class="dot"></span> Live</div>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Type</th>
+                    <th>Blood Group</th>
+                    <th>Requester</th>
+                    <th>Contact</th>
+                    <th>Urgency</th>
+                    <th>Status</th>
+                    <th>Received</th>
+                  </tr>
+                </thead>
+                <tbody id="emergencyBody">
+                  <tr>
+                    <td colspan="8" style="text-align:center;color:var(--text-muted);padding:20px;">
+                      Loading...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════ FORECAST ══════════ -->
+        <div class="page-view" id="page-forecast">
+          <div class="page-header reveal">
+            <div>
+              <div class="page-label">Predictive</div>
+              <h1 class="page-title">Demand Forecast</h1>
+              <p class="page-sub">
+                AI-powered blood demand predictions by region.
+              </p>
+            </div>
+          </div>
+          <div class="glass-card table-card reveal">
+            <div class="card-header">
+              <div class="card-title">
+                <span class="card-title-icon">📈</span> Forecast Records
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Blood Bank</th>
+                    <th>Date</th>
+                    <th>Blood Group</th>
+                    <th>Predicted Units</th>
+                    <th>Lower</th>
+                    <th>Upper</th>
+                    <th>Generated</th>
+                  </tr>
+                </thead>
+                <tbody id="forecastBody">
+                  <tr>
+                    <td
+                      colspan="8"
+                      style="
+                        text-align: center;
+                        color: var(--text-muted);
+                        padding: 20px;
+                      "
+                    >
+                      Loading...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════ USERS (B.2) ══════════ -->
+        <div class="page-view" id="page-users">
+          <div class="page-header reveal">
+            <div>
+              <div class="page-label">Management</div>
+              <h1 class="page-title">User Management</h1>
+              <p class="page-sub">View, filter, and manage all users across the BloodBridge network.</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn-primary-sm" onclick="exportPagePDF('users')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Export Report
+              </button>
+            </div>
+          </div>
+          <div class="glass-card reveal" style="margin-bottom:20px;padding:16px 20px;">
+            <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+              <select id="userTypeFilter" style="background:var(--input-bg);border:1px solid var(--input-border);color:var(--text-primary);padding:6px 10px;border-radius:8px;font-family:Outfit,sans-serif;font-size:.78rem;">
+                <option value="all">All Types</option>
+                <option value="donor_recipient">Donors / Recipients</option>
+                <option value="doctor">Doctors</option>
+                <option value="lab_technician">Lab Technicians</option>
+                <option value="delivery_staff">Delivery Staff</option>
+              </select>
+              <select id="userStatusFilter" style="background:var(--input-bg);border:1px solid var(--input-border);color:var(--text-primary);padding:6px 10px;border-radius:8px;font-family:Outfit,sans-serif;font-size:.78rem;">
+                <option value="all">All Status</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+              <input type="text" id="userSearchInput" placeholder="Search name, email, phone..." style="flex:1;min-width:180px;background:var(--input-bg);border:1px solid var(--input-border);color:var(--text-primary);padding:6px 12px;border-radius:8px;font-family:Outfit,sans-serif;font-size:.78rem;">
+              <button class="btn-primary-sm" id="userSearchBtn" style="white-space:nowrap;">🔍 Search</button>
+            </div>
+          </div>
+          <div class="glass-card table-card reveal">
+            <div class="card-header">
+              <div class="card-title"><span class="card-title-icon">👥</span> All Users</div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Blood Group</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Joined</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="usersBody">
+                  <tr><td colspan="9" style="text-align:center;color:var(--text-muted);padding:20px;">Loading...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════ SYSTEM SETTINGS (B.6) ══════════ -->
+        <div class="page-view" id="page-settings">
+          <div class="page-header reveal">
+            <div>
+              <div class="page-label">Configuration</div>
+              <h1 class="page-title">System Settings</h1>
+              <p class="page-sub">Manage platform-wide configuration values.</p>
+            </div>
+          </div>
+          <div class="glass-card table-card reveal">
+            <div class="card-header">
+              <div class="card-title"><span class="card-title-icon">⚙️</span> Platform Settings</div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Setting Key</th>
+                    <th>Value</th>
+                    <th>Description</th>
+                    <th>Updated</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="settingsBody">
+                  <tr>                    <td
+                      colspan="5"
+                      style="text-align:center;color:var(--text-muted);padding:20px;">Loading...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════ NOTIFICATION TEMPLATES (B.7) ══════════ -->
+        <div class="page-view" id="page-notif_templates">
+          <div class="page-header reveal">
+            <div>
+              <div class="page-label">Templates</div>
+              <h1 class="page-title">Notification Templates</h1>
+              <p class="page-sub">Edit system notification messages and toggle their active status.</p>
+            </div>
+          </div>
+          <div class="glass-card table-card reveal">
+            <div class="card-header">
+              <div class="card-title"><span class="card-title-icon">📋</span> Email / Push Templates</div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Template Name</th>
+                    <th>Title</th>
+                    <th>Message</th>
+                    <th>Channel</th>
+                    <th>Created</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="notifTemplatesBody">
+                  <tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:20px;">Loading...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════ PROFILE ══════════ -->
+        <div class="page-view" id="page-profile">
+          <div class="page-header reveal">
+            <div>
+              <div class="page-label">Account</div>
+              <h1 class="page-title">Admin Profile</h1>
+              <p class="page-sub">Manage your account and security settings.</p>
+            </div>
+          </div>
+          <div
+            class="reveal"
+            style="
+              display: grid;
+              grid-template-columns: 240px 1fr;
+              gap: 24px;
+              align-items: start;
+            "
+          >
+            <div
+              class="glass-card"
+              style="
+                padding: 28px 20px;
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 14px;
+              "
+            >
+              <div
+                id="profAvatar"
+                style="
+                  width: 90px;
+                  height: 90px;
+                  border-radius: 50%;
+                  background: linear-gradient(135deg, #c0162c, #8b0020);
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 2rem;
+                  font-weight: 800;
+                  color: #fff;
+                  box-shadow: 0 0 24px rgba(192, 22, 44, 0.4);
+                "
+              >
+                AD
+              </div>
+              <div
+                style="font-size: 1.1rem; font-weight: 700"
+                id="profNameDisplay"
+              >
+                Admin
+              </div>
+              <div
+                style="font-size: 0.78rem; color: var(--text-muted)"
+                id="profRoleDisplay"
+              >
+                Super Admin
+              </div>
+              <div
+                style="
+                  font-size: 0.72rem;
+                  color: var(--text-sub);
+                  background: rgba(192, 22, 44, 0.12);
+                  padding: 3px 10px;
+                  border-radius: 50px;
+                  border: 1px solid rgba(192, 22, 44, 0.3);
+                "
+                id="profIdDisplay"
+              >
+                ID: --
+              </div>
+            </div>
+            <div class="glass-card" style="padding: 28px">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 22px;
+                  flex-wrap: wrap;
+                  gap: 12px;
+                "
+              >
+                <h3 style="font-size: 1.1rem; font-weight: 700">
+                  Account Information
+                </h3>
+                <div style="display: flex; gap: 10px">
+                  <button
+                    style="
+                      background: none;
+                      border: 1px solid var(--glass-border);
+                      padding: 7px 14px;
+                      border-radius: 40px;
+                      font-size: 0.78rem;
+                      cursor: pointer;
+                      font-family: Outfit, sans-serif;
+                      color: var(--text-muted);
+                      display: none;
+                    "
+                    id="cancelProfBtn"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    style="
+                      background: linear-gradient(135deg, #c0162c, #8b0020);
+                      color: #fff;
+                      border: none;
+                      padding: 7px 16px;
+                      border-radius: 40px;
+                      font-size: 0.78rem;
+                      font-weight: 600;
+                      cursor: pointer;
+                      font-family: Outfit, sans-serif;
+                    "
+                    id="editProfBtn"
+                  >
+                    ✏️ Edit
+                  </button>
+                  <button
+                    style="
+                      background: linear-gradient(135deg, #c0162c, #8b0020);
+                      color: #fff;
+                      border: none;
+                      padding: 7px 16px;
+                      border-radius: 40px;
+                      font-size: 0.78rem;
+                      font-weight: 600;
+                      cursor: pointer;
+                      font-family: Outfit, sans-serif;
+                      display: none;
+                    "
+                    id="saveProfBtn"
+                  >
+                    💾 Save
+                  </button>
+                </div>
+              </div>
+              <form id="profileForm" novalidate>
+                <div
+                  style="
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 16px;
+                  "
+                >
+                  <div>
+                    <label
+                      style="
+                        font-size: 0.78rem;
+                        font-weight: 600;
+                        color: var(--text-muted);
+                        display: block;
+                        margin-bottom: 6px;
+                      "
+                      >Admin ID</label
+                    ><input
+                      type="text"
+                      id="profId"
+                      readonly
+                      style="
+                        width: 100%;
+                        padding: 10px 14px;
+                        background: var(--input-bg);
+                        border: 1px solid var(--input-border);
+                        border-radius: 10px;
+                        color: var(--text-primary);
+                        font-size: 0.85rem;
+                        font-family: Outfit, sans-serif;
+                        opacity: 0.6;
+                        cursor: not-allowed;
+                      "
+                    />
+                  </div>
+                  <div>
+                    <label
+                      style="
+                        font-size: 0.78rem;
+                        font-weight: 600;
+                        color: var(--text-muted);
+                        display: block;
+                        margin-bottom: 6px;
+                      "
+                      >Member Since</label
+                    ><input
+                      type="text"
+                      id="profSince"
+                      readonly
+                      style="
+                        width: 100%;
+                        padding: 10px 14px;
+                        background: var(--input-bg);
+                        border: 1px solid var(--input-border);
+                        border-radius: 10px;
+                        color: var(--text-primary);
+                        font-size: 0.85rem;
+                        font-family: Outfit, sans-serif;
+                        opacity: 0.6;
+                        cursor: not-allowed;
+                      "
+                    />
+                  </div>
+                  <div>
+                    <label
+                      style="
+                        font-size: 0.78rem;
+                        font-weight: 600;
+                        color: var(--text-muted);
+                        display: block;
+                        margin-bottom: 6px;
+                      "
+                      >Full Name *</label
+                    ><input
+                      type="text"
+                      id="profFullName"
+                      name="full_name"
+                      disabled
+                      style="
+                        width: 100%;
+                        padding: 10px 14px;
+                        background: var(--input-bg);
+                        border: 1px solid var(--input-border);
+                        border-radius: 10px;
+                        color: var(--text-primary);
+                        font-size: 0.85rem;
+                        font-family: Outfit, sans-serif;
+                      "
+                    />
+                    <div
+                      id="err-name"
+                      style="
+                        font-size: 0.72rem;
+                        color: #f87171;
+                        min-height: 14px;
+                      "
+                    ></div>
+                  </div>
+                  <div>
+                    <label
+                      style="
+                        font-size: 0.78rem;
+                        font-weight: 600;
+                        color: var(--text-muted);
+                        display: block;
+                        margin-bottom: 6px;
+                      "
+                      >Email *</label
+                    ><input
+                      type="email"
+                      id="profEmail"
+                      name="email"
+                      disabled
+                      style="
+                        width: 100%;
+                        padding: 10px 14px;
+                        background: var(--input-bg);
+                        border: 1px solid var(--input-border);
+                        border-radius: 10px;
+                        color: var(--text-primary);
+                        font-size: 0.85rem;
+                        font-family: Outfit, sans-serif;
+                      "
+                    />
+                    <div
+                      id="err-email"
+                      style="
+                        font-size: 0.72rem;
+                        color: #f87171;
+                        min-height: 14px;
+                      "
+                    ></div>
+                  </div>
+                  <div>
+                    <label
+                      style="
+                        font-size: 0.78rem;
+                        font-weight: 600;
+                        color: var(--text-muted);
+                        display: block;
+                        margin-bottom: 6px;
+                      "
+                      >Role</label
+                    ><input
+                      type="text"
+                      id="profRole"
+                      readonly
+                      style="
+                        width: 100%;
+                        padding: 10px 14px;
+                        background: var(--input-bg);
+                        border: 1px solid var(--input-border);
+                        border-radius: 10px;
+                        color: var(--text-primary);
+                        font-size: 0.85rem;
+                        font-family: Outfit, sans-serif;
+                        opacity: 0.6;
+                        cursor: not-allowed;
+                      "
+                    />
+                  </div>
+                  <div>
+                    <label
+                      style="
+                        font-size: 0.78rem;
+                        font-weight: 600;
+                        color: var(--text-muted);
+                        display: block;
+                        margin-bottom: 6px;
+                      "
+                      >Last Login</label
+                    ><input
+                      type="text"
+                      id="profLastLogin"
+                      readonly
+                      style="
+                        width: 100%;
+                        padding: 10px 14px;
+                        background: var(--input-bg);
+                        border: 1px solid var(--input-border);
+                        border-radius: 10px;
+                        color: var(--text-primary);
+                        font-size: 0.85rem;
+                        font-family: Outfit, sans-serif;
+                        opacity: 0.6;
+                        cursor: not-allowed;
+                      "
+                    />
+                  </div>
+                </div>
+                <div
+                  id="profFormActions"
+                  style="
+                    display: none;
+                    margin-top: 20px;
+                    padding-top: 18px;
+                    border-top: 1px solid var(--table-border);
+                    display: flex;
+                    gap: 12px;
+                    justify-content: flex-end;
+                  "
+                >
+                  <button
+                    type="button"
+                    id="cancelProfBtn2"
+                    style="
+                      background: none;
+                      border: 1px solid var(--glass-border);
+                      padding: 9px 20px;
+                      border-radius: 10px;
+                      cursor: pointer;
+                      font-family: Outfit, sans-serif;
+                      font-size: 0.85rem;
+                      color: var(--text-muted);
+                    "
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    style="
+                      background: linear-gradient(135deg, #c0162c, #8b0020);
+                      color: #fff;
+                      border: none;
+                      padding: 9px 24px;
+                      border-radius: 10px;
+                      cursor: pointer;
+                      font-family: Outfit, sans-serif;
+                      font-size: 0.85rem;
+                      font-weight: 600;
+                    "
+                  >
+                    💾 Save Profile
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      window._RAK_CONFIG = { auth: true, api: 'chat_api.php' };
+    </script>
+    <script src="raktosathi_floating.js"></script>
+    
+<div class="admin-modal" id="adminWarningModal" aria-hidden="true" style="display:none;">
+  <div class="admin-modal-backdrop" data-modal-close="1"></div>
+  <div class="admin-modal-panel glass-card" role="dialog" aria-modal="true" aria-labelledby="adminWarningModalTitle">
+    <div class="admin-modal-header">
+      <div>
+        <div class="page-label" id="adminWarningModalLabel">Admin Action</div>
+        <h3 id="adminWarningModalTitle">Confirm Warning</h3>
+      </div>
+      <button type="button" class="admin-modal-x" id="adminWarningModalX" aria-label="Close">✕</button>
+    </div>
+    <div class="admin-modal-body">
+      <p id="adminWarningModalBody">Please confirm this action.</p>
+      <label for="adminWarningModalMessage" class="admin-modal-field-label">Warning message</label>
+      <textarea id="adminWarningModalMessage" rows="5" placeholder="Warning message will appear here..."></textarea>
+      <div class="admin-modal-meta" id="adminWarningModalMeta"></div>
+    </div>
+    <div class="admin-modal-actions">
+      <button type="button" class="btn-ghost-sm" id="adminWarningModalCancel">Cancel</button>
+      <button type="button" class="btn-primary-sm" id="adminWarningModalConfirm">Send Warning</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── ALL BLOOD BANKS MODAL ── -->
+<div class="admin-modal" id="allBanksModal" aria-hidden="true" style="display:none;">
+  <div class="admin-modal-backdrop" data-modal-close="1"></div>
+  <div class="admin-modal-panel all-banks-panel glass-card" role="dialog" aria-modal="true" aria-labelledby="allBanksModalTitle">
+    <div class="admin-modal-header">
+      <div>
+        <div class="page-label">Blood Banks</div>
+        <h3 id="allBanksModalTitle">All Blood Banks</h3>
+      </div>
+      <button type="button" class="admin-modal-x" id="allBanksModalX" aria-label="Close">✕</button>
+    </div>
+    <div class="admin-modal-body" style="padding:0;overflow:hidden;display:flex;flex-direction:column;">
+      <div class="all-banks-toolbar">
+        <span class="all-banks-count" id="allBanksCount">0 banks</span>
+        <input type="text" class="all-banks-search" id="allBanksSearch" placeholder="Search banks..." oninput="filterAllBanks()">
+      </div>
+      <div class="table-wrap" style="flex:1;overflow-y:auto;border-radius:0;">
+        <table class="data-table" id="allBanksTable">
+          <thead>
+            <tr>
+              <th>Bank Name</th>
+              <th>Location</th>
+              <th>Rating</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="allBanksBody">
+            <tr>
+              <td colspan="5" style="text-align:center;color:var(--text-muted);padding:40px;">
+                <div class="loader-spin" style="margin:0 auto 12px"></div>
+                Loading banks...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="admindash.js"></script>
+  </body>
+</html>

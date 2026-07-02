@@ -1,0 +1,2425 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    />
+    <title>BloodBridge — Donor &amp; Recipient Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="donor_recipient_dash.css" />
+    <link rel="stylesheet" href="raktosathi_floating.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  </head>
+  <body>
+    <div class="bg-scene">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+    </div>
+    <div class="grid-overlay"></div>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <img
+            src="blood1.png"
+            alt="BloodBridge"
+            class="sidebar-logo-img"
+            onerror="this.style.display = 'none'"
+          />
+          <span class="sidebar-logo-text">Donor &amp; Recipient</span>
+        </div>
+        <button class="sidebar-close" id="sidebarClose">✕</button>
+      </div>
+      <div class="sidebar-section-label">Main</div>
+      <nav class="sidebar-nav">
+        <a href="#" class="sidebar-link active" data-section="dashboard"
+          ><span class="sidebar-icon">📊</span><span>Dashboard</span></a
+        >
+        <a href="#" class="sidebar-link" data-section="donations"
+          ><span class="sidebar-icon">🩸</span><span>My Donations</span></a
+        >
+        <a href="#" class="sidebar-link" data-section="myRequests"
+          ><span class="sidebar-icon">🚨</span><span>My Requests</span></a
+        >
+        <a href="#" class="sidebar-link" data-section="emergency"
+          ><span class="sidebar-icon">🆘</span
+          ><span>Emergency Requests</span></a
+        >
+        <a href="#" class="sidebar-link" data-section="delivery"
+          ><span class="sidebar-icon">🚁</span><span>Drone Tracking</span></a
+        >
+        <a href="#" class="sidebar-link" data-section="approvals"
+          ><span class="sidebar-icon">📋</span><span>Approvals</span></a
+        >
+        <a href="#" class="sidebar-link" data-section="badges"
+          ><span class="sidebar-icon">🏅</span
+          ><span>Badges &amp; Rewards</span></a
+        >
+      </nav>
+      <div class="sidebar-section-label">Tools</div>
+      <nav class="sidebar-nav">
+        <a href="#" class="sidebar-link" data-section="newborn"
+          ><span class="sidebar-icon">👶</span><span>Newborn Predictor</span></a
+        >
+        <a href="#" class="sidebar-link" data-section="ratings"
+          ><span class="sidebar-icon">⭐</span><span>Rate Blood Bank</span></a
+        >
+      </nav>
+      <div class="sidebar-section-label">Account</div>
+      <nav class="sidebar-nav">
+        <a href="#" class="sidebar-link" data-section="profile"
+          ><span class="sidebar-icon">👤</span><span>Profile</span></a
+        >
+        <a href="#" class="sidebar-link" data-section="settings"
+          ><span class="sidebar-icon">⚙️</span><span>Settings</span></a
+        >
+        <a href="#" class="sidebar-link" data-section="help"
+          ><span class="sidebar-icon">❓</span><span>Help Center</span></a
+        >
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-avatar" id="sidebarAvatar">--</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name" id="sidebarName">Loading...</div>
+            <div class="sidebar-user-role" id="sidebarRole">
+              Donor &amp; Recipient
+            </div>
+            </div>
+          </div>
+        </div>
+    </aside>
+
+    <!-- MAIN WRAPPER -->
+    <div class="main-wrapper" id="mainWrapper">
+      <nav class="topnav">
+        <div class="topnav-left">
+          <button
+            class="hamburger"
+            id="hamburger"
+            aria-label="Toggle sidebar"
+            aria-expanded="false"
+          >
+            <span></span><span></span><span></span>
+          </button>
+          <div class="topnav-brand">
+            <img
+              src="blood1.png"
+              alt="BloodBridge"
+              class="topnav-logo-img"
+              onerror="this.style.display = 'none'"
+            />
+            <span class="topnav-title">Donor &amp; Recipient Dashboard</span>
+          </div>
+        </div>
+        <div class="topnav-right">
+          <div class="theme-toggle" id="themeToggle" role="button" tabindex="0">
+            <div class="toggle-track">
+              <span class="toggle-icon moon">🌙</span
+              ><span class="toggle-icon sun">☀️</span>
+              <div class="toggle-thumb"></div>
+            </div>
+          </div>
+          <div class="donor-quick-badge">
+            <span class="trust-badge"
+              >⭐ <span id="navTrustScore">--</span> Trust</span
+            >
+          </div>
+          <button
+            class="logout-btn"
+            onclick="localStorage.removeItem('bbDrPage');window.location.href='login.html'"
+          >
+            Logout
+          </button>
+        </div>
+      </nav>
+
+      <main class="content" id="pageContent">
+        <!-- ══════════════════ DASHBOARD ══════════════════ -->
+        <div class="dashboard-view active" id="dashboardView">
+          <div class="greeting-section reveal">
+            <div class="greeting-text">
+              <h1>
+                Welcome back, <span class="donor-name" id="greetName">...</span>
+              </h1>
+              <p class="donor-id">
+                ID: <span id="userIdSpan">...</span> ·
+                <span id="userRoleSpan">Donor &amp; Recipient</span> · Member
+                since <span id="memberSinceSpan">...</span>
+              </p>
+            </div>
+            <div class="eligibility-pill glass-card" id="eligibilityPill">
+              <span class="live-dot"></span> Next donation:
+              <strong id="nextEligibleSpan">...</strong>
+            </div>
+          </div>
+
+          <!-- Admin Warning Banner -->
+          <div id="adminWarningBanner" style="display:none;margin-bottom:18px;"></div>
+
+                    <!-- Cooldown Timer Widget -->
+          <div class="cooldown-widget glass-card" id="cooldownWidget" style="display:none;">
+            <div class="cooldown-inner">
+              <div class="cooldown-progress-ring">
+                <svg viewBox="0 0 120 120" class="cooldown-svg">
+                  <circle cx="60" cy="60" r="52" class="cooldown-bg-ring" />
+                  <circle cx="60" cy="60" r="52" class="cooldown-fg-ring" id="cooldownFgRing" />
+                </svg>
+                <div class="cooldown-progress-text">
+                  <span class="cooldown-percent" id="cooldownPercent">0%</span>
+                </div>
+              </div>
+              <div class="cooldown-info">
+                <div class="cooldown-label">Donation Cooldown</div>
+                <div class="cooldown-timer">
+                  <span class="cooldown-days" id="cooldownDays">0</span>
+                  <span class="cooldown-unit">days</span>
+                </div>
+                <div class="cooldown-sub" id="cooldownSub">You can donate again on <strong>—</strong></div>
+                <div class="cooldown-bar-track">
+                  <div class="cooldown-bar-fill" id="cooldownBarFill"></div>
+                </div>
+                <div class="cooldown-bar-labels">
+                  <span id="cooldownLastDonation">Last donation</span>
+                  <span id="cooldownBarPct">0%</span>
+                  <span>Ready to donate</span>
+                </div>
+                <div class="cooldown-countdown" id="cooldownCountdown">--:--:--</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Unified Stats Grid -->
+          <div class="stats-grid reveal">
+            <div class="stat-card glass-card">
+              <div class="stat-icon">🧬</div>
+              <div class="stat-info">
+                <span class="stat-value" id="statBloodGroup">--</span
+                ><span class="stat-label">Blood Group</span>
+              </div>
+            </div>
+            <div class="stat-card glass-card">
+              <div class="stat-icon">🩸</div>
+              <div class="stat-info">
+                <span class="stat-value" id="statTotalDonations">0</span
+                ><span class="stat-label">Donations</span>
+              </div>
+            </div>
+            <div class="stat-card glass-card">
+              <div class="stat-icon">🏆</div>
+              <div class="stat-info">
+                <span class="stat-value" id="statTrustScore">0</span
+                ><span class="stat-label">Trust Score</span>
+              </div>
+            </div>
+            <div class="stat-card glass-card">
+              <div class="stat-icon">🚨</div>
+              <div class="stat-info">
+                <span class="stat-value" id="statActiveRequests">0</span
+                ><span class="stat-label">Active Requests</span>
+              </div>
+            </div>
+            <div class="stat-card glass-card">
+              <div class="stat-icon">❤️</div>
+              <div class="stat-info">
+                <span class="stat-value" id="statLivesSaved">0</span
+                ><span class="stat-label">Lives Saved</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Health Alert -->
+          <div
+            class="health-alert-card glass-card reveal"
+            id="dashHealthAlert"
+            style="display: none"
+          >
+            <div class="alert-icon pulse-icon">⚠️</div>
+            <div class="alert-content">
+              <div class="alert-title" id="dashAlertTitle">
+                Haemoglobin alert
+              </div>
+              <p class="alert-message" id="dashAlertMsg"></p>
+            </div>
+            <div class="alert-action">
+              <button class="btn-small" id="viewHealthTipsBtn">
+                View Tips
+              </button>
+            </div>
+          </div>
+
+          <!-- ═══════════ THALASSEMIA COUPLE ALERT — REDESIGNED ═══════════ -->
+          <div class="thal-couple-card glass-card reveal" id="dashThalassemiaAlert">
+            <div class="thal-couple-header">
+              <div class="thal-couple-icon-wrap">
+                <span class="thal-couple-icon">🧬</span>
+                <span class="thal-couple-badge">Genetic</span>
+              </div>
+              <div class="thal-couple-title-group">
+                <div class="thal-couple-title" id="dashThalassemiaTitle">Thalassemia Couple Alert</div>
+                <div class="thal-couple-subtitle" id="dashThalSubtitle">You & your partner are both carriers</div>
+              </div>
+              <div class="thal-risk-badge" id="thalRiskBadge">25% Risk</div>
+            </div>
+
+            <div class="thal-couple-body" id="thalPunnettWrap" style="display:none">
+              <div class="thal-couple-desc" id="dashThalassemiaMsg"></div>
+              <div id="thalPunnettGrid"></div>
+              <div id="thalRiskStrip"></div>
+              <div class="thal-counsel-notice" id="thalCounselNotice">
+                <span class="tcn-icon">🩺</span>
+                <span class="tcn-text">Genetic counseling is strongly recommended. A specialist can explain your options and help plan for a healthy pregnancy.</span>
+              </div>
+            </div>
+
+            <div class="thal-couple-footer">
+              <button class="btn-tiny" id="viewThalassemiaDetailsBtn"
+                style="background:rgba(192,22,44,0.15);border:1.5px solid rgba(192,22,44,0.5);color:var(--text-primary,#fff);padding:7px 16px;border-radius:20px;font-size:.78rem;font-weight:600;cursor:pointer;font-family:Outfit,sans-serif;">
+                Learn About Genetic Counseling →
+              </button>
+              <button class="btn-tiny" id="downloadThalReportBtn"
+                style="background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.2);color:var(--text-primary,#fff);padding:7px 16px;border-radius:20px;font-size:.78rem;font-weight:600;cursor:pointer;font-family:Outfit,sans-serif;margin-left:8px;">
+                📄 Download Report
+              </button>
+            </div>
+          </div>
+
+          <!-- Delivery Alert -->
+          <div class="delivery-alert-card glass-card reveal" id="dashDeliveryAlert" style="display: none">
+            <div class="delivery-icon">🚁</div>
+            <div class="delivery-content">
+              <div class="delivery-title">
+                🩸 Blood bag assigned —
+                <span class="delivery-highlight" id="deliveryETA">calculating...</span>
+              </div>
+              <p class="delivery-message" id="deliveryAlertMsg">Your approved blood unit is en route.</p>
+            </div>
+            <div class="delivery-action">
+              <button class="btn-small" id="trackDeliveryBtn">🚁 Track Live</button>
+            </div>
+          </div>
+
+          <!-- Emergency Alert -->
+          <div class="emergency-alert-card glass-card reveal" id="dashEmergencyAlert" style="display: none">
+            <div class="emergency-alert-icon pulse-icon" style="font-size:1.8rem;">🚨</div>
+            <div class="emergency-alert-content">
+              <div class="emergency-alert-title" id="dashEmergAlertTitle">Active Emergency Requests</div>
+              <p class="emergency-alert-message" id="dashEmergAlertMsg"></p>
+            </div>
+            <div class="emergency-alert-actions">
+              <button class="btn-small" id="viewEmergRequestsBtn">📋 View Requests</button>
+              <button class="btn-small emergency-voice-btn" id="dashEmergVoiceBtn">🎤 Voice Request</button>
+            </div>
+          </div>
+
+          <!-- Actions Grid -->
+          <div class="section-header reveal">
+            <h2>Actions &amp; Tools</h2>
+            <p>Manage your donation journey, health, and blood requests</p>
+          </div>
+          <div class="actions-grid reveal">
+            <div class="action-card glass-card" data-action="submitRequest">
+              <div class="action-icon">📝🩸</div>
+              <h3>Submit Blood Request</h3>
+              <p>Request blood units when you need them</p>
+            </div>
+            <div class="action-card glass-card" data-action="promise">
+              <div class="action-icon">📅❤️</div>
+              <h3>Make Donation Promise</h3>
+              <p>Schedule your next lifesaving commitment</p>
+            </div>
+            <div class="action-card glass-card" data-action="emergencyVoice">
+              <div class="action-icon">🎤🚨</div>
+              <h3>Emergency Voice Request</h3>
+              <p>Speak to dispatch immediate help</p>
+            </div>
+            <div class="action-card glass-card" data-action="droneDelivery">
+              <div class="action-icon">🚁📍</div>
+              <h3>Track Drone Delivery</h3>
+              <p>Live GPS tracking of shipments</p>
+            </div>
+            <div class="action-card glass-card" data-action="newbornPrediction">
+              <div class="action-icon">👶🧬</div>
+              <h3>Newborn Predictor</h3>
+              <p>Predict baby's blood type</p>
+            </div>
+            <div class="action-card glass-card" data-action="rateBank">
+              <div class="action-icon">⭐🏥</div>
+              <h3>Rate a Blood Bank</h3>
+              <p>Share your experience</p>
+            </div>
+          </div>
+
+          <!-- Two col: Recent Donations + Recent Requests -->
+          <div class="two-col-grid reveal">
+            <div class="glass-card table-card">
+              <div class="card-header">
+                <div class="card-title">
+                  <span class="card-title-icon">📜</span> Recent Donations
+                </div>
+                <button class="btn-ghost-sm" data-nav="donations">
+                  View All
+                </button>
+              </div>
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Blood Bank</th>
+                      <th>Units</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dashDonationsBody">
+                    <tr>
+                      <td
+                        colspan="4"
+                        style="
+                          text-align: center;
+                          color: var(--text-muted);
+                          padding: 20px;
+                        "
+                      >
+                        Loading...
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="glass-card table-card">
+              <div class="card-header">
+                <div class="card-title">
+                  <span class="card-title-icon">🚨</span> Recent Requests
+                </div>
+                <button class="btn-ghost-sm" data-nav="myRequests">
+                  View All
+                </button>
+              </div>
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Date</th>
+                      <th>Units</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dashRequestsBody">
+                    <tr>
+                      <td
+                        colspan="4"
+                        style="
+                          text-align: center;
+                          color: var(--text-muted);
+                          padding: 20px;
+                        "
+                      >
+                        Loading...
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Two col: Approval Queue + Badges -->
+          <div class="two-col-grid reveal" style="margin-top: 20px">
+            <div class="glass-card alerts-card approval-queue">
+              <div class="card-header">
+                <div class="card-title">
+                  <span class="card-title-icon">⏳</span> Approval Queue
+                </div>
+                <div class="live-pill small">
+                  <span class="dot"></span> Live
+                </div>
+              </div>
+              <div class="alert-list" id="dashApprovalList">
+                <div
+                  style="
+                    padding: 14px;
+                    color: var(--text-muted);
+                    font-size: 0.82rem;
+                    text-align: center;
+                  "
+                >
+                  Loading...
+                </div>
+              </div>
+              <div class="card-footer">
+                <a href="#" class="card-footer-link" data-nav="approvals"
+                  >View all approvals →</a
+                >
+              </div>
+            </div>
+            <div class="dash-bdg-card">
+              <div class="dash-bdg-header">
+                <div class="dash-bdg-hleft">
+                  <div class="dash-bdg-icon-wrap">
+                    <span class="dash-bdg-emoji">🏅</span>
+                  </div>
+                  <div>
+                    <div class="dash-bdg-title">Badges</div>
+                    <div class="dash-bdg-sub" id="dashBdgSub">Loading...</div>
+                  </div>
+                </div>
+                <div class="dash-bdg-count" id="dashBdgCount">0</div>
+              </div>
+              <div class="dash-bdg-body">
+                <div class="dash-bdg-mini-grid" id="dashBadgesGrid"></div>
+              </div>
+              <div class="dash-bdg-footer">
+                <span class="dash-bdg-note" id="dashMilestoneNote">Next milestone: loading...</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-sub);"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Drone Preview + Newborn Predictor -->
+          <div class="two-col-grid reveal" style="margin-top: 20px">
+            <div
+              class="glass-card dash-drone-card"
+              id="dashDronePreview"
+              style="display: none"
+            >
+              <div class="dash-drone-top">
+                <div class="dash-drone-icon-wrap">
+                  <div class="dash-drone-icon-inner">
+                    <span class="dash-drone-emoji">🚁</span>
+                    <span class="dash-drone-ring"></span>
+                  </div>
+                </div>
+                <div class="dash-drone-top-info">
+                  <div class="dash-drone-top-title">Live Drone Delivery</div>
+                  <div class="dash-drone-top-id">
+                    Request <span id="dronePreviewReqId">#--</span>
+                    <span class="dash-drone-bullet">·</span>
+                    <span class="dash-drone-code" id="dashDroneCode">BB-DR</span>
+                  </div>
+                </div>
+                <div class="dash-drone-live-badge">
+                  <span class="dash-drone-dot"></span> In Transit
+                </div>
+              </div>
+              <div class="dash-drone-path">
+                <div class="dash-drone-steps" id="dashDroneSteps">
+                  <div class="dds-item completed" data-idx="0">
+                    <div class="dds-dot"></div>
+                    <div class="dds-label">Blood Bank</div>
+                  </div>
+                  <div class="dds-connector"><div class="dds-conn-fill" id="ddsConnFill1"></div></div>
+                  <div class="dds-item active" data-idx="1">
+                    <div class="dds-dot"></div>
+                    <div class="dds-label">En Route</div>
+                  </div>
+                  <div class="dds-connector"><div class="dds-conn-fill" id="ddsConnFill2"></div></div>
+                  <div class="dds-item" data-idx="2">
+                    <div class="dds-dot"></div>
+                    <div class="dds-label">Hospital</div>
+                  </div>
+                  <div class="dds-connector"><div class="dds-conn-fill" id="ddsConnFill3"></div></div>
+                  <div class="dds-item" data-idx="3">
+                    <div class="dds-dot"></div>
+                    <div class="dds-label">Delivered</div>
+                  </div>
+                </div>
+                <div class="dash-drone-progress">
+                  <div class="dash-drone-progress-track">
+                    <div class="dash-drone-progress-fill" id="droneProgressFill" style="width: 0%"></div>
+                  </div>
+                  <span class="dash-drone-progress-pct" id="dashDronePct">0%</span>
+                </div>
+              </div>
+              <div class="dash-drone-footer">
+                <div class="dash-drone-stats">
+                  <div class="dash-drone-stat">
+                    <span class="dds-label">ETA</span>
+                    <span class="dds-value" id="droneETA">--</span>
+                  </div>
+                  <div class="dash-drone-stat">
+                    <span class="dds-label">Battery</span>
+                    <span class="dds-value" id="dashDroneBattery">--%</span>
+                  </div>
+                  <div class="dash-drone-stat">
+                    <span class="dds-label">Speed</span>
+                    <span class="dds-value" id="dashDroneSpeed">--</span>
+                  </div>
+                </div>
+                <button class="dash-drone-btn" data-nav="delivery">
+                  Open Full Tracker
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="glass-card dash-nb-card">
+              <div class="dash-nb-header">
+                <div class="dash-nb-header-left">
+                  <div class="dash-nb-icon-wrap">
+                    <span class="dash-nb-icon">👶</span>
+                  </div>
+                  <div>
+                    <div class="dash-nb-title">Newborn Blood Predictor</div>
+                    <div class="dash-nb-sub">Predict your baby's blood type</div>
+                  </div>
+                </div>
+              </div>
+              <div class="dash-nb-body">
+                <div class="dash-nb-pickers">
+                  <div class="dash-nb-picker">
+                    <span class="dash-nb-picker-label">👩 Mother</span>
+                    <div class="dash-nb-select-wrap">
+                      <select id="dashNbMother" class="dash-nb-select">
+                        <option value="A+">A+</option>
+                        <option value="A-">A−</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B−</option>
+                        <option value="O+" selected>O+</option>
+                        <option value="O-">O−</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB−</option>
+                      </select>
+                      <span class="dash-nb-select-arrow">▼</span>
+                    </div>
+                  </div>
+                  <div class="dash-nb-picker">
+                    <span class="dash-nb-picker-label">👨 Father</span>
+                    <div class="dash-nb-select-wrap">
+                      <select id="dashNbFather" class="dash-nb-select">
+                        <option value="A+">A+</option>
+                        <option value="A-">A−</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B−</option>
+                        <option value="O+" selected>O+</option>
+                        <option value="O-">O−</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB−</option>
+                      </select>
+                      <span class="dash-nb-select-arrow">▼</span>
+                    </div>
+                  </div>
+                  <button class="dash-nb-predict-btn" id="dashNbPredictBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    Predict
+                  </button>
+                </div>
+                <div class="dash-nb-result" id="dashNbResult" style="display:none;">
+                  <div class="dash-nb-result-divider"></div>
+                  <div class="dash-nb-result-content" id="dashNbResultContent"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="footer-note reveal">
+            <p id="dashFooterNote">❤️ Thank you for being a hero.</p>
+          </div>
+        </div>
+
+        <!-- ══════════════════ MY DONATIONS ══════════════════ -->
+        <div class="dashboard-view" id="donationsView">
+          <div class="section-header reveal">
+            <h2>My Donations</h2>
+            <p>Complete record of all your lifesaving donations</p>
+          </div>
+          <div class="donations-mini-stats reveal">
+            <div class="mini-stat-card glass-card">
+              <div
+                class="mini-stat-icon"
+                style="background: rgba(192, 22, 44, 0.15)"
+              >
+                🩸
+              </div>
+              <div>
+                <div class="mini-stat-val" id="donMiniTotal">--</div>
+                <div class="mini-stat-lbl">Total Donations</div>
+              </div>
+            </div>
+            <div class="mini-stat-card glass-card">
+              <div
+                class="mini-stat-icon"
+                style="background: rgba(74, 222, 128, 0.12)"
+              >
+                ❤️
+              </div>
+              <div>
+                <div class="mini-stat-val" id="donMiniLives">--</div>
+                <div class="mini-stat-lbl">Lives Saved</div>
+              </div>
+            </div>
+            <div class="mini-stat-card glass-card">
+              <div
+                class="mini-stat-icon"
+                style="background: rgba(251, 191, 36, 0.12)"
+              >
+                🗓️
+              </div>
+              <div>
+                <div class="mini-stat-val" id="donMiniLast">--</div>
+                <div class="mini-stat-lbl">Last Donation</div>
+              </div>
+            </div>
+            <div class="mini-stat-card glass-card">
+              <div
+                class="mini-stat-icon"
+                style="background: rgba(99, 102, 241, 0.12)"
+              >
+                ⏭️
+              </div>
+              <div>
+                <div class="mini-stat-val" id="donMiniNext">--</div>
+                <div class="mini-stat-lbl">Next Eligible</div>
+              </div>
+            </div>
+          </div>
+          <div class="glass-card table-card reveal" style="margin-top: 24px">
+            <div class="card-header">
+              <div class="card-title">
+                <span class="card-title-icon">📜</span> Complete Donation
+                History
+              </div>
+              <button class="btn-ghost-sm" id="exportHistoryPdfBtn">
+                ⬇ Export PDF
+              </button>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Date</th>
+                    <th>Blood Bank</th>
+                    <th>City</th>
+                    <th>Units</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Certificate</th>
+                  </tr>
+                </thead>
+                <tbody id="donationsTableBody">
+                  <tr>
+                    <td
+                      colspan="8"
+                      style="
+                        text-align: center;
+                        color: var(--text-muted);
+                        padding: 24px;
+                      "
+                    >
+                      Loading...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div
+            class="glass-card reveal"
+            style="padding: 24px; margin-top: 20px"
+          >
+            <div class="card-header">
+              <div class="card-title">
+                <span class="card-title-icon">📅</span> Upcoming Donation Pledge
+              </div>
+              <button class="btn-primary-sm" id="addPledgeBtn">
+                + Add Pledge
+              </button>
+            </div>
+            <div id="pledgeContainer">
+              <p style="color: var(--text-muted); font-size: 0.84rem">
+                Loading pledges...
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════ MY REQUESTS ══════════════════ -->
+        <div class="dashboard-view" id="myRequestsView">
+          <div class="section-header reveal">
+            <h2>My Blood Requests</h2>
+            <p>All your current and past blood requests</p>
+          </div>
+          <div
+            class="glass-card reveal"
+            style="
+              display: flex;
+              align-items: flex-end;
+              gap: 16px;
+              padding: 16px 20px;
+              margin-bottom: 20px;
+              flex-wrap: wrap;
+            "
+          >
+            <div style="display: flex; flex-direction: column; gap: 6px">
+              <label
+                style="
+                  font-size: 0.72rem;
+                  font-weight: 600;
+                  color: var(--text-muted);
+                  text-transform: uppercase;
+                  letter-spacing: 0.06em;
+                "
+                >Status</label
+              >
+              <select
+                id="reqFilterStatus"
+                class="filter-select"
+                style="min-width: 160px"
+              >
+                <option value="all">All</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="in_transit">In Transit</option>
+                <option value="completed">Completed</option>
+                <option value="rejected">Rejected</option>
+              </select>
+            </div>
+            <button
+              id="newRequestBtn"
+              style="
+                background: linear-gradient(135deg, #c0162c, #8b0020);
+                color: #fff;
+                border: none;
+                padding: 9px 18px;
+                border-radius: 40px;
+                font-size: 0.82rem;
+                font-weight: 600;
+                cursor: pointer;
+                font-family: Outfit, sans-serif;
+              "
+            >
+              + New Request
+            </button>
+            <button
+              id="myVoiceReqBtn"
+              style="
+                background: linear-gradient(135deg, #7c3aed, #5b21b6);
+                color: #fff;
+                border: none;
+                padding: 9px 18px;
+                border-radius: 40px;
+                font-size: 0.82rem;
+                font-weight: 600;
+                cursor: pointer;
+                font-family: Outfit, sans-serif;
+              "
+            >
+              🎤 Voice Request
+            </button>
+          </div>
+          <div class="glass-card table-card reveal">
+            <div class="card-header">
+              <div class="card-title">
+                <span class="card-title-icon">🩸</span> Request History
+              </div>
+              <button class="btn-ghost-sm" id="exportRequestsPdfBtn">⬇ Export PDF</button>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Request ID</th>
+                    <th>Date</th>
+                    <th>Blood Group</th>
+                    <th>Units</th>
+                    <th>Urgency</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="requestsTableBody">
+                  <tr>
+                    <td
+                      colspan="7"
+                      style="
+                        text-align: center;
+                        color: var(--text-muted);
+                        padding: 24px;
+                      "
+                    >
+                      Loading...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════ HEALTH ANALYTICS ══════════════════ -->
+        <div class="dashboard-view" id="healthView">
+          <div class="section-header reveal">
+            <h2>Health Analytics</h2>
+            <p>Detailed haemoglobin, iron &amp; wellness trends</p>
+          </div>
+          <div class="health-stats-row reveal">
+            <div class="health-metric-card glass-card">
+              <div class="hm-label">Haemoglobin</div>
+              <div
+                class="hm-value"
+                id="hmHaemoglobinValue"
+                style="color: #f87171"
+              >
+                -- <span class="hm-unit">g/dL</span>
+              </div>
+              <div class="hm-bar">
+                <div
+                  class="hm-fill hm-low"
+                  id="hmHaemoglobinBar"
+                  style="width: 0%"
+                ></div>
+              </div>
+              <div class="hm-note" id="hmHaemoglobinNote">Loading...</div>
+            </div>
+            <div class="health-metric-card glass-card">
+              <div class="hm-label">Blood Pressure</div>
+              <div class="hm-value" id="hmBPValue" style="color: #4ade80">
+                -- <span class="hm-unit">mmHg</span>
+              </div>
+              <div class="hm-bar">
+                <div
+                  class="hm-fill hm-good"
+                  id="hmBPBar"
+                  style="width: 0%"
+                ></div>
+              </div>
+              <div class="hm-note" id="hmBPNote">Loading...</div>
+            </div>
+            <div class="health-metric-card glass-card">
+              <div class="hm-label">Pulse</div>
+              <div class="hm-value" id="hmPulseValue" style="color: #4ade80">
+                -- <span class="hm-unit">bpm</span>
+              </div>
+              <div class="hm-bar">
+                <div
+                  class="hm-fill hm-good"
+                  id="hmPulseBar"
+                  style="width: 0%"
+                ></div>
+              </div>
+              <div class="hm-note" id="hmPulseNote">Loading...</div>
+            </div>
+            <div class="health-metric-card glass-card">
+              <div class="hm-label">Weight</div>
+              <div class="hm-value" id="hmWeightValue" style="color: #4ade80">
+                -- <span class="hm-unit">kg</span>
+              </div>
+              <div class="hm-bar">
+                <div
+                  class="hm-fill hm-good"
+                  id="hmWeightBar"
+                  style="width: 0%"
+                ></div>
+              </div>
+              <div class="hm-note" id="hmWeightNote">Loading...</div>
+            </div>
+          </div>
+          <div class="two-col-grid reveal" style="margin-top: 24px">
+            <div class="glass-card" style="padding: 24px">
+              <div class="card-header">
+                <div class="card-title">
+                  <span class="card-title-icon">📈</span> Haemoglobin Trend
+                </div>
+              </div>
+              <div class="chart-container">
+                <div class="chart-bars" id="hbChartBars">
+                  <div
+                    style="
+                      color: var(--text-muted);
+                      font-size: 0.82rem;
+                      padding: 20px;
+                      text-align: center;
+                      width: 100%;
+                    "
+                  >
+                    Loading chart...
+                  </div>
+                </div>
+                <div class="chart-note" id="hbChartNote"></div>
+              </div>
+            </div>
+            <div class="glass-card" style="padding: 24px">
+              <div class="card-header">
+                <div class="card-title">
+                  <span class="card-title-icon">🥗</span> Health Recommendations
+                </div>
+              </div>
+              <div class="health-tips-list">
+                <div class="health-tip">
+                  <div class="tip-icon">🥩</div>
+                  <div class="tip-body">
+                    <div class="tip-title">Iron-rich foods</div>
+                    <div class="tip-desc">
+                      Lean red meat, spinach, lentils, fortified cereals — daily
+                    </div>
+                  </div>
+                </div>
+                <div class="health-tip">
+                  <div class="tip-icon">🍊</div>
+                  <div class="tip-body">
+                    <div class="tip-title">Vitamin C boost</div>
+                    <div class="tip-desc">
+                      Take citrus with iron foods — improves absorption by 2×
+                    </div>
+                  </div>
+                </div>
+                <div class="health-tip">
+                  <div class="tip-icon">💧</div>
+                  <div class="tip-body">
+                    <div class="tip-title">Hydration</div>
+                    <div class="tip-desc">
+                      Drink 2L water daily, especially 24h before donation
+                    </div>
+                  </div>
+                </div>
+                <div class="health-tip">
+                  <div class="tip-icon">🚫</div>
+                  <div class="tip-body">
+                    <div class="tip-title">Avoid tea/coffee</div>
+                    <div class="tip-desc">
+                      Tannins block iron absorption — avoid 1 hour before meals
+                    </div>
+                  </div>
+                </div>
+                <div class="health-tip">
+                  <div class="tip-icon">🩺</div>
+                  <div class="tip-body">
+                    <div class="tip-title">Consult physician</div>
+                    <div class="tip-desc">
+                      Haemoglobin below 12.5 warrants a professional review
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="glass-card table-card reveal" style="margin-top: 20px">
+            <div class="card-header">
+              <div class="card-title">
+                <span class="card-title-icon">🔬</span> Lab Results History
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Haemoglobin</th>
+                    <th>Blood Pressure</th>
+                    <th>Pulse</th>
+                    <th>Weight</th>
+                    <th>Eligibility</th>
+                  </tr>
+                </thead>
+                <tbody id="labHistoryBody">
+                  <tr>
+                    <td
+                      colspan="6"
+                      style="
+                        text-align: center;
+                        color: var(--text-muted);
+                        padding: 20px;
+                      "
+                    >
+                      Loading...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div
+            class="glass-card reveal"
+            style="padding: 24px; margin-top: 20px"
+          >
+            <div class="card-header">
+              <div class="card-title">
+                <span class="card-title-icon">🧪</span> Antibody Profile
+              </div>
+            </div>
+            <div id="antibodyList">
+              <p style="color: var(--text-muted); font-size: 0.82rem">
+                Loading antibody data...
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════ EMERGENCY REQUESTS — PREMIUM ══════════════════ -->
+        <div class="dashboard-view" id="emergencyView">
+          <div class="section-header reveal emergency-view-header">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;">
+              <div>
+                <h2>🚨 Emergency Blood Requests</h2>
+                <p id="emergencySubtitle" style="margin-top:4px;">Active emergency requests matching your blood type — respond quickly to save lives</p>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                <span class="emergency-counter-pill" id="emergencyCounter">🆘 0 active</span>
+                <div class="live-pill"><span class="dot"></span> Live</div>
+              </div>
+            </div>
+          </div>
+          <div class="filter-bar glass-card reveal" style="background:linear-gradient(135deg,var(--glass-bg),rgba(239,68,68,0.03));border-color:rgba(239,68,68,0.08);">
+            <div class="filter-group">
+              <label>🩸 Blood Type</label>
+              <select class="filter-select" id="filterBloodType">
+                <option value="all">All Types</option>
+                <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+                <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label>⚡ Urgency</label>
+              <select class="filter-select" id="filterUrgency">
+                <option value="all">All</option>
+                <option value="urgent">Urgent</option>
+                <option value="emergency">Emergency</option>
+                <option value="normal">Normal</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label>📍 Division</label>
+              <div class="division-select" id="divisionSelect">
+                <div class="ds-trigger" id="dsTrigger">
+                  <span id="dsLabel">All Divisions</span>
+                  <svg class="ds-chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+                <select id="filterCity" style="display:none;"><option value="all">All Divisions</option></select>
+              </div>
+            </div>
+            <button class="btn-ghost-sm" id="refreshEmergencyBtn" style="margin-left:auto;">🔄 Refresh</button>
+            <button class="btn-ghost-sm" id="exportEmergencyPdfBtn">📄 Export PDF</button>
+          </div>
+          <div id="emergencyListContainer">
+            <div
+              style="
+                padding: 28px;
+                text-align: center;
+                color: var(--text-muted);
+              "
+            >
+              Loading requests...
+            </div>
+          </div>
+          <div class="glass-card table-card reveal" style="margin-top: 24px">
+            <div class="card-header">
+              <div class="card-title">
+                <span class="card-title-icon">📋</span> My Response History
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Request</th>
+                    <th>Requester</th>
+                    <th>Group</th>
+                    <th>Urgency</th>
+                    <th>Date</th>
+                    <th>Pipeline Status</th>
+                  </tr>
+                </thead>
+                <tbody id="myResponsesBody">
+                  <tr>
+                    <td
+                      colspan="6"
+                      style="
+                        text-align: center;
+                        color: var(--text-muted);
+                        padding: 16px;
+                      "
+                    >
+                      Loading...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════ DRONE TRACKING — PREMIUM ══════════════════ -->
+        <div class="dashboard-view" id="deliveryView">
+          <div class="section-header reveal">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;">
+              <div>
+                <h2>🚁 Drone Tracking Center</h2>
+                <p>Live 3D simulation of blood delivery by drone</p>
+              </div>
+              <div id="dtLivePill" class="live-pill" style="display:none;">
+                <span class="dot"></span> <span id="dtLiveStatus">Live</span>
+              </div>
+            </div>
+          </div>
+          <div id="deliveryCardsContainer">
+            <div class="section-loader"><div class="loader-spin"></div>Connecting to drone network...</div>
+          </div>
+        </div>
+
+        <!-- ══════════════════ APPROVALS ══════════════════ -->
+        <div class="dashboard-view" id="approvalsView">
+          <div class="section-header reveal">
+            <h2>Approval Status</h2>
+            <p>Track the approval workflow for your blood requests</p>
+          </div>
+          <div id="approvalsContainer">
+            <div
+              style="
+                padding: 28px;
+                text-align: center;
+                color: var(--text-muted);
+              "
+            >
+              Loading approval data...
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════ BADGES & REWARDS ══════════════════ -->
+        <div class="dashboard-view" id="badgesView">
+          <div class="section-header reveal">
+            <h2>Badges <span style="color:var(--text-muted);font-weight:400;">&amp;</span> Rewards</h2>
+            <p>🎯 Your donations save lives — unlock exclusive rewards as you reach each milestone</p>
+          </div>
+
+          <!-- ════════════════════════════════
+               STATS ROW
+          ════════════════════════════════ -->
+          <div class="bw-stats-row reveal">
+            <div class="bw-stat-card">
+              <div class="bw-stat-icon" style="background:linear-gradient(135deg,rgba(239,68,68,0.15),rgba(239,68,68,0.05));color:#f87171;">🏅</div>
+              <div class="bw-stat-body">
+                <div class="bw-stat-num" id="bwStatBadges">0</div>
+                <div class="bw-stat-label">Badges Earned</div>
+              </div>
+            </div>
+            <div class="bw-stat-card">
+              <div class="bw-stat-icon" style="background:linear-gradient(135deg,rgba(96,165,250,0.15),rgba(96,165,250,0.05));color:#60a5fa;">🩸</div>
+              <div class="bw-stat-body">
+                <div class="bw-stat-num" id="bwStatDonations">0</div>
+                <div class="bw-stat-label">Total Donations</div>
+              </div>
+            </div>
+            <div class="bw-stat-card">
+              <div class="bw-stat-icon" style="background:linear-gradient(135deg,rgba(52,211,153,0.15),rgba(52,211,153,0.05));color:#34d399;">⭐</div>
+              <div class="bw-stat-body">
+                <div class="bw-stat-num" id="bwStatTrust">0</div>
+                <div class="bw-stat-label">Trust Score</div>
+              </div>
+            </div>
+            <div class="bw-stat-card">
+              <div class="bw-stat-icon" style="background:linear-gradient(135deg,rgba(168,85,247,0.15),rgba(168,85,247,0.05));color:#a78bfa;">🎯</div>
+              <div class="bw-stat-body">
+                <div class="bw-stat-num" id="bwStatNext">—</div>
+                <div class="bw-stat-label">Next Reward At</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ════════════════════════════════
+               MOTIVATIONAL BANNER
+          ════════════════════════════════ -->
+          <div class="bw-banner reveal">
+            <div class="bw-banner-glow"></div>
+            <div class="bw-banner-icon">❤️</div>
+            <div class="bw-banner-text">
+              <div class="bw-banner-title">Your donations are saving lives</div>
+              <div class="bw-banner-sub">Keep going to unlock exciting rewards!</div>
+            </div>
+          </div>
+
+          <!-- ════════════════════════════════
+               REWARDS JOURNEY — 3 FIXED MILESTONES
+          ════════════════════════════════ -->
+          <div class="bw-journey reveal" id="bwJourney">
+            <div class="bw-journey-header">
+              <span class="bw-jh-title">🎁 Rewards Journey</span>
+              <span class="bw-jh-badge">3 Rewards Available</span>
+            </div>
+
+            <!-- Progress tracker -->
+            <div class="bw-journey-tracker" id="bwJourneyTracker">
+              <div class="bw-tracker-top">
+                <span class="bw-tracker-count" id="bwTrackerCount">0 / 10 Donations</span>
+                <span class="bw-tracker-pct" id="bwTrackerPct">0%</span>
+              </div>
+              <div class="bw-tracker-bar">
+                <div class="bw-tracker-fill" id="bwTrackerFill"></div>
+              </div>
+              <div class="bw-tracker-remaining" id="bwTrackerRemaining">Complete your 10th donation to unlock your first reward</div>
+            </div>
+
+            <!-- 3 Milestone cards -->
+            <div class="bw-milestones" id="bwMilestones">
+              <!-- 10 Donations -->
+              <div class="bw-milestone-card" data-milestone="10" id="bwMs10">
+                <div class="bw-ms-glow"></div>
+                <div class="bw-ms-icon-wrap">
+                  <div class="bw-ms-icon">👕</div>
+                </div>
+                <div class="bw-ms-info">
+                  <div class="bw-ms-label">🎽 Exclusive T-Shirt</div>
+                  <div class="bw-ms-donations">10 Donations</div>
+                  <div class="bw-ms-desc">Earn an exclusive Blood Bridge donor t-shirt as a token of gratitude.</div>
+                </div>
+                <div class="bw-ms-action" id="bwMsAction10">
+                  <span class="bw-ms-status-badge bw-ms-locked">🔒 Locked</span>
+                </div>
+              </div>
+
+              <!-- 20 Donations -->
+              <div class="bw-milestone-card" data-milestone="20" id="bwMs20">
+                <div class="bw-ms-glow"></div>
+                <div class="bw-ms-icon-wrap">
+                  <div class="bw-ms-icon">🎟️</div>
+                </div>
+                <div class="bw-ms-info">
+                  <div class="bw-ms-label">🎟️ 10% Discount Coupon</div>
+                  <div class="bw-ms-donations">20 Donations</div>
+                  <div class="bw-ms-desc">Receive a 10% discount coupon valid for medical tests at any partner hospital.</div>
+                </div>
+                <div class="bw-ms-action" id="bwMsAction20">
+                  <span class="bw-ms-status-badge bw-ms-locked">🔒 Locked</span>
+                </div>
+              </div>
+
+              <!-- 40 Donations -->
+              <div class="bw-milestone-card" data-milestone="40" id="bwMs40">
+                <div class="bw-ms-glow"></div>
+                <div class="bw-ms-icon-wrap">
+                  <div class="bw-ms-icon">🏆</div>
+                </div>
+                <div class="bw-ms-info">
+                  <div class="bw-ms-label">🏆 25% Discount Coupon</div>
+                  <div class="bw-ms-donations">40 Donations</div>
+                  <div class="bw-ms-desc">Receive a 25% discount coupon valid for medical tests at any partner hospital.</div>
+                </div>
+                <div class="bw-ms-action" id="bwMsAction40">
+                  <span class="bw-ms-status-badge bw-ms-locked">🔒 Locked</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ════════════════════════════════
+               ACHIEVEMENT BADGES
+          ════════════════════════════════ -->
+          <div class="bw-badges-section reveal">
+            <div class="bw-bs-header">
+              <div class="bw-bs-left">
+                <span class="bw-bs-icon" style="background:linear-gradient(135deg,rgba(74,222,128,0.15),rgba(74,222,128,0.05));color:#4ade80;">🏅</span>
+                <div>
+                  <div class="bw-bs-title">Achievement Badges</div>
+                  <div class="bw-bs-sub" id="bwBsSub">0 of 5 badges unlocked</div>
+                </div>
+              </div>
+            </div>
+            <div class="bw-badge-grid" id="bwBadgeGrid">
+              <div style="color:var(--text-muted);font-size:.85rem;text-align:center;padding:24px;">Loading badges...</div>
+            </div>
+          </div>
+
+          <!-- ════════════════════════════════
+               REDEMPTION HISTORY
+          ════════════════════════════════ -->
+          <div class="bw-history reveal">
+            <div class="bw-history-header">
+              <span class="bw-h-title">🔄 Redemption History</span>
+              <span class="bw-h-count" id="bwHCount">0 redeemed</span>
+            </div>
+            <div class="bw-history-list" id="bwHistoryList">
+              <div style="color:var(--text-muted);font-size:.85rem;text-align:center;padding:24px;">No rewards redeemed yet.</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ══════════════════ NEWBORN PREDICTOR ══════════════════ -->
+        <div class="dashboard-view" id="newbornView">
+          <div class="section-header reveal">
+            <h2>Newborn Blood Group Predictor</h2>
+            <p>
+              Predict your baby's possible blood type based on parents' blood
+              groups using real Mendelian genetics
+            </p>
+          </div>
+
+          <div class="nb-layout">
+            <!-- Left: Inputs -->
+            <div class="glass-card nb-input-card reveal">
+              <div class="nb-card-heading">
+                <span class="nb-head-icon">🧬</span>
+                <span>Parent Blood Groups</span>
+              </div>
+
+              <div class="nb-parents-grid">
+                <div class="nb-parent-col">
+                  <div class="nb-parent-label">
+                    <span class="nb-label-icon">👩</span>
+                    <span>Mother</span>
+                  </div>
+                  <div class="nb-bg-select-wrap">
+                    <select id="nbMotherBG" class="nb-bg-select">
+                      <option value="A+">A+</option>
+                      <option value="A-">A−</option>
+                      <option value="B+">B+</option>
+                      <option value="B-">B−</option>
+                      <option value="O+" selected>O+</option>
+                      <option value="O-">O−</option>
+                      <option value="AB+">AB+</option>
+                      <option value="AB-">AB−</option>
+                    </select>
+                    <span class="nb-select-arrow">▼</span>
+                  </div>
+                </div>
+                <div class="nb-parent-col">
+                  <div class="nb-parent-label">
+                    <span class="nb-label-icon">👨</span>
+                    <span>Father</span>
+                  </div>
+                  <div class="nb-bg-select-wrap">
+                    <select id="nbFatherBG" class="nb-bg-select">
+                      <option value="A+">A+</option>
+                      <option value="A-">A−</option>
+                      <option value="B+">B+</option>
+                      <option value="B-">B−</option>
+                      <option value="O+" selected>O+</option>
+                      <option value="O-">O−</option>
+                      <option value="AB+">AB+</option>
+                      <option value="AB-">AB−</option>
+                    </select>
+                    <span class="nb-select-arrow">▼</span>
+                  </div>
+                </div>
+              </div>
+
+              <button id="runPredictionBtn" class="nb-predict-btn">
+                <span class="nb-btn-icon">🔬</span>
+                <span>Predict Blood Group</span>
+              </button>
+            </div>
+
+            <!-- Right: Results -->
+            <div class="nb-results-area" id="predictionResultBox">
+              <div class="nb-results-inner">
+                <div class="nb-results-header">
+                  <span class="nb-results-icon">🩸</span>
+                  <span>Possible Baby Blood Types</span>
+                </div>
+
+                <div id="predictionResultGroups" class="nb-results-list"></div>
+
+                <div id="predictionResultDetail" class="nb-results-detail"></div>
+
+                <div id="predictionPunnett" class="nb-punnett-wrap"></div>
+
+                <div class="nb-how-it-works">
+                  <div class="nb-hiw-title">📖 How Blood Type Inheritance Works</div>
+                  <div class="nb-hiw-grid">
+                    <div class="nb-hiw-item">
+                      <div class="nb-hiw-icon">🧬</div>
+                      <div><strong>ABO System</strong><br><span style="font-size:0.75rem;opacity:0.7;">Each parent contributes one allele. A and B are codominant; O is recessive.</span></div>
+                    </div>
+                    <div class="nb-hiw-item">
+                      <div class="nb-hiw-icon">🅰️🅱️</div>
+                      <div><strong>Possible Genotypes</strong><br><span style="font-size:0.75rem;opacity:0.7;">AA/AO = Type A, BB/BO = Type B, AB = Type AB, OO = Type O</span></div>
+                    </div>
+                    <div class="nb-hiw-item">
+                      <div class="nb-hiw-icon">➕➖</div>
+                      <div><strong>Rh Factor</strong><br><span style="font-size:0.75rem;opacity:0.7;">Rh+ (D antigen present) is dominant over Rh−. Population probability applied.</span></div>
+                    </div>
+                    <div class="nb-hiw-item">
+                      <div class="nb-hiw-icon">⚠️</div>
+                      <div><strong>Medical Disclaimer</strong><br><span style="font-size:0.75rem;opacity:0.7;">This is a genetic probability estimate. Always confirm with medical lab tests.</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════ RATE BLOOD BANK ══════════════════ -->
+        <div class="dashboard-view" id="ratingsView">
+          <div class="section-header reveal">
+            <h2>Rate a Blood Bank</h2>
+            <p>Share your experience to help improve blood bank services</p>
+          </div>
+          <div
+            class="glass-card reveal"
+            style="padding: 28px; max-width: 600px"
+          >
+            <div class="card-title" style="margin-bottom: 20px">
+              <span>⭐</span> Submit a Review
+            </div>
+            <div style="margin-bottom: 16px">
+              <label
+                style="
+                  font-size: 0.78rem;
+                  font-weight: 600;
+                  color: var(--text-muted);
+                  display: block;
+                  margin-bottom: 6px;
+                "
+                >Blood Bank</label
+              >
+              <select
+                id="ratingBankSelect"
+                style="
+                  width: 100%;
+                  background: var(--input-bg);
+                  border: 1px solid var(--input-border);
+                  color: var(--text-primary);
+                  padding: 10px;
+                  border-radius: 10px;
+                  font-family: Outfit, sans-serif;
+                "
+              >
+                <option value="">Loading blood banks...</option>
+              </select>
+            </div>
+            <div style="margin-bottom: 16px">
+              <label
+                style="
+                  font-size: 0.78rem;
+                  font-weight: 600;
+                  color: var(--text-muted);
+                  display: block;
+                  margin-bottom: 8px;
+                "
+                >Rating</label
+              >
+              <div
+                id="starRatingFull"
+                data-rating="5"
+                style="
+                  display: flex;
+                  gap: 8px;
+                  font-size: 1.8rem;
+                  cursor: pointer;
+                "
+              >
+                <span data-star="1">⭐</span><span data-star="2">⭐</span
+                ><span data-star="3">⭐</span><span data-star="4">⭐</span
+                ><span data-star="5">⭐</span>
+              </div>
+              <div
+                id="starRatingLabel"
+                style="
+                  font-size: 0.78rem;
+                  color: var(--text-muted);
+                  margin-top: 4px;
+                "
+              >
+                5 stars — Excellent
+              </div>
+            </div>
+            <div style="margin-bottom: 20px">
+              <label
+                style="
+                  font-size: 0.78rem;
+                  font-weight: 600;
+                  color: var(--text-muted);
+                  display: block;
+                  margin-bottom: 6px;
+                "
+                >Your Feedback</label
+              >
+              <textarea
+                id="ratingFeedbackText"
+                rows="4"
+                placeholder="Share your experience..."
+                style="
+                  width: 100%;
+                  background: var(--input-bg);
+                  border: 1px solid var(--input-border);
+                  border-radius: 10px;
+                  padding: 10px;
+                  color: var(--text-primary);
+                  font-family: Outfit, sans-serif;
+                  resize: vertical;
+                "
+              ></textarea>
+            </div>
+            <button
+              id="submitRatingBtn"
+              style="
+                background: linear-gradient(135deg, #c0162c, #8b0020);
+                color: #fff;
+                border: none;
+                padding: 12px 28px;
+                border-radius: 10px;
+                font-family: Outfit, sans-serif;
+                font-size: 0.9rem;
+                font-weight: 600;
+                cursor: pointer;
+                width: 100%;
+              "
+            >
+              ⭐ Submit Review
+            </button>
+          </div>
+        </div>
+
+        <!-- ══════════════════ PROFILE ══════════════════ -->
+        <div class="dashboard-view" id="profileView">
+          <div class="section-header reveal">
+            <h2>My Profile</h2>
+            <p>View and update your personal, medical, and donor information</p>
+          </div>
+
+          <div class="profile-layout reveal">
+            <!-- ═══ LEFT SIDEBAR CARD ═══ -->
+            <div class="profile-sidebar">
+              <div class="ps-avatar-section">
+                <div class="ps-avatar-ring">
+                  <div class="ps-avatar" id="profileAvatarCircle">--</div>
+                  <label class="ps-avatar-upload" for="avatarInput" title="Change photo">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                  </label>
+                  <input type="file" id="avatarInput" accept="image/*" style="display:none">
+                </div>
+                <div class="ps-name" id="profileNameDisplay">Loading...</div>
+                <div class="ps-role" id="profileRoleDisplay">Donor &amp; Recipient</div>
+                <div class="ps-id" id="profileIdDisplay">ID: --</div>
+              </div>
+
+              <!-- Availability -->
+              <div class="ps-section">
+                <div class="ps-avail-row" id="psAvailRow">
+                  <div class="ps-avail-info">
+                    <span class="avail-dot" id="availDot"></span>
+                    <span id="availabilityText">Available for Donation</span>
+                  </div>
+                  <label class="toggle-compact">
+                    <input type="checkbox" id="availabilityToggle" checked>
+                    <span class="toggle-compact-slider"></span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Quick Stats -->
+              <div class="ps-stats">
+                <div class="ps-stat">
+                  <div class="ps-stat-val" id="pqsDonations">--</div>
+                  <div class="ps-stat-lbl">Donations</div>
+                </div>
+                <div class="ps-stat-divider"></div>
+                <div class="ps-stat">
+                  <div class="ps-stat-val" id="pqsTrust">--</div>
+                  <div class="ps-stat-lbl">Trust</div>
+                </div>
+                <div class="ps-stat-divider"></div>
+                <div class="ps-stat">
+                  <div class="ps-stat-val" id="pqsLives">--</div>
+                  <div class="ps-stat-lbl">Lives Saved</div>
+                </div>
+              </div>
+
+              <!-- Carrier -->
+              <div class="ps-section" id="profileCarrierSection" style="display:none;">
+                <div class="ps-carrier-row" id="carrierStatusRow">
+                  <span class="ps-carrier-icon" id="carrierBadge">⏳</span>
+                  <div>
+                    <div class="ps-carrier-label" id="carrierLabel">Checking...</div>
+                    <div class="ps-carrier-sub">Thalassemia Screening</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Partner -->
+              <div class="ps-section" id="profilePartnerSection">
+                <div class="ps-partner-header">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                  <span>Partner</span>
+                </div>
+                <div class="ps-partner-body">
+                  <div class="ps-partner-status" id="partnerInfoDisplay">
+                    <span id="partnerNameDisplay">Not linked</span>
+                  </div>
+                  <div class="ps-partner-link-form" id="partnerLinkForm">
+                    <input type="email" id="partnerEmailInput" class="ps-input" placeholder="Partner email">
+                    <button class="ps-btn-link" id="sendPartnerReqBtn">Send</button>
+                  </div>
+                  <div class="ps-partner-pending" id="partnerPendingActions" style="display:none;">
+                    <span id="partnerPendingMsg">Request sent — waiting</span>
+                    <button class="ps-btn-ghost" id="cancelPartnerReqBtn">Cancel</button>
+                  </div>
+                  <div class="ps-partner-confirm" id="partnerConfirmActions" style="display:none;">
+                    <div class="ps-confirm-name" id="partnerConfirmName"></div>
+                    <div class="ps-confirm-actions">
+                      <button class="ps-btn-accept" id="confirmPartnerBtn">Accept</button>
+                      <button class="ps-btn-reject" id="rejectPartnerBtn">Reject</button>
+                    </div>
+                  </div>
+                  <div class="ps-partner-linked" id="partnerLinkedActions" style="display:none;">
+                    <span>✅ Linked with <strong id="partnerLinkedName"></strong></span>
+                    <button class="ps-btn-reject" id="unlinkPartnerBtn">Unlink</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ═══ RIGHT FORM CARD ═══ -->
+            <div class="profile-main">
+              <div class="pm-header">
+                <div class="pm-header-left">
+                  <div class="pm-title">Personal Information</div>
+                  <div class="pm-sub">Manage your identity and donor details</div>
+                </div>
+                <div class="pm-actions">
+                  <button class="pm-btn pm-btn-ghost" id="cancelProfileBtn" style="display:none">Cancel</button>
+                  <button class="pm-btn pm-btn-primary" id="editProfileBtn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    Edit
+                  </button>
+                  <button class="pm-btn pm-btn-save" id="saveProfileBtn" style="display:none">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                    Save
+                  </button>
+                </div>
+              </div>
+
+              <form id="profileForm" novalidate>
+                <!-- Section: System -->
+                <div class="pm-fieldset">
+                  <div class="pm-fieldset-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><circle cx="6" cy="6" r=".5" fill="currentColor"/><circle cx="6" cy="18" r=".5" fill="currentColor"/></svg>
+                    System Information
+                  </div>
+                  <div class="pm-grid-2">
+                    <div class="pm-field">
+                      <label class="pm-label">User ID</label>
+                      <div class="pm-value" id="userId">--</div>
+                    </div>
+                    <div class="pm-field">
+                      <label class="pm-label">Account Created</label>
+                      <div class="pm-value" id="createdAt">--</div>
+                    </div>
+                    <div class="pm-field">
+                      <label class="pm-label">Total Donations</label>
+                      <div class="pm-value" id="totalDonations">0</div>
+                    </div>
+                    <div class="pm-field">
+                      <label class="pm-label">Trust Score</label>
+                      <div class="pm-value" id="trustScore">100</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Section: Personal Details -->
+                <div class="pm-fieldset">
+                  <div class="pm-fieldset-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    Personal Details
+                  </div>
+                  <div class="pm-grid-2">
+                    <div class="pm-field">
+                      <label class="pm-label">Full Name <span class="pm-req">*</span></label>
+                      <input type="text" id="profileFullName" name="full_name" class="pm-input" disabled>
+                      <div class="pm-err" id="err-fullname"></div>
+                    </div>
+                    <div class="pm-field">
+                      <label class="pm-label">Email <span class="pm-req">*</span></label>
+                      <input type="email" id="profileEmail" name="email" class="pm-input" disabled>
+                      <div class="pm-err" id="err-email"></div>
+                    </div>
+                    <div class="pm-field">
+                      <label class="pm-label">Phone</label>
+                      <input type="tel" id="profilePhone" name="phone" class="pm-input" disabled>
+                    </div>
+                    <div class="pm-field">
+                      <label class="pm-label">Date of Birth</label>
+                      <input type="date" id="profileDob" name="date_of_birth" class="pm-input" disabled>
+                    </div>
+                    <div class="pm-field">
+                      <label class="pm-label">Gender</label>
+                      <select id="profileGender" name="gender" class="pm-input" disabled>
+                        <option value="">Select...</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+                    <div class="pm-field">
+                      <label class="pm-label">Address</label>
+                      <input type="text" id="profileAddress" name="address" class="pm-input" disabled>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Section: Medical & Donor -->
+                <div class="pm-fieldset">
+                  <div class="pm-fieldset-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                    Medical & Donor Information
+                  </div>
+                  <div class="pm-grid-2">
+                    <div class="pm-field">
+                      <label class="pm-label">Blood Group <span class="pm-req">*</span></label>
+                      <select id="bloodGroup" name="blood_group" class="pm-input" disabled>
+                        <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+                        <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
+                      </select>
+                    </div>
+                    <div class="pm-field">
+                      <label class="pm-label">Last Donation</label>
+                      <input type="date" id="lastDonation" name="last_donation_date" class="pm-input" disabled>
+                    </div>
+                    <div class="pm-field">
+                      <label class="pm-label">Weight (kg)</label>
+                      <input type="number" id="profileWeight" name="weight_kg" step="0.1" min="45" max="200" class="pm-input" disabled>
+                      <div class="pm-err" id="err-weight"></div>
+                    </div>
+                    <div class="pm-field">
+                      <label class="pm-label">Height (cm)</label>
+                      <input type="number" id="profileHeight" name="height_cm" step="0.1" min="100" max="250" class="pm-input" disabled>
+                      <div class="pm-err" id="err-height"></div>
+                    </div>
+                    <div class="pm-field">
+                      <label class="pm-label">Emergency Contact</label>
+                      <input type="tel" id="profileEmergency" name="emergency_contact" class="pm-input" disabled>
+                    </div>
+                    <div class="pm-field">
+                      <label class="pm-label">Availability</label>
+                      <div class="pm-avail-display">
+                        <span class="avail-dot" id="availDotForm"></span>
+                        <span id="availabilityTextForm">Available for Donation</span>
+                      </div>
+                    </div>
+                    <div class="pm-field pm-field-full">
+                      <label class="pm-label">Underlying Conditions</label>
+                      <textarea id="profileConditions" name="underlying_conditions" rows="2" class="pm-textarea" disabled></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="pm-bottom" id="formBottomActions" style="display:none">
+                  <button type="button" class="pm-btn pm-btn-ghost" id="cancelProfileBtn2">Cancel</button>
+                  <button type="submit" class="pm-btn pm-btn-save">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                    Save Profile
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════ SETTINGS ══════════════════ -->
+        <div class="dashboard-view" id="settingsView">
+          <div class="section-header reveal">
+            <h2>Settings</h2>
+            <p>Manage your account preferences and notifications</p>
+          </div>
+
+          <div class="set-grid reveal">
+            <!-- Notifications card -->
+            <div class="set-card">
+              <div class="set-card-header">
+                <div class="set-card-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                </div>
+                <div>
+                  <div class="set-card-title">Notifications</div>
+                  <div class="set-card-sub">Control how you receive alerts</div>
+                </div>
+              </div>
+              <div class="set-section">
+                <div class="set-section-title">Channels</div>
+                <div class="set-list">
+                  <div class="set-item">
+                    <div class="set-item-left">
+                      <div class="set-item-icon" style="background:rgba(59,130,246,0.12);color:#60a5fa;">📧</div>
+                      <div>
+                        <div class="set-item-name">Email Notifications</div>
+                        <div class="set-item-desc">Receive notifications via email</div>
+                      </div>
+                    </div>
+                    <label class="set-toggle"><input type="checkbox" id="notifEmail" checked /><span class="set-toggle-track"></span></label>
+                  </div>
+                  <div class="set-item">
+                    <div class="set-item-left">
+                      <div class="set-item-icon" style="background:rgba(16,185,129,0.12);color:#34d399;">💬</div>
+                      <div>
+                        <div class="set-item-name">SMS Notifications</div>
+                        <div class="set-item-desc">Receive notifications via SMS</div>
+                      </div>
+                    </div>
+                    <label class="set-toggle"><input type="checkbox" id="notifSms" checked /><span class="set-toggle-track"></span></label>
+                  </div>
+                  <div class="set-item">
+                    <div class="set-item-left">
+                      <div class="set-item-icon" style="background:rgba(168,85,247,0.12);color:#a78bfa;">📲</div>
+                      <div>
+                        <div class="set-item-name">Push Notifications</div>
+                        <div class="set-item-desc">Receive in-app push notifications</div>
+                      </div>
+                    </div>
+                    <label class="set-toggle"><input type="checkbox" id="notifPush" checked /><span class="set-toggle-track"></span></label>
+                  </div>
+                </div>
+              </div>
+              <div class="set-section">
+                <div class="set-section-title">Alerts</div>
+                <div class="set-list">
+                  <div class="set-item">
+                    <div class="set-item-left">
+                      <div class="set-item-icon" style="background:rgba(239,68,68,0.12);color:#f87171;">🚨</div>
+                      <div>
+                        <div class="set-item-name">Emergency Blood Requests</div>
+                        <div class="set-item-desc">Notify when your blood type is urgently needed</div>
+                      </div>
+                    </div>
+                    <label class="set-toggle"><input type="checkbox" checked /><span class="set-toggle-track"></span></label>
+                  </div>
+                  <div class="set-item">
+                    <div class="set-item-left">
+                      <div class="set-item-icon" style="background:rgba(251,191,36,0.12);color:#fbbf24;">📅</div>
+                      <div>
+                        <div class="set-item-name">Donation Reminders</div>
+                        <div class="set-item-desc">Reminder when you become eligible again</div>
+                      </div>
+                    </div>
+                    <label class="set-toggle"><input type="checkbox" checked /><span class="set-toggle-track"></span></label>
+                  </div>
+                  <div class="set-item">
+                    <div class="set-item-left">
+                      <div class="set-item-icon" style="background:rgba(236,72,153,0.12);color:#f472b6;">❤️</div>
+                      <div>
+                        <div class="set-item-name">Health Trend Alerts</div>
+                        <div class="set-item-desc">Alerts when your health metrics change</div>
+                      </div>
+                    </div>
+                    <label class="set-toggle"><input type="checkbox" checked /><span class="set-toggle-track"></span></label>
+                  </div>
+                  <div class="set-item">
+                    <div class="set-item-left">
+                      <div class="set-item-icon" style="background:rgba(250,204,21,0.12);color:#facc15;">🏅</div>
+                      <div>
+                        <div class="set-item-name">Badge Notifications</div>
+                        <div class="set-item-desc">Notify when you earn a new badge</div>
+                      </div>
+                    </div>
+                    <label class="set-toggle"><input type="checkbox" checked /><span class="set-toggle-track"></span></label>
+                  </div>
+                  <div class="set-item">
+                    <div class="set-item-left">
+                      <div class="set-item-icon" style="background:rgba(99,102,241,0.12);color:#818cf8;">📋</div>
+                      <div>
+                        <div class="set-item-name">Request Updates</div>
+                        <div class="set-item-desc">Status changes for your blood requests</div>
+                      </div>
+                    </div>
+                    <label class="set-toggle"><input type="checkbox" checked /><span class="set-toggle-track"></span></label>
+                  </div>
+                  <div class="set-item">
+                    <div class="set-item-left">
+                      <div class="set-item-icon" style="background:rgba(148,163,184,0.12);color:#94a3b8;">📊</div>
+                      <div>
+                        <div class="set-item-name">Email Summaries</div>
+                        <div class="set-item-desc">Weekly summary of your activity</div>
+                      </div>
+                    </div>
+                    <label class="set-toggle"><input type="checkbox" /><span class="set-toggle-track"></span></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Appearance card -->
+            <div class="set-card">
+              <div class="set-card-header">
+                <div class="set-card-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                </div>
+                <div>
+                  <div class="set-card-title">Appearance</div>
+                  <div class="set-card-sub">Customize your interface</div>
+                </div>
+              </div>
+              <div class="set-section">
+                <div class="set-list">
+                  <div class="set-item">
+                    <div class="set-item-left">
+                      <div class="set-item-icon" style="background:rgba(96,165,250,0.12);color:#60a5fa;">🌙</div>
+                      <div>
+                        <div class="set-item-name">Dark Mode</div>
+                        <div class="set-item-desc">Toggle between dark and light theme</div>
+                      </div>
+                    </div>
+                    <label class="set-toggle" id="settingsThemeToggle"><input type="checkbox" id="settingsThemeCheck" checked /><span class="set-toggle-track"></span></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Privacy card -->
+            <div class="set-card">
+              <div class="set-card-header">
+                <div class="set-card-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </div>
+                <div>
+                  <div class="set-card-title">Privacy & Security</div>
+                  <div class="set-card-sub">Protect your account and data</div>
+                </div>
+              </div>
+              <div class="set-section">
+                <div class="set-list">
+                  <div class="set-item">
+                    <div class="set-item-left">
+                      <div class="set-item-icon" style="background:rgba(74,222,128,0.12);color:#4ade80;">👁️</div>
+                      <div>
+                        <div class="set-item-name">Profile Visibility</div>
+                        <div class="set-item-desc">Allow hospitals to see your profile</div>
+                      </div>
+                    </div>
+                    <label class="set-toggle"><input type="checkbox" checked /><span class="set-toggle-track"></span></label>
+                  </div>
+                  <div class="set-item">
+                    <div class="set-item-left">
+                      <div class="set-item-icon" style="background:rgba(251,191,36,0.12);color:#fbbf24;">🔐</div>
+                      <div>
+                        <div class="set-item-name">Two-Factor Authentication</div>
+                        <div class="set-item-desc">Secure your account with 2FA</div>
+                      </div>
+                    </div>
+                    <label class="set-toggle"><input type="checkbox" /><span class="set-toggle-track"></span></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Account card -->
+            <div class="set-card">
+              <div class="set-card-header">
+                <div class="set-card-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </div>
+                <div>
+                  <div class="set-card-title">Account</div>
+                  <div class="set-card-sub">Manage your account settings</div>
+                </div>
+              </div>
+              <div class="set-section">
+                <div class="set-list">
+                  <div class="set-item set-item-action">
+                    <div class="set-item-left">
+                      <div class="set-item-icon" style="background:rgba(96,165,250,0.12);color:#60a5fa;">🔑</div>
+                      <div>
+                        <div class="set-item-name">Change Password</div>
+                        <div class="set-item-desc">Update your account password</div>
+                      </div>
+                    </div>
+                    <button class="set-act-btn">Change</button>
+                  </div>
+                  <div class="set-item set-item-action">
+                    <div class="set-item-left">
+                      <div class="set-item-icon" style="background:rgba(148,163,184,0.12);color:#94a3b8;">📥</div>
+                      <div>
+                        <div class="set-item-name">Download My Data</div>
+                        <div class="set-item-desc">Export your donation history and profile</div>
+                      </div>
+                    </div>
+                    <button class="set-act-btn">Export</button>
+                  </div>
+                  <div class="set-item set-item-action">
+                    <div class="set-item-left">
+                      <div class="set-item-icon" style="background:rgba(239,68,68,0.12);color:#f87171;">🗑️</div>
+                      <div>
+                        <div class="set-item-name">Delete Account</div>
+                        <div class="set-item-desc">Permanently delete your account</div>
+                      </div>
+                    </div>
+                    <button class="set-act-btn set-act-btn-danger">Delete</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Save bar -->
+            <div class="set-save-bar">
+              <div class="set-save-info">💡 Changes to channels are saved automatically</div>
+              <button class="set-save-btn" id="saveSettingsBtn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                Save Preferences
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════ HELP CENTER ══════════════════ -->
+        <div class="dashboard-view" id="helpView">
+          <div class="section-header reveal">
+            <h2>Help Center</h2>
+            <p>Find answers to common questions about blood donation</p>
+          </div>
+
+          <div class="hlp-hero reveal">
+            <div class="hlp-hero-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+            </div>
+            <div class="hlp-hero-title">How can we help you?</div>
+            <div class="hlp-hero-sub">Search through our knowledge base or browse by category</div>
+            <div class="hlp-search">
+              <svg class="hlp-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <input type="text" id="helpSearchInput" class="hlp-search-input" placeholder="Search topics, keywords, questions…">
+            </div>
+            <div class="hlp-hint">💡 Try "eligibility", "trust score", "badges", or "frequency"</div>
+          </div>
+
+          <div class="faq-grid reveal">
+            <div class="faq-card">
+              <div class="faq-icon-wrap" style="background:rgba(239,68,68,0.12);color:#f87171;">🩸</div>
+              <div class="faq-title">Who can donate blood?</div>
+              <div class="faq-body">Anyone aged 18–65, weighing at least 50 kg, with haemoglobin ≥12.5 g/dL, and no recent illness or major surgery within 6 months.</div>
+            </div>
+            <div class="faq-card">
+              <div class="faq-icon-wrap" style="background:rgba(59,130,246,0.12);color:#60a5fa;">⏱️</div>
+              <div class="faq-title">How often can I donate?</div>
+              <div class="faq-body">Whole blood: every 56 days (8 weeks). Platelets: every 7 days, up to 24 times/year. Plasma: every 28 days.</div>
+            </div>
+            <div class="faq-card">
+              <div class="faq-icon-wrap" style="background:rgba(16,185,129,0.12);color:#34d399;">💧</div>
+              <div class="faq-title">How to prepare for donation?</div>
+              <div class="faq-body">Drink extra fluids the day before. Eat a healthy meal 2–3 hours before. Avoid fatty foods. Wear comfortable clothing.</div>
+            </div>
+            <div class="faq-card">
+              <div class="faq-icon-wrap" style="background:rgba(168,85,247,0.12);color:#a78bfa;">📊</div>
+              <div class="faq-title">What is Trust Score?</div>
+              <div class="faq-body">Your Trust Score starts at 100 and reflects reliability. It increases for keeping donation promises and decreases for no-shows.</div>
+            </div>
+            <div class="faq-card">
+              <div class="faq-icon-wrap" style="background:rgba(250,204,21,0.12);color:#facc15;">🏅</div>
+              <div class="faq-title">How do I earn badges?</div>
+              <div class="faq-body">Badges are automatically awarded when you reach milestones: first donation, 5 donations, maintaining health metrics, etc.</div>
+            </div>
+            <div class="faq-card">
+              <div class="faq-icon-wrap" style="background:rgba(99,102,241,0.12);color:#818cf8;">🌍</div>
+              <div class="faq-title">What is International Rotation?</div>
+              <div class="faq-body">BloodBridge coordinates with global blood banks. Eligible donors can register to donate during international travel.</div>
+            </div>
+            <div class="faq-card">
+              <div class="faq-icon-wrap" style="background:rgba(236,72,153,0.12);color:#f472b6;">🤰</div>
+              <div class="faq-title">Can I donate if I am pregnant?</div>
+              <div class="faq-body">No. You must wait at least 6 weeks after delivery before donating blood.</div>
+            </div>
+            <div class="faq-card">
+              <div class="faq-icon-wrap" style="background:rgba(148,163,184,0.12);color:#94a3b8;">💊</div>
+              <div class="faq-title">Can I donate while on medication?</div>
+              <div class="faq-body">Depends on the medication. Common antibiotics require a 2-week wait. Always disclose medications during screening.</div>
+            </div>
+          </div>
+
+          <div class="hlp-support reveal">
+            <div class="hlp-support-header">
+              <div class="hlp-support-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              </div>
+              <div>
+                <div class="hlp-support-title">Still need help? Contact us</div>
+                <div class="hlp-support-sub">Our team is available 24/7 to assist you</div>
+              </div>
+            </div>
+            <div class="hlp-support-grid">
+              <div class="hlp-contact-card">
+                <div class="hlp-contact-icon" style="background:rgba(59,130,246,0.12);color:#60a5fa;">📧</div>
+                <div class="hlp-contact-label">Email</div>
+                <div class="hlp-contact-val">support@bloodbridge.org</div>
+                <div class="hlp-contact-note">We reply within 4 hours</div>
+              </div>
+              <div class="hlp-contact-card">
+                <div class="hlp-contact-icon" style="background:rgba(16,185,129,0.12);color:#34d399;">📱</div>
+                <div class="hlp-contact-label">Hotline</div>
+                <div class="hlp-contact-val">16000</div>
+                <div class="hlp-contact-note">24/7 Toll-free</div>
+              </div>
+              <div class="hlp-contact-card">
+                <div class="hlp-contact-icon" style="background:rgba(168,85,247,0.12);color:#a78bfa;">💬</div>
+                <div class="hlp-contact-label">Live Chat</div>
+                <div class="hlp-contact-val">Available now</div>
+                <button class="hlp-chat-btn">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  Start Chat
+                </button>
+              </div>
+              <div class="hlp-contact-card">
+                <div class="hlp-contact-icon" style="background:rgba(239,68,68,0.12);color:#f87171;">📍</div>
+                <div class="hlp-contact-label">Visit Us</div>
+                <div class="hlp-contact-val">Find a blood bank</div>
+                <button class="hlp-chat-btn" style="border-color:rgba(239,68,68,0.2);color:#f87171;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  Locate
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+      </main>
+    </div>
+
+    <!-- BLOOD REQUEST MODAL — multi-step -->
+    <div id="bloodRequestModal" class="br-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="brModalTitle" style="display:none;">
+      <div class="br-modal-container glass-card">
+
+        <!-- Header -->
+        <div class="br-modal-header">
+          <div class="br-modal-title-row">
+            <span class="br-modal-icon">🩸</span>
+            <h2 id="brModalTitle">Submit Blood Request</h2>
+          </div>
+          <!-- Step indicator -->
+          <div class="br-steps-indicator">
+            <div class="br-step active" data-step="1">
+              <div class="br-step-circle">1</div>
+              <div class="br-step-label">Details</div>
+            </div>
+            <div class="br-step-line"></div>
+            <div class="br-step" data-step="2">
+              <div class="br-step-circle">2</div>
+              <div class="br-step-label">Location</div>
+            </div>
+            <div class="br-step-line"></div>
+            <div class="br-step" data-step="3">
+              <div class="br-step-circle">3</div>
+              <div class="br-step-label">Bank</div>
+            </div>
+            <div class="br-step-line"></div>
+            <div class="br-step" data-step="4">
+              <div class="br-step-circle">4</div>
+              <div class="br-step-label">Confirm</div>
+            </div>
+          </div>
+          <button class="br-modal-close" id="brModalClose" aria-label="Close">&times;</button>
+        </div>
+
+        <!-- Body — steps -->
+        <div class="br-modal-body">
+
+          <!-- STEP 1: Details -->
+          <div class="br-step-panel active" id="brStep1">
+            <p class="br-step-desc">Fill in the details below to submit your blood request.</p>
+
+            <div class="br-field-group">
+              <label class="br-label" for="brBloodGroup">🩸 Blood Group *</label>
+              <select id="brBloodGroup" class="br-select">
+                <option value="">— Select blood group —</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+              </select>
+            </div>
+
+            <div class="br-field-group">
+              <label class="br-label" for="brVisibleTo">👁 Who can see this request? *</label>
+              <select id="brVisibleTo" class="br-select">
+                <option value="both">Everyone — Donors &amp; Blood Banks</option>
+                <option value="blood_bank">Blood Banks only</option>
+                <option value="donor_recipient">Donors &amp; Recipients only</option>
+              </select>
+              <div class="br-field-hint">Controls who sees your request in the system.</div>
+            </div>
+
+            <div class="br-two-col">
+              <div class="br-field-group">
+                <label class="br-label" for="brUnits">Units Required *</label>
+                <select id="brUnits" class="br-select">
+                  <option value="1">1 unit</option>
+                  <option value="2">2 units</option>
+                  <option value="3">3 units</option>
+                  <option value="4">4 units</option>
+                  <option value="5">5 units</option>
+                </select>
+              </div>
+              <div class="br-field-group">
+                <label class="br-label" for="brUrgency">Urgency *</label>
+                <select id="brUrgency" class="br-select">
+                  <option value="normal">Normal</option>
+                  <option value="urgent">Urgent</option>
+                  <option value="emergency">Emergency 🚨</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="br-field-group">
+              <label class="br-label" for="brRequiredBy">Required By (Date) *</label>
+              <input type="date" id="brRequiredBy" class="br-input" />
+              <div class="br-field-hint">Must select a future date — this field is required.</div>
+            </div>
+
+            <!-- PAYMENT TYPE FIELDS -->
+            <div class="br-field-group">
+              <label class="br-label" for="brRequestType">💰 Payment Type *</label>
+              <select id="brRequestType" class="br-select" onchange="brTogglePriceField(this.value)">
+                <option value="free">🆓 Free — I need donors who donate for free</option>
+                <option value="paid">💰 Paid — I am willing to pay donors</option>
+                <option value="open">🔓 Open — Both free and paid donors welcome</option>
+              </select>
+              <div class="br-field-hint">
+                Free: only free donors respond. Paid: attract more donors with payment. Open: maximum reach.
+              </div>
+            </div>
+
+            <div class="br-field-group" id="brMaxPriceWrap" style="display:none;">
+              <label class="br-label" for="brMaxPrice">৳ Maximum Price Per Unit (BDT) *</label>
+              <input type="number" id="brMaxPrice" class="br-input" min="50" max="2000" step="10"
+                placeholder="e.g. 500" />
+              <div class="br-field-hint">
+                Donors can ask up to this amount per unit. Range: ৳50 – ৳2000.
+              </div>
+            </div>
+
+            <div class="br-field-group">
+              <label class="br-label" for="brNotes">Notes <span style="font-weight:400;opacity:.6;">(Optional)</span></label>
+              <textarea id="brNotes" class="br-textarea" rows="3" placeholder="Medical reason, doctor's name, hospital name, or any additional info..."></textarea>
+            </div>
+          </div>
+
+          <!-- STEP 2: Location -->
+          <div class="br-step-panel" id="brStep2">
+            <p class="br-step-desc">Share your location so nearby blood banks can respond faster.</p>
+
+            <div class="br-location-actions">
+              <button id="brGpsBtn" class="br-gps-btn"><span>📍</span> Detect My Location</button>
+              <div id="brGpsStatus" class="br-gps-status"></div>
+            </div>
+
+            <div class="br-field-group" style="margin-top:16px;">
+              <label class="br-label" for="brLocationSearch">Or search your location</label>
+              <div class="br-search-row">
+                <input type="text" id="brLocationSearch" class="br-input" placeholder="e.g. Dhanmondi, Dhaka" />
+                <button id="brLocationSearchBtn" class="br-search-btn">Search</button>
+              </div>
+            </div>
+
+            <div id="brLocationLabel" class="br-location-label" style="display:none;">
+              <span class="br-loc-icon">📍</span>
+              <span id="brLocationLabelText">—</span>
+              <button id="brClearLocation" class="br-clear-loc">✕ Clear</button>
+            </div>
+
+            <div id="brMapPlaceholder" class="br-map-placeholder">
+              <div class="br-map-loading-msg">🗺 Map loading...</div>
+            </div>
+            <div class="br-field-hint" style="margin-top:8px;">📌 You can also click anywhere on the map to set your location.</div>
+
+            <input type="hidden" id="brLocLat" value="" />
+            <input type="hidden" id="brLocLng" value="" />
+          </div>
+
+          <!-- STEP 3: Bank + Availability -->
+          <div class="br-step-panel" id="brStep3">
+            <p class="br-step-desc">Checking availability of <strong id="brAvailBloodGroup">--</strong> blood across all banks. Select a bank to fulfill your request.</p>
+
+            <div id="brAvailResult" class="br-avail-result" style="display:none;"></div>
+
+            <div id="brSingleBankWrap" class="br-field-group" style="display:none;">
+              <label class="br-label">Select Blood Bank *</label>
+            </div>
+
+            <div id="brSplitWrap" style="display:none;">
+              <div class="br-split-header">
+                <span>🔀 Suggested Split</span>
+                <span class="br-split-badge" id="brSplitBadge">Auto</span>
+              </div>
+              <div id="brSplitCards" class="br-split-cards"></div>
+              <div class="br-field-hint">You can adjust the units per bank before confirming.</div>
+            </div>
+
+            <div id="brShortageWrap" style="display:none;">
+              <div class="br-shortage-box">
+                <div class="br-shortage-icon">⚠️</div>
+                <div id="brShortageMsg" class="br-shortage-msg"></div>
+                <button id="brEscalateBtn" class="br-escalate-btn">🚨 Escalate to Emergency</button>
+              </div>
+            </div>
+
+            <div id="brAvailLoading" class="br-avail-loading">
+              <div class="loader-spin"></div>
+              <span>Checking blood availability across all banks...</span>
+            </div>
+          </div>
+
+          <!-- STEP 4: Confirm -->
+          <div class="br-step-panel" id="brStep4">
+            <p class="br-step-desc">Review your request before submitting.</p>
+            <div id="brConfirmSummary" class="br-confirm-summary"></div>
+          </div>
+
+        </div><!-- end br-modal-body -->
+
+        <!-- Footer -->
+        <div class="br-modal-footer">
+          <button id="brBtnBack" class="br-btn-back" style="display:none;">← Back</button>
+          <div class="br-footer-right">
+            <button id="brBtnCancel" class="br-btn-cancel">Cancel</button>
+            <button id="brBtnNext" class="br-btn-next">Next →</button>
+            <button id="brBtnSubmit" class="br-btn-submit" style="display:none;">
+              <span>🩸</span> Submit Request
+            </button>
+          </div>
+        </div>
+
+      </div><!-- end br-modal-container -->
+    </div><!-- end bloodRequestModal -->
+
+    <!-- GLOBAL MODAL -->
+    <div
+      id="globalModal"
+      class="modal-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modalTitle"
+    >
+      <div class="modal-container glass-card">
+        <div class="modal-header">
+          <h3 id="modalTitle">Action</h3>
+          <button class="modal-close" id="closeModalBtn">&times;</button>
+        </div>
+        <div class="modal-body" id="modalBody"></div>
+        <div class="modal-footer">
+          <button class="btn-ghost-sm" id="modalCancelBtn">Close</button>
+          <button class="btn-modal-confirm" id="modalConfirmBtn">
+            Proceed
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Leaflet map portal — positioned over placeholder by JS -->
+    <div id="brMap" style="display:none;position:fixed;z-index:2000;background:#1a0b0e;border-radius:14px;border:1px solid rgba(255,255,255,0.1);box-shadow:0 4px 24px rgba(0,0,0,0.6);"></div>
+
+    <div id="toastMessage" class="toast-message"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <script>
+      window._RAK_CONFIG = { auth: true, api: 'chat_api.php' };
+    </script>
+    <script src="raktosathi_floating.js"></script>
+    <script src="donor_recipient_dash.js"></script>
+  </body>
+</html>

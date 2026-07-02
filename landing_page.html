@@ -1,0 +1,836 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    />
+    <meta
+      name="description"
+      content="BloodBridge - Real-time Blood Donation & Distribution System for Bangladesh"
+    />
+    <title>BloodBridge — Real-time Blood Donation & Distribution</title>
+    <link rel="icon" type="image/png" href="blood_bridge_favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+Bengali:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="landing_page.css" />
+    <link rel="stylesheet" href="raktosathi_floating.css" />
+  </head>
+  <body lang="en">
+    <!-- MOUSE SPOTLIGHT -->
+    <div id="mouse-spotlight"></div>
+
+    <!-- FLOATING PARTICLES -->
+    <div id="particles"></div>
+
+    <!-- BACKGROUND -->
+    <div class="bg-scene">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+    </div>
+    <div class="grid-overlay"></div>
+
+    <!-- TOAST CONTAINER -->
+    <div id="toast-container"></div>
+
+    <!-- ============================================================ -->
+    <div class="page">
+      <!-- NAVBAR -->
+      <nav id="mainNav">
+        <div class="nav-logo">
+          <a href="landing_page.html" title="Blood Bridge Home">
+            <img src="blood1.png" alt="BloodBridge" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" id="navLogoImg" />
+            <div class="logo-text-fallback">🩸 BloodBridge</div>
+            <div class="logo-text-wrap">
+              <div class="logo-title">BloodBridge</div>
+              <div class="logo-subtitle" data-translate="nav_subtitle">
+                Donate & Save Lives
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <!-- Mobile hamburger -->
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+          <span></span><span></span><span></span>
+        </button>
+
+        <!-- Desktop Nav Links -->
+        <ul class="nav-links" id="navLinks">
+          <li>
+            <a href="landing_page.html" class="active">
+              <svg
+                class="nav-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+              <span data-translate="nav_home">Home</span>
+            </a>
+          </li>
+          <li>
+            <a href="find_blood.php">
+              <svg
+                class="nav-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="M21 21l-4.35-4.35"></path>
+              </svg>
+              <span data-translate="nav_find_blood">Find Blood</span>
+            </a>
+          </li>
+          <li>
+            <a href="donate.php">
+              <svg
+                class="nav-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                ></path>
+              </svg>
+              <span data-translate="nav_donate">Donate</span>
+            </a>
+          </li>
+          <li>
+            <a href="blood_banks.php">
+              <svg
+                class="nav-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z"
+                ></path>
+                <path d="M3 9h18"></path>
+                <path d="M9 21V9"></path>
+              </svg>
+              <span data-translate="nav_blood_banks">Blood Banks</span>
+            </a>
+          </li>
+          <li>
+            <a href="about.php">
+              <svg
+                class="nav-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 16v-4"></path>
+                <path d="M12 8h.01"></path>
+              </svg>
+              <span data-translate="nav_about">About</span>
+            </a>
+          </li>
+        </ul>
+
+        <!-- Right Side -->
+        <div class="nav-right">
+          <!-- Language Toggle -->
+          <div
+            class="lang-toggle"
+            id="langToggle"
+            aria-label="Toggle language"
+            title="English / বাংলা"
+          >
+            <div class="lang-track">
+              <span class="lang-label en">EN</span>
+              <span class="lang-label bn">বাং</span>
+              <div class="lang-thumb"></div>
+            </div>
+          </div>
+
+          <!-- Theme Toggle -->
+          <div
+            class="theme-toggle"
+            id="themeToggle"
+            aria-label="Toggle theme"
+            title="Toggle Light/Dark Mode"
+          >
+            <div class="toggle-track">
+              <span class="toggle-icon moon">🌙</span>
+              <span class="toggle-icon sun">☀️</span>
+              <div class="toggle-thumb"></div>
+            </div>
+          </div>
+
+          <button
+            class="nav-login"
+            onclick="window.location.href = 'login.html'"
+            data-translate="nav_login"
+          >
+            Login
+          </button>
+          <button
+            class="nav-cta"
+            onclick="window.location.href = 'login.html'"
+            data-translate="nav_emergency"
+          >
+            Emergency Request
+          </button>
+        </div>
+      </nav>
+
+      <!-- Mobile Nav Overlay -->
+      <div class="mobile-nav-overlay" id="mobileOverlay">
+        <ul class="mobile-nav-links" id="mobileNavLinks">
+          <li>
+            <a href="landing_page.html" onclick="closeMobileNav()">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+              <span data-translate="nav_home">Home</span>
+            </a>
+          </li>
+          <li>
+            <a href="find_blood.php" onclick="closeMobileNav()">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="M21 21l-4.35-4.35"></path>
+              </svg>
+              <span data-translate="nav_find_blood">Find Blood</span>
+            </a>
+          </li>
+          <li>
+            <a href="donate.php" onclick="closeMobileNav()">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                ></path>
+              </svg>
+              <span data-translate="nav_donate">Donate</span>
+            </a>
+          </li>
+          <li>
+            <a href="blood_banks.php" onclick="closeMobileNav()">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z"
+                ></path>
+                <path d="M3 9h18"></path>
+                <path d="M9 21V9"></path>
+              </svg>
+              <span data-translate="nav_blood_banks">Blood Banks</span>
+            </a>
+          </li>
+          <li>
+            <a href="about.php" onclick="closeMobileNav()">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 16v-4"></path>
+                <path d="M12 8h.01"></path>
+              </svg>
+              <span data-translate="nav_about">About</span>
+            </a>
+          </li>
+          <li>
+            <a href="login.html" class="mobile-cta" onclick="closeMobileNav()">
+              <span data-translate="nav_login">🔑 Login</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="emergency.php"
+              class="mobile-cta"
+              onclick="closeMobileNav()"
+            >
+              <span data-translate="nav_emergency">🚨 Emergency Request</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- URGENT TICKER -->
+      <div class="ticker-section">
+        <div class="ticker-track" id="ticker">
+          <div class="ticker-item">
+            <span class="blood-tag">URGENT</span> O− needed at DMCH, Dhaka
+            <span class="ticker-sep">•</span>
+          </div>
+          <div class="ticker-item">
+            <span class="blood-tag">AB+</span> 2 units required — Chittagong
+            Medical <span class="ticker-sep">•</span>
+          </div>
+          <div class="ticker-item">
+            <span class="blood-tag">B−</span> Rare type — Sylhet MAG Osmani
+            Hospital <span class="ticker-sep">•</span>
+          </div>
+          <div class="ticker-item">
+            <span class="blood-tag">A+</span> 4 donors needed — Rajshahi, BD
+            <span class="ticker-sep">•</span>
+          </div>
+          <div class="ticker-item">
+            <span class="blood-tag">O+</span> Post-surgery requirement — Square
+            Hospital <span class="ticker-sep">•</span>
+          </div>
+          <div class="ticker-item">
+            <span class="blood-tag">URGENT</span> O− needed at DMCH, Dhaka
+            <span class="ticker-sep">•</span>
+          </div>
+          <div class="ticker-item">
+            <span class="blood-tag">AB+</span> 2 units required — Chittagong
+            Medical <span class="ticker-sep">•</span>
+          </div>
+          <div class="ticker-item">
+            <span class="blood-tag">B−</span> Rare type — Sylhet MAG Osmani
+            Hospital <span class="ticker-sep">•</span>
+          </div>
+          <div class="ticker-item">
+            <span class="blood-tag">A+</span> 4 donors needed — Rajshahi, BD
+            <span class="ticker-sep">•</span>
+          </div>
+          <div class="ticker-item">
+            <span class="blood-tag">O+</span> Post-surgery requirement — Square
+            Hospital <span class="ticker-sep">•</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero-content">
+          <div class="hero-badge">
+            <span class="dot"></span>
+            <span data-translate="hero_badge">Live Blood Network Active</span>
+          </div>
+          <h1>
+            <span data-translate="hero_title_1">Every Drop</span><br /><span
+              data-translate="hero_title_2"
+              >Can <em>Save a Life</em></span
+            >
+          </h1>
+          <p data-translate="hero_desc">
+            BloodBridge connects donors, recipients, and blood banks in
+            real-time — cutting emergency response times and making life-saving
+            blood accessible when it matters most.
+          </p>
+          <div class="hero-actions">
+            <a href="donate.php" class="btn-primary">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+              >
+                <path
+                  d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                ></path>
+              </svg>
+              <span data-translate="btn_donate">Donate Blood</span>
+            </a>
+            <a href="find_blood.php" class="btn-ghost">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="M21 21l-4.35-4.35"></path>
+              </svg>
+              <span data-translate="btn_find">Find Blood</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- FLOATING STATS CARD -->
+        <div class="hero-stats-card">
+          <div class="glass-card stats-card">
+            <div class="stats-card-header">
+              <span data-translate="stats_live">Live Dashboard</span>
+              <div class="live-tag"><span class="dot"></span>LIVE</div>
+            </div>
+            <div class="blood-types">
+              <div class="bt active" id="stock-A+">
+                <div class="type">A+</div>
+                <div class="avail up">High</div>
+              </div>
+              <div class="bt" id="stock-A-">
+                <div class="type">A−</div>
+                <div class="avail up">Med</div>
+              </div>
+              <div class="bt" id="stock-B+">
+                <div class="type">B+</div>
+                <div class="avail up">High</div>
+              </div>
+              <div class="bt" id="stock-B-">
+                <div class="type">B−</div>
+                <div class="avail warn">Low</div>
+              </div>
+              <div class="bt" id="stock-O+">
+                <div class="type">O+</div>
+                <div class="avail up">High</div>
+              </div>
+              <div class="bt" id="stock-O-">
+                <div class="type">O−</div>
+                <div class="avail down">Crit</div>
+              </div>
+              <div class="bt" id="stock-AB+">
+                <div class="type">AB+</div>
+                <div class="avail up">Med</div>
+              </div>
+              <div class="bt" id="stock-AB-">
+                <div class="type">AB−</div>
+                <div class="avail warn">Low</div>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <div class="stat-row">
+              <div class="stat-item">
+                <div class="num" id="hero-donors">0</div>
+                <div class="label" data-translate="stats_donors">Donors</div>
+              </div>
+              <div class="stat-item">
+                <div class="num" id="hero-banks">0</div>
+                <div class="label" data-translate="stats_banks">Banks</div>
+              </div>
+              <div class="stat-item">
+                <div class="num" id="hero-saved">0</div>
+                <div class="label" data-translate="stats_saved">Saved</div>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <div class="progress-row">
+              <div class="progress-label">
+                <span>O− Availability</span
+                ><span id="progress-label-1">0%</span>
+              </div>
+              <div class="progress-bar">
+                <div
+                  class="progress-fill"
+                  id="progress-1"
+                  style="width: 0%"
+                ></div>
+              </div>
+            </div>
+            <div class="progress-row">
+              <div class="progress-label">
+                <span>A+ Availability</span
+                ><span id="progress-label-2">0%</span>
+              </div>
+              <div class="progress-bar">
+                <div
+                  class="progress-fill"
+                  id="progress-2"
+                  style="width: 0%"
+                ></div>
+              </div>
+            </div>
+            <div class="progress-row">
+              <div class="progress-label">
+                <span>B+ Availability</span
+                ><span id="progress-label-3">0%</span>
+              </div>
+              <div class="progress-bar">
+                <div
+                  class="progress-fill"
+                  id="progress-3"
+                  style="width: 0%"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- MOBILE STATS -->
+      <section class="mobile-stats-section">
+        <div class="glass-card mobile-stats-card">
+          <div class="stats-card-header">
+            <span data-translate="stats_live">Live Dashboard</span>
+            <div class="live-tag"><span class="dot"></span>LIVE</div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-item">
+              <div class="num" id="hero-donors-mobile">0</div>
+              <div class="label" data-translate="stats_donors">Donors</div>
+            </div>
+            <div class="stat-item">
+              <div class="num" id="hero-banks-mobile">0</div>
+              <div class="label" data-translate="stats_banks">Banks</div>
+            </div>
+            <div class="stat-item">
+              <div class="num" id="hero-saved-mobile">0</div>
+              <div class="label" data-translate="stats_saved">Saved</div>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="blood-types">
+            <div class="bt active">
+              <div class="type">A+</div>
+              <div class="avail">High</div>
+            </div>
+            <div class="bt">
+              <div class="type">A−</div>
+              <div class="avail">Med</div>
+            </div>
+            <div class="bt">
+              <div class="type">B+</div>
+              <div class="avail">High</div>
+            </div>
+            <div class="bt">
+              <div class="type">B−</div>
+              <div class="avail">Low</div>
+            </div>
+            <div class="bt">
+              <div class="type">O+</div>
+              <div class="avail">High</div>
+            </div>
+            <div class="bt">
+              <div class="type">O−</div>
+              <div class="avail">Crit</div>
+            </div>
+            <div class="bt">
+              <div class="type">AB+</div>
+              <div class="avail">Med</div>
+            </div>
+            <div class="bt">
+              <div class="type">AB−</div>
+              <div class="avail">Low</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- LIVE DASHBOARD -->
+      <section class="section live-dashboard reveal">
+        <div class="section-label" data-translate="stats_live">
+          Live Dashboard
+        </div>
+        <h2 class="section-title">Network at a Glance</h2>
+        <p class="section-sub">
+          Real-time statistics from the BloodBridge network across Bangladesh.
+        </p>
+
+        <div class="dashboard-grid">
+          <div class="glass-card dashboard-card reveal">
+            <div class="dash-icon">👥</div>
+            <div class="dash-num" id="dash-donors" data-value="0">0</div>
+            <div class="dash-label" data-translate="dash_donors">
+              Active Donors
+            </div>
+            <div class="dash-change up">+12% this week</div>
+          </div>
+          <div
+            class="glass-card dashboard-card reveal"
+            style="transition-delay: 0.1s"
+          >
+            <div class="dash-icon">🏥</div>
+            <div class="dash-num" id="dash-banks" data-value="0">0</div>
+            <div class="dash-label" data-translate="dash_banks">
+              Blood Banks
+            </div>
+            <div class="dash-change up">+3 new this month</div>
+          </div>
+          <div
+            class="glass-card dashboard-card reveal"
+            style="transition-delay: 0.2s"
+          >
+            <div class="dash-icon">❤️</div>
+            <div class="dash-num" id="dash-lives" data-value="0">0</div>
+            <div class="dash-label" data-translate="dash_lives">
+              Lives Saved
+            </div>
+            <div class="dash-change up">+156 this month</div>
+          </div>
+          <div
+            class="glass-card dashboard-card reveal"
+            style="transition-delay: 0.3s"
+          >
+            <div class="dash-icon">🚨</div>
+            <div class="dash-num" id="dash-urgent" data-value="0">0</div>
+            <div class="dash-label" data-translate="dash_urgent">
+              Urgent Requests
+            </div>
+            <div class="dash-change warn">Needs attention</div>
+          </div>
+          <div
+            class="glass-card dashboard-card reveal"
+            style="transition-delay: 0.1s"
+          >
+            <div class="dash-icon">⏳</div>
+            <div class="dash-num" id="dash-pending" data-value="0">0</div>
+            <div class="dash-label" data-translate="dash_pending">Pending</div>
+            <div class="dash-change up">Processing</div>
+          </div>
+          <div
+            class="glass-card dashboard-card reveal"
+            style="transition-delay: 0.2s"
+          >
+            <div class="dash-icon">⏰</div>
+            <div class="dash-num" id="dash-expiring" data-value="0">0</div>
+            <div class="dash-label" data-translate="dash_expiring">
+              Expiring Soon
+            </div>
+            <div class="dash-change warn">Action needed</div>
+          </div>
+          <div
+            class="glass-card dashboard-card reveal"
+            style="transition-delay: 0.3s"
+          >
+            <div class="dash-icon">🌡️</div>
+            <div class="dash-num" id="dash-temp" data-value="0">0</div>
+            <div class="dash-label" data-translate="dash_temp">Temp Alerts</div>
+            <div class="dash-change up">All normal</div>
+          </div>
+          <div
+            class="glass-card dashboard-card reveal"
+            style="transition-delay: 0.4s"
+          >
+            <div class="dash-icon">📋</div>
+            <div class="dash-num" id="dash-requests" data-value="0">0</div>
+            <div class="dash-label" data-translate="dash_requests">
+              Requests
+            </div>
+            <div class="dash-change up">Today</div>
+          </div>
+        </div>
+        <div
+          class="last-updated"
+          id="last-updated"
+          data-translate="last_updated"
+        >
+          Last updated: --:--:--
+        </div>
+      </section>
+
+      <!-- FEATURES -->
+      <section class="section reveal">
+        <div class="section-label" data-translate="feat_title">
+          Why BloodBridge
+        </div>
+        <h2 class="section-title" data-translate="feat_heading">
+          Built for speed.<br />Designed to save lives.
+        </h2>
+        <p class="section-sub" data-translate="feat_sub">
+          A unified platform bridging every part of the blood supply chain —
+          from donor to patient — in real time.
+        </p>
+
+        <div class="features-grid">
+          <div class="feature-card glass-card reveal">
+            <div class="feature-icon">🩸</div>
+            <h3 data-translate="feat_1_title">Real-Time Blood Tracking</h3>
+            <p data-translate="feat_1_desc">
+              Monitor blood unit availability across all registered banks and
+              hospitals with live inventory updates every 60 seconds.
+            </p>
+          </div>
+          <div
+            class="feature-card glass-card reveal"
+            style="transition-delay: 0.1s"
+          >
+            <div class="feature-icon">🚨</div>
+            <h3 data-translate="feat_2_title">Emergency Alerts</h3>
+            <p data-translate="feat_2_desc">
+              Instantly broadcast urgent blood needs to nearby verified donors
+              and partner facilities via SMS, app, and email.
+            </p>
+          </div>
+          <div
+            class="feature-card glass-card reveal"
+            style="transition-delay: 0.2s"
+          >
+            <div class="feature-icon">📍</div>
+            <h3 data-translate="feat_3_title">Location-Based Matching</h3>
+            <p data-translate="feat_3_desc">
+              Smart geo-matching connects the closest compatible donors to
+              recipients within minutes, not hours.
+            </p>
+          </div>
+          <div
+            class="feature-card glass-card reveal"
+            style="transition-delay: 0.3s"
+          >
+            <div class="feature-icon">🏥</div>
+            <h3 data-translate="feat_4_title">Hospital Integration</h3>
+            <p data-translate="feat_4_desc">
+              Seamless API connectivity with hospital EMR systems for automated
+              blood requisition and real-time cross-matching.
+            </p>
+          </div>
+          <div
+            class="feature-card glass-card reveal"
+            style="transition-delay: 0.4s"
+          >
+            <div class="feature-icon">📊</div>
+            <h3 data-translate="feat_5_title">Analytics Dashboard</h3>
+            <p data-translate="feat_5_desc">
+              Comprehensive insights on donation trends, regional shortages, and
+              supply forecasting for better health policy.
+            </p>
+          </div>
+          <div
+            class="feature-card glass-card reveal"
+            style="transition-delay: 0.5s"
+          >
+            <div class="feature-icon">🔐</div>
+            <h3 data-translate="feat_6_title">Secure & Verified</h3>
+            <p data-translate="feat_6_desc">
+              All donors and facilities are identity-verified. Blood units are
+              digitally tracked end-to-end with full chain of custody.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- HOW IT WORKS -->
+      <section class="section reveal" style="padding-top: 40px">
+        <div class="section-label" data-translate="process_title">Process</div>
+        <h2 class="section-title" data-translate="process_heading">
+          How it works
+        </h2>
+        <p class="section-sub" data-translate="process_sub">
+          Three simple steps to connect life-saving blood with those who need
+          it.
+        </p>
+
+        <div class="steps">
+          <div class="step reveal">
+            <div class="step-num">01</div>
+            <h3 data-translate="step_1_title">Register & Verify</h3>
+            <p data-translate="step_1_desc">
+              Donors, hospitals, and blood banks register with full identity and
+              medical verification for a trusted network.
+            </p>
+          </div>
+          <div class="step reveal" style="transition-delay: 0.15s">
+            <div class="step-num">02</div>
+            <h3 data-translate="step_2_title">Request or Offer</h3>
+            <p data-translate="step_2_desc">
+              Hospitals post blood requests instantly. Donors receive
+              geo-targeted alerts for compatible types nearby.
+            </p>
+          </div>
+          <div class="step reveal" style="transition-delay: 0.3s">
+            <div class="step-num">03</div>
+            <h3 data-translate="step_3_title">Bridge the Gap</h3>
+            <p data-translate="step_3_desc">
+              BloodBridge orchestrates logistics — matching, routing, and
+              confirming delivery from donor to patient.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section class="cta-section">
+        <div class="glass-card cta-inner reveal">
+          <div class="hero-badge" style="margin-bottom: 24px">
+            <span class="dot"></span>
+            <span data-translate="cta_badge">Join 4,800+ Donors Today</span>
+          </div>
+          <h2 data-translate="cta_heading">
+            Be the Bridge.<br />Be the Reason Someone Lives.
+          </h2>
+          <p data-translate="cta_desc">
+            It takes less than 10 minutes to donate, but it can mean a lifetime
+            to a patient in need. Join our growing network of heroes.
+          </p>
+          <div class="cta-actions">
+            <a href="register.php" class="btn-primary">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+              >
+                <path
+                  d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                ></path>
+              </svg>
+              <span data-translate="cta_btn_1">Register as Donor</span>
+            </a>
+            <a
+              href="request_blood.php"
+              class="btn-ghost"
+              data-translate="cta_btn_2"
+              >Request Blood Now</a
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- FOOTER (Logo removed as requested) -->
+      <footer>
+        <p style="flex: 1; text-align: center">
+          © 2026 BloodBridge.
+          <span data-translate="footer_copy"
+            >Saving lives, one drop at a time.</span
+          >
+        </p>
+        <div class="footer-links">
+          <a href="privacy.php" data-translate="footer_privacy">Privacy</a>
+          <a href="terms.php" data-translate="footer_terms">Terms</a>
+          <a href="contact.php" data-translate="footer_contact">Contact</a>
+        </div>
+      </footer>
+    </div>
+
+    <script src="landing_page.js"></script>
+    <script src="raktosathi_floating.js"></script>
+  </body>
+</html>

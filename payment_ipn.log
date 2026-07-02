@@ -1,0 +1,310 @@
+2026-06-06 16:53:11 | PAY: req=82 bag=129 amount=0 uid=22
+  specific_bag_rows=1
+2026-06-06 17:21:00 | PAY: req=88 bag=130 amount=500 uid=23
+  specific_bag_rows=1
+2026-06-06 17:25:15 | PAY: req=88 bag=130 amount=500 uid=23
+  specific_bag_rows=1
+2026-06-06 17:26:27 | IPN received
+  amount: 500.00
+  bank_tran_id: 260606212407sCWJ9AvMvleopBM
+  base_fair: 0.00
+  card_brand: MOBILEBANKING
+  card_issuer: BKash Mobile Banking
+  card_issuer_country: Bangladesh
+  card_issuer_country_code: BD
+  card_no: 
+  card_sub_brand: Classic
+  card_type: 
+  currency: BDT
+  currency_amount: 500.00
+  currency_rate: 1.0000
+  currency_type: BDT
+  error: Unattempted or Expired
+  status: FAILED
+  store_id: blood6a2421de71e37
+  tran_date: 2026-06-06 21:22:56
+  tran_id: BLOOD88_1780759515_ADB81A18
+  value_a: 88
+  value_b: 130
+  value_c: R Khan
+  value_d: 
+  verify_sign: beaff83a131ae82da4bc911cc2aac697
+  verify_sign_sha2: 7d64c48524f6325ebc38a00257a759ca9a529eb46178a2dedc358dfcf6a61746
+  verify_key: amount,bank_tran_id,base_fair,card_brand,card_issuer,card_issuer_country,card_issuer_country_code,card_no,card_sub_brand,card_type,currency,currency_amount,currency_rate,currency_type,error,status,store_id,tran_date,tran_id,value_a,value_b,value_c,value_d
+2026-06-06 17:26:27 | ERROR: Missing tran_id or val_id
+2026-06-06 17:27:13 | PAY: req=88 bag=130 amount=500 uid=23
+  specific_bag_rows=1
+2026-06-06 17:27:31 | IPN received
+  amount: 500.00
+  bank_tran_id: 260606212512w0oDBizH8iCUbUw
+  base_fair: 0.00
+  card_brand: MOBILEBANKING
+  card_issuer: BKash Mobile Banking
+  card_issuer_country: Bangladesh
+  card_issuer_country_code: BD
+  card_no: 
+  card_sub_brand: Classic
+  card_type: BKASH-BKash
+  currency: BDT
+  currency_amount: 500.00
+  currency_rate: 1.0000
+  currency_type: BDT
+  error: 
+  risk_level: 0
+  risk_title: Safe
+  status: VALID
+  store_amount: 487.50
+  store_id: blood6a2421de71e37
+  tran_date: 2026-06-06 21:24:54
+  tran_id: BLOOD88_1780759633_6C32C721
+  val_id: 2606062125126VkE93b6AczY5ey
+  value_a: 88
+  value_b: 130
+  value_c: R Khan
+  value_d: 
+  verify_sign: be6469c81d59b53830035264dec30ac7
+  verify_sign_sha2: 2a71cea7b5360b7430ccb30c3c0b073bf6a1ee05dc270056cb8d73dcea9cf97a
+  verify_key: amount,bank_tran_id,base_fair,card_brand,card_issuer,card_issuer_country,card_issuer_country_code,card_no,card_sub_brand,card_type,currency,currency_amount,currency_rate,currency_type,error,risk_level,risk_title,status,store_amount,store_id,tran_date,tran_id,val_id,value_a,value_b,value_c,value_d
+2026-06-06 17:27:32 | SUCCESS: Payment completed for tran_id=BLOOD88_1780759633_6C32C721, request_id=88
+2026-06-06 19:13:07 | PAY: req=89 bag=132 amount=500 uid=23
+  specific_bag_rows=1
+2026-06-06 19:13:49 | IPN received
+  amount: 500.00
+  bank_tran_id: 260606231130MZMQaYp6JjDkdlY
+  base_fair: 0.00
+  card_brand: MOBILEBANKING
+  card_issuer: BKash Mobile Banking
+  card_issuer_country: Bangladesh
+  card_issuer_country_code: BD
+  card_no: 
+  card_sub_brand: Classic
+  card_type: BKASH-BKash
+  currency: BDT
+  currency_amount: 500.00
+  currency_rate: 1.0000
+  currency_type: BDT
+  error: 
+  risk_level: 0
+  risk_title: Safe
+  status: VALID
+  store_amount: 487.50
+  store_id: blood6a2421de71e37
+  tran_date: 2026-06-06 23:10:51
+  tran_id: BLOOD89_1780765987_D0EA2CD1
+  val_id: 260606231130Erqp6RYbzerY9Cd
+  value_a: 89
+  value_b: 132
+  value_c: anik
+  value_d: 
+  verify_sign: 71d5622f426c4731f0b8a0421cb7c2fc
+  verify_sign_sha2: d4c735f0726f9ec4237d599cb697e7ab63f97688ea9e77103a545f31001fa65c
+  verify_key: amount,bank_tran_id,base_fair,card_brand,card_issuer,card_issuer_country,card_issuer_country_code,card_no,card_sub_brand,card_type,currency,currency_amount,currency_rate,currency_type,error,risk_level,risk_title,status,store_amount,store_id,tran_date,tran_id,val_id,value_a,value_b,value_c,value_d
+2026-06-06 19:13:50 | SUCCESS: Payment completed for tran_id=BLOOD89_1780765987_D0EA2CD1, request_id=89
+2026-06-06 19:35:19 | IPN received
+  amount: 500.00
+  bank_tran_id: 260606233300Umcnra3oQf6k8XD
+  base_fair: 0.00
+  card_brand: MOBILEBANKING
+  card_issuer: BKash Mobile Banking
+  card_issuer_country: Bangladesh
+  card_issuer_country_code: BD
+  card_no: 
+  card_sub_brand: Classic
+  card_type: BKASH-BKash
+  currency: BDT
+  currency_amount: 500.00
+  currency_rate: 1.0000
+  currency_type: BDT
+  error: 
+  risk_level: 0
+  risk_title: Safe
+  status: VALID
+  store_amount: 487.50
+  store_id: blood6a2421de71e37
+  tran_date: 2026-06-06 23:32:42
+  tran_id: BLOOD90_1780767158_1B69BE48
+  val_id: 260606233300AryWYAMXM1sOnY4
+  value_a: 90
+  value_b: 135
+  value_c: R Khan
+  value_d: 
+  verify_sign: cc9c32f91f5f854c365b21c4f1dcb49b
+  verify_sign_sha2: 9fc0d4ccacc22c24795fe2cc28fe5d7b2644245634bb31e0eb23a123fc2fcd2d
+  verify_key: amount,bank_tran_id,base_fair,card_brand,card_issuer,card_issuer_country,card_issuer_country_code,card_no,card_sub_brand,card_type,currency,currency_amount,currency_rate,currency_type,error,risk_level,risk_title,status,store_amount,store_id,tran_date,tran_id,val_id,value_a,value_b,value_c,value_d
+2026-06-06 19:35:20 | ERROR: Transaction not found: BLOOD90_1780767158_1B69BE48
+2026-06-06 19:36:27 | IPN received
+  amount: 500.00
+  bank_tran_id: 26060623340924gOFMwF5PbMWL2
+  base_fair: 0.00
+  card_brand: MOBILEBANKING
+  card_issuer: BKash Mobile Banking
+  card_issuer_country: Bangladesh
+  card_issuer_country_code: BD
+  card_no: 
+  card_sub_brand: Classic
+  card_type: BKASH-BKash
+  currency: BDT
+  currency_amount: 500.00
+  currency_rate: 1.0000
+  currency_type: BDT
+  error: 
+  risk_level: 0
+  risk_title: Safe
+  status: VALID
+  store_amount: 487.50
+  store_id: blood6a2421de71e37
+  tran_date: 2026-06-06 23:33:52
+  tran_id: BLOOD90_1780767228_22F74F43
+  val_id: 260606233409MiWFwA4rSRE6M9S
+  value_a: 90
+  value_b: 135
+  value_c: R Khan
+  value_d: 
+  verify_sign: 4308e0b25398f93aa86c68d4e9ff661d
+  verify_sign_sha2: d37cd5302e9de307a768d2bbb5aa427e4b53fe581d36079835dc862a7fdcaef8
+  verify_key: amount,bank_tran_id,base_fair,card_brand,card_issuer,card_issuer_country,card_issuer_country_code,card_no,card_sub_brand,card_type,currency,currency_amount,currency_rate,currency_type,error,risk_level,risk_title,status,store_amount,store_id,tran_date,tran_id,val_id,value_a,value_b,value_c,value_d
+2026-06-06 19:36:28 | ERROR: Transaction not found: BLOOD90_1780767228_22F74F43
+2026-06-07 13:17:35 | PAY: req=90 bag=135 amount=500 uid=23
+  specific_bag_rows=1
+2026-06-07 13:18:29 | IPN received
+  amount: 500.00
+  bank_tran_id: 260607171610UgFnpConAsrkcf1
+  base_fair: 0.00
+  card_brand: MOBILEBANKING
+  card_issuer: BKash Mobile Banking
+  card_issuer_country: Bangladesh
+  card_issuer_country_code: BD
+  card_no: 
+  card_sub_brand: Classic
+  card_type: BKASH-BKash
+  currency: BDT
+  currency_amount: 500.00
+  currency_rate: 1.0000
+  currency_type: BDT
+  error: 
+  risk_level: 0
+  risk_title: Safe
+  status: VALID
+  store_amount: 487.50
+  store_id: blood6a2421de71e37
+  tran_date: 2026-06-07 17:15:17
+  tran_id: BLOOD90_1780831055_76B097E2
+  val_id: 260607171610UFbIBpKsRW4Ybu9
+  value_a: 90
+  value_b: 135
+  value_c: R Khan
+  value_d: 
+  verify_sign: d2c6308e641d3f5efc855f0deb4f7f7a
+  verify_sign_sha2: ab2ba3962c7c18548888441793aea4ddef6dc877bb3113002c5e2abb41c3603e
+  verify_key: amount,bank_tran_id,base_fair,card_brand,card_issuer,card_issuer_country,card_issuer_country_code,card_no,card_sub_brand,card_type,currency,currency_amount,currency_rate,currency_type,error,risk_level,risk_title,status,store_amount,store_id,tran_date,tran_id,val_id,value_a,value_b,value_c,value_d
+2026-06-07 13:18:31 | SUCCESS: Payment completed for tran_id=BLOOD90_1780831055_76B097E2, request_id=90
+2026-06-09 12:42:59 | PAY: req=92 bag=137 amount=2000 uid=23
+  specific_bag_rows=1
+2026-06-09 12:43:13 | IPN received
+  amount: 2000.00
+  bank_tran_id: 260609164054o85OuTp0NLhUAJJ
+  base_fair: 0.00
+  card_brand: MOBILEBANKING
+  card_issuer: BKash Mobile Banking
+  card_issuer_country: Bangladesh
+  card_issuer_country_code: BD
+  card_no: 
+  card_sub_brand: Classic
+  card_type: BKASH-BKash
+  currency: BDT
+  currency_amount: 2000.00
+  currency_rate: 1.0000
+  currency_type: BDT
+  error: 
+  risk_level: 0
+  risk_title: Safe
+  status: VALID
+  store_amount: 1950.00
+  store_id: blood6a2421de71e37
+  tran_date: 2026-06-09 16:40:42
+  tran_id: BLOOD92_1781001779_E8E192D6
+  val_id: 260609164054Up57w5MESH2E2MA
+  value_a: 92
+  value_b: 137
+  value_c: R Khan
+  value_d: 
+  verify_sign: 9aec7d4c9ae85a90bef5f4e78ce903f6
+  verify_sign_sha2: 793d8d0ddc073f3223b5e5167c662133d557a133270f3f56c5412dcca7d86170
+  verify_key: amount,bank_tran_id,base_fair,card_brand,card_issuer,card_issuer_country,card_issuer_country_code,card_no,card_sub_brand,card_type,currency,currency_amount,currency_rate,currency_type,error,risk_level,risk_title,status,store_amount,store_id,tran_date,tran_id,val_id,value_a,value_b,value_c,value_d
+2026-06-09 12:43:14 | SUCCESS: Payment completed for tran_id=BLOOD92_1781001779_E8E192D6, request_id=92
+2026-06-09 12:44:51 | PAY: req=87 bag=0 amount=0 uid=23
+  all_bags_rows=0
+2026-06-09 12:53:31 | PAY: req=93 bag=138 amount=500 uid=23
+  specific_bag_rows=1
+2026-06-09 12:53:42 | IPN received
+  amount: 500.00
+  bank_tran_id: 2606091651236ttjlyqMSJaU5Io
+  base_fair: 0.00
+  card_brand: MOBILEBANKING
+  card_issuer: BKash Mobile Banking
+  card_issuer_country: Bangladesh
+  card_issuer_country_code: BD
+  card_no: 
+  card_sub_brand: Classic
+  card_type: BKASH-BKash
+  currency: BDT
+  currency_amount: 500.00
+  currency_rate: 1.0000
+  currency_type: BDT
+  error: 
+  risk_level: 0
+  risk_title: Safe
+  status: VALID
+  store_amount: 487.50
+  store_id: blood6a2421de71e37
+  tran_date: 2026-06-09 16:51:13
+  tran_id: BLOOD93_1781002411_3F2F7A23
+  val_id: 260609165123wI8rIoW7biOwVYu
+  value_a: 93
+  value_b: 138
+  value_c: R Khan
+  value_d: 
+  verify_sign: 1f21df8455f91ef086c2afa6a8959ba1
+  verify_sign_sha2: a7c6fdc76902c6a03d776ae1bbfe3550ffb7b85774e0be19b70d1c215f3cbfb4
+  verify_key: amount,bank_tran_id,base_fair,card_brand,card_issuer,card_issuer_country,card_issuer_country_code,card_no,card_sub_brand,card_type,currency,currency_amount,currency_rate,currency_type,error,risk_level,risk_title,status,store_amount,store_id,tran_date,tran_id,val_id,value_a,value_b,value_c,value_d
+2026-06-09 12:53:43 | SUCCESS: Payment completed for tran_id=BLOOD93_1781002411_3F2F7A23, request_id=93
+2026-06-11 21:14:42 | PAY: req=100 bag=0 amount=500 uid=23
+  all_bags_rows=1
+2026-06-11 21:15:35 | PAY: req=100 bag=147 amount=500 uid=23
+  specific_bag_rows=1
+2026-06-11 21:17:39 | PAY: req=100 bag=0 amount=500 uid=23
+  all_bags_rows=1
+2026-06-11 21:19:51 | PAY: req=100 bag=0 amount=500 uid=23
+  all_bags_rows=1
+2026-06-11 21:20:07 | IPN received
+  amount: 500.00
+  bank_tran_id: 26061212007Q56eZEI8sdJM2At
+  base_fair: 0.00
+  card_brand: MOBILEBANKING
+  card_issuer: BKash Mobile Banking
+  card_issuer_country: Bangladesh
+  card_issuer_country_code: BD
+  card_no: 
+  card_sub_brand: Classic
+  card_type: BKASH-BKash
+  currency: BDT
+  currency_amount: 500.00
+  currency_rate: 1.0000
+  currency_type: BDT
+  error: 
+  risk_level: 0
+  risk_title: Safe
+  status: VALID
+  store_amount: 487.50
+  store_id: blood6a2421de71e37
+  tran_date: 2026-06-12 01:19:54
+  tran_id: BLOOD100_1781205591_29CC9A78
+  val_id: 260612120076eFxV7R787ewYch
+  value_a: 100
+  value_b: 0
+  value_c: R Khan
+  value_d: 
+  verify_sign: 0ccdc67ea1d33b907eaff3f342d764d1
+  verify_sign_sha2: e91586df0fc6045042913833d45738063458d7da67ee92854c05dc55deb8de5b
+  verify_key: amount,bank_tran_id,base_fair,card_brand,card_issuer,card_issuer_country,card_issuer_country_code,card_no,card_sub_brand,card_type,currency,currency_amount,currency_rate,currency_type,error,risk_level,risk_title,status,store_amount,store_id,tran_date,tran_id,val_id,value_a,value_b,value_c,value_d
+2026-06-11 21:20:08 | SUCCESS: Payment completed for tran_id=BLOOD100_1781205591_29CC9A78, request_id=100

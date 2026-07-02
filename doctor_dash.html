@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>BloodBridge — Doctor Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="doctor_dash.css">
+  <link rel="stylesheet" href="raktosathi_floating.css">
+</head>
+<body>
+
+<div class="bg-scene">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+<div class="grid-overlay"></div>
+
+<!-- SIDEBAR OVERLAY (mobile) -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- SIDEBAR (premium design) -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">
+      <img src="blood1.png" alt="BloodBridge" class="sidebar-logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+      <span class="sidebar-logo-text-fallback" style="display:none;">🩸 BloodBridge</span>
+      <span class="sidebar-logo-text">Doctor Portal</span>
+    </div>
+    <button class="sidebar-close" id="sidebarClose" aria-label="Close sidebar">✕</button>
+  </div>
+
+  <div class="sidebar-section-label">Main</div>
+  <nav class="sidebar-nav">
+    <a href="#" class="sidebar-link active" data-section="dashboard">
+      <span class="sidebar-icon">📊</span>
+      <span>Dashboard</span>
+    </a>
+    <a href="#" class="sidebar-link" data-section="patients">
+      <span class="sidebar-icon">👥</span>
+      <span>My Patients</span>
+    </a>
+    <a href="#" class="sidebar-link" data-section="antibodies">
+      <span class="sidebar-icon">🛡️</span>
+      <span>Antibody Profiles</span>
+    </a>
+    <a href="#" class="sidebar-link" data-section="thalassemia">
+      <span class="sidebar-icon">🧬</span>
+      <span>Thalassemia Registry</span>
+    </a>
+    <a href="#" class="sidebar-link" data-section="transfusions">
+      <span class="sidebar-icon">🩸</span>
+      <span>Transfusion Requests</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-section-label">Clinical</div>
+  <nav class="sidebar-nav">
+    <a href="#" class="sidebar-link" data-section="lab">
+      <span class="sidebar-icon">🔬</span>
+      <span>Lab Results</span>
+    </a>
+    <a href="#" class="sidebar-link" data-section="pregnancy">
+      <span class="sidebar-icon">🤰</span>
+      <span>Pregnancy Risk</span>
+    </a>
+    <a href="#" class="sidebar-link" data-section="mental">
+      <span class="sidebar-icon">🧠</span>
+      <span>Mental Health Flags</span>
+    </a>
+    <a href="#" class="sidebar-link" data-section="crossmatch">
+      <span class="sidebar-icon">🔬</span>
+      <span>Crossmatch Tests</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-section-label">Account</div>
+  <nav class="sidebar-nav">
+    <a href="#" class="sidebar-link" data-section="profile">
+      <span class="sidebar-icon">👤</span>
+      <span>Profile</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" id="sidebarAvatar">DR</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name" id="sidebarName">Loading...</div>
+        <div class="sidebar-user-role" id="sidebarRole">Doctor</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN WRAPPER -->
+<div class="main-wrapper" id="mainWrapper">
+  <!-- TOP NAVBAR -->
+  <nav class="topnav">
+    <div class="topnav-left">
+      <button class="hamburger" id="hamburger" aria-label="Open sidebar">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="topnav-brand">
+        <img src="blood1.png" alt="BloodBridge" class="topnav-logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline'">
+        <span class="topnav-logo-fallback" style="display:none;">🩸</span>
+        <span class="topnav-title">Doctor Dashboard</span>
+      </div>
+    </div>
+    <div class="topnav-right">
+      <div class="theme-toggle" id="themeToggle" title="Toggle Light/Dark Mode">
+        <div class="toggle-track">
+          <span class="toggle-icon moon">🌙</span>
+          <span class="toggle-icon sun">☀️</span>
+          <div class="toggle-thumb"></div>
+        </div>
+      </div>
+      <div class="doctor-badge">
+        <span class="online-badge">🟢 On Call</span>
+      </div>
+      <button class="logout-btn" id="logoutBtn" onclick="localStorage.removeItem('bbDocPage');window.location.href='login.html'">Logout</button>
+    </div>
+  </nav>
+
+  <main class="content" id="pageContent">
+    <!-- DASHBOARD VIEW (default active) -->
+    <div class="dashboard-view active" id="dashboardView">
+
+      <!-- GREETING + STATS OVERVIEW -->
+      <div class="greeting-section reveal">
+        <div class="greeting-text">
+          <h1>Welcome back, <span class="doctor-name" id="greetName">...</span></h1>
+          <p class="doctor-id" id="doctorSubtitle">BloodBridge Medical Network</p>
+        </div>
+        <div class="alert-pulse">
+          <span class="alert-dot"></span> <span id="alertPillText">Loading alerts...</span>
+        </div>
+      </div>
+
+      <!-- STATS GRID (7 active patients, 3 pending transfusions, 2 antibody alerts, 1 thalassemia alert) -->
+      <div class="stats-grid reveal">
+        <div class="stat-card glass-card">
+          <div class="stat-icon">👥</div>
+          <div class="stat-info">
+            <span class="stat-value" id="statPatients">0</span>
+            <span class="stat-label">Active Patients</span>
+          </div>
+        </div>
+        <div class="stat-card glass-card">
+          <div class="stat-icon">🩸</div>
+          <div class="stat-info">
+            <span class="stat-value" id="statPendingTrans">0</span>
+            <span class="stat-label">Pending Transfusions</span>
+          </div>
+        </div>
+        <div class="stat-card glass-card">
+          <div class="stat-icon">🛡️</div>
+          <div class="stat-info">
+            <span class="stat-value" id="statAntibodyAlerts">0</span>
+            <span class="stat-label">Antibody Alerts</span>
+          </div>
+        </div>
+        <div class="stat-card glass-card">
+          <div class="stat-icon">🧬</div>
+          <div class="stat-info">
+            <span class="stat-value" id="statThalAlerts">0</span>
+            <span class="stat-label">Thalassemia Alerts</span>
+          </div>
+        </div>
+        <div class="stat-card glass-card">
+          <div class="stat-icon">🧠</div>
+          <div class="stat-info">
+            <span class="stat-value" id="statMentalFlags">0</span>
+            <span class="stat-label">Mental Health Flags</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CRITICAL ALERTS — dynamic -->
+      <div class="alerts-grid reveal" id="criticalAlertsGrid">
+        <div class="alert-critical-card glass-card" style="justify-content:center;color:var(--text-muted);">
+          <div class="loader-spin" style="margin:0 auto;"></div>
+        </div>
+      </div>
+
+      <!-- FEATURES & ACTIONS GRID (7 items from jpeg) -->
+      <div class="section-header reveal">
+        <h2>Clinical Actions & Tools</h2>
+        <p>Manage antibodies, approve transfusions, and monitor patient health</p>
+      </div>
+      <div class="actions-grid reveal">
+        <div class="action-card glass-card" data-action="manageAntibodies">
+          <div class="action-icon">🛡️📋</div>
+          <h3>Manage Patient Antibody Profiles</h3>
+          <p>View and update antibody records</p>
+          <span class="action-tag">#12</span>
+        </div>
+        <div class="action-card glass-card" data-action="antibodyMatch">
+          <div class="action-icon">🔄🩸</div>
+          <h3>Review Antibody Match Suggestions</h3>
+          <p>AI-powered compatibility checks</p>
+          <span class="action-tag">#12</span>
+        </div>
+        <div class="action-card glass-card" data-action="confirmThalassemia">
+          <div class="action-icon">🧬✅</div>
+          <h3>Confirm Thalassemia Carrier Status</h3>
+          <p>Validate genetic test results</p>
+          <span class="action-tag">#13</span>
+        </div>
+        <div class="action-card glass-card" data-action="cultureResults">
+          <div class="action-icon">🔬🧫</div>
+          <h3>Review Blood Culture Test Results</h3>
+          <p>Infection screening & sterility</p>
+          <span class="action-tag">#06</span>
+        </div>
+        <div class="action-card glass-card" data-action="healthTrend">
+          <div class="action-icon">📈❤️</div>
+          <h3>View Patient Health Trend</h3>
+          <p>Haemoglobin, iron, and vitals</p>
+          <span class="action-tag">#07</span>
+        </div>
+        <div class="action-card glass-card" data-action="pregnancyRisk">
+          <div class="action-icon">🤰⚠️</div>
+          <h3>Review Pregnancy Risk Records</h3>
+          <p>Hemolytic disease management</p>
+          <span class="action-tag">#10</span>
+        </div>
+        <div class="action-card glass-card" data-action="approveRequests">
+          <div class="action-icon">✅🩸</div>
+          <h3>Approve Blood Requests</h3>
+          <p>Authorize transfusions</p>
+          <span class="action-tag">#16</span>
+        </div>
+        <div class="action-card glass-card" data-action="mentalHealth">
+          <div class="action-icon">🧠💚</div>
+          <h3>Review Mental Health Flags</h3>
+          <p>Psychological distress alerts from AI</p>
+          <span class="action-tag">#D1.4</span>
+        </div>
+        <div class="action-card glass-card" data-action="crossmatchAuth">
+          <div class="action-icon">🔬✅</div>
+          <h3>Authorize Crossmatch Tests</h3>
+          <p>Approve compatibility results</p>
+          <span class="action-tag">#D1.8</span>
+        </div>
+        <div class="action-card glass-card" data-action="recordOutcomes">
+          <div class="action-icon">📋🩸</div>
+          <h3>Record Transfusion Outcomes</h3>
+          <p>Log reaction notes &amp; results</p>
+          <span class="action-tag">#D1.3</span>
+        </div>
+      </div>
+
+      <!-- TWO COLUMN: Pending Transfusions + Patient List -->
+      <div class="two-col-grid reveal">
+        <!-- Pending Transfusions Table -->
+        <div class="glass-card table-card">
+          <div class="card-header">
+            <div class="card-title"><span class="card-title-icon">⏳</span> Pending Transfusions</div>
+            <button class="btn-ghost-sm" id="viewAllTransfusionsBtn">View All</button>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr><th>Patient</th><th>Blood Group</th><th>Units</th><th>Antibody Risk</th><th>Action</th></tr>
+              </thead>
+              <tbody id="dashTransfusionsBody">
+                <tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:20px;">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Recent Antibody Alerts & Thalassemia Pair List -->
+        <div class="glass-card alerts-card">
+          <div class="card-header">
+            <div class="card-title"><span class="card-title-icon">⚡</span> Clinical Alerts</div>
+            <div class="live-pill small"><span class="dot"></span> Live</div>
+          </div>
+          <div class="alert-list" id="dashClinicalAlerts">
+            <div style="padding:12px;color:var(--text-muted);font-size:.82rem;text-align:center;">Loading...</div>
+          </div>
+          <div class="card-footer"><a href="#" class="card-footer-link" id="viewAllAlertsLink">View all clinical alerts →</a></div>
+        </div>
+      </div>
+
+      <!-- RECENT LAB RESULTS PREVIEW -->
+      <div class="glass-card lab-preview reveal">
+        <div class="card-header">
+          <div class="card-title"><span class="card-title-icon">🔬</span> Recent Blood Culture Results</div>
+          <button class="btn-ghost-sm" id="viewAllLabBtn">View All</button>
+        </div>
+        <div class="lab-grid" id="dashLabGrid"><div style="padding:12px;color:var(--text-muted);font-size:.82rem;">Loading...</div></div>
+      </div>
+
+      <div class="footer-note reveal">
+        <p>⚕️ Secure clinical environment. All patient data is HIPAA & GDPR compliant.</p>
+      </div>
+    </div>
+
+
+    <!-- ══════════ PATIENTS ══════════ -->
+    <div class="dashboard-view" id="patientsView">
+      <div class="section-header reveal"><h2>My Patients</h2><p>Patients under your care and their blood request history</p></div>
+      <div class="glass-card reveal" style="display:flex;align-items:flex-end;gap:16px;padding:16px 20px;margin-bottom:20px;flex-wrap:wrap;">
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <label style="font-size:.72rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;">Blood Group</label>
+          <select id="patientFilterBG" style="background:var(--input-bg);border:1px solid var(--input-border);color:var(--text-primary);padding:8px 12px;border-radius:10px;font-family:Outfit,sans-serif;font-size:.82rem;">
+            <option value="all">All Groups</option>
+            <option value="A+">A+</option><option value="A-">A-</option>
+            <option value="B+">B+</option><option value="B-">B-</option>
+            <option value="AB+">AB+</option><option value="AB-">AB-</option>
+            <option value="O+">O+</option><option value="O-">O-</option>
+          </select>
+        </div>
+        <button id="addPatientBtn" style="background:linear-gradient(135deg,#C0162C,#8B0020);color:#fff;border:none;padding:9px 18px;border-radius:40px;font-size:.82rem;font-weight:600;cursor:pointer;font-family:Outfit,sans-serif;">+ Register Patient</button>
+      </div>
+      <div class="glass-card table-card reveal">
+        <div class="card-header"><div class="card-title"><span class="card-title-icon">👥</span> Patient Registry</div></div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>#</th><th>Name</th><th>Blood Group</th><th>Phone</th><th>Last Request</th><th>Antibody</th><th>Action</th></tr></thead>
+            <tbody id="patientsTableBody"><tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:24px;">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ ANTIBODY PROFILES ══════════ -->
+    <div class="dashboard-view" id="antibodiesView">
+      <div class="section-header reveal"><h2>Antibody Profiles</h2><p>Patient antibody records and AI-powered compatibility suggestions</p></div>
+      <div class="two-col-grid reveal">
+        <div class="glass-card table-card">
+          <div class="card-header"><div class="card-title"><span class="card-title-icon">🛡️</span> Antibody Records</div></div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr><th>Patient</th><th>Antibody</th><th>Type</th><th>Detected</th><th>Action</th></tr></thead>
+              <tbody id="antibodyTableBody"><tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:24px;">Loading...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="glass-card table-card">
+          <div class="card-header"><div class="card-title"><span class="card-title-icon">🔄</span> Match Suggestions</div><div class="live-pill small"><span class="dot"></span> AI</div></div>
+          <div id="matchSuggestionsContainer"><div style="padding:20px;color:var(--text-muted);font-size:.82rem;text-align:center;">Loading suggestions...</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ THALASSEMIA REGISTRY ══════════ -->
+    <div class="dashboard-view" id="thalassemiaView">
+      <div class="section-header reveal"><h2>Thalassemia Registry</h2><p>Carrier confirmation and couple alerts for genetic counseling</p></div>
+      <div class="two-col-grid reveal">
+        <div class="glass-card table-card">
+          <div class="card-header"><div class="card-title"><span class="card-title-icon">🧬</span> Carrier Records</div></div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr><th>Patient</th><th>Is Carrier</th><th>Confirmed By</th><th>Confirmed At</th><th>Action</th></tr></thead>
+              <tbody id="thalCarrierBody"><tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:24px;">Loading...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="glass-card table-card">
+          <div class="card-header"><div class="card-title"><span class="card-title-icon">⚠️</span> Couple Alerts</div></div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr><th>Couple ID</th><th>Risk %</th><th>Advice</th><th>Date</th><th>Action</th></tr></thead>
+              <tbody id="thalCoupleBody"><tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:24px;">Loading...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ TRANSFUSION REQUESTS ══════════ -->
+    <div class="dashboard-view" id="transfusionsView">
+      <div class="section-header reveal">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;">
+          <div><h2>Transfusion Requests</h2><p>Pending blood requests awaiting your approval &amp; recorded outcomes</p></div>
+          <div class="live-pill"><span class="dot"></span> Live</div>
+        </div>
+      </div>
+      <div class="glass-card reveal" style="display:flex;align-items:flex-end;gap:16px;padding:16px 20px;margin-bottom:20px;flex-wrap:wrap;">
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <label style="font-size:.72rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;">Status</label>
+          <select id="transFilterStatus" style="background:var(--input-bg);border:1px solid var(--input-border);color:var(--text-primary);padding:8px 12px;border-radius:10px;font-family:Outfit,sans-serif;font-size:.82rem;">
+            <option value="pending">Pending</option><option value="approved">Approved</option><option value="all">All</option>
+          </select>
+        </div>
+        <button id="refreshTransBtn" style="background:var(--glass-bg);border:1px solid var(--glass-border);padding:9px 16px;border-radius:40px;font-size:.82rem;cursor:pointer;font-family:Outfit,sans-serif;color:var(--text-primary);">🔄 Refresh</button>
+      </div>
+      <div class="glass-card table-card reveal">
+        <div class="card-header"><div class="card-title"><span class="card-title-icon">🩸</span> Blood Requests</div></div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Request ID</th><th>Requester</th><th>Blood Group</th><th>Units</th><th>Urgency</th><th>Antibody Risk</th><th>Date</th><th>Action</th></tr></thead>
+            <tbody id="transTableBody"><tr><td colspan="8" style="text-align:center;color:var(--text-muted);padding:24px;">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="glass-card table-card reveal" style="margin-top:20px;">
+        <div class="card-header"><div class="card-title"><span class="card-title-icon">📜</span> Transfusion History</div></div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>#</th><th>Date</th><th>Recipient</th><th>Blood Group</th><th>Hospital</th><th>Crossmatch</th><th>Notes</th><th>Action</th></tr></thead>
+            <tbody id="transHistoryBody"><tr><td colspan="8" style="text-align:center;color:var(--text-muted);padding:24px;">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ LAB RESULTS ══════════ -->
+    <div class="dashboard-view" id="labView">
+      <div class="section-header reveal"><h2>Lab Results</h2><p>Blood culture and donor health records</p></div>
+      <div class="glass-card table-card reveal">
+        <div class="card-header"><div class="card-title"><span class="card-title-icon">🧫</span> Blood Culture Tests</div></div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>#</th><th>Test Date</th><th>Blood Bag</th><th>Result</th><th>Pathogen</th><th>Comments</th></tr></thead>
+            <tbody id="labCultureBody"><tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:24px;">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="glass-card table-card reveal" style="margin-top:20px;">
+        <div class="card-header"><div class="card-title"><span class="card-title-icon">❤️</span> Recent Donor Health Records</div></div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Donor</th><th>Date</th><th>Haemoglobin</th><th>BP</th><th>Pulse</th><th>Weight</th><th>Notes</th></tr></thead>
+            <tbody id="labHealthBody"><tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:24px;">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ PREGNANCY RISK ══════════ -->
+    <div class="dashboard-view" id="pregnancyView">
+      <div class="section-header reveal"><h2>Pregnancy Risk Records</h2><p>Hemolytic disease of the newborn monitoring and blood group prediction</p></div>
+      <div class="glass-card table-card reveal">
+        <div class="card-header"><div class="card-title"><span class="card-title-icon">🤰</span> Pregnancy Records</div></div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>#</th><th>Mother</th><th>Mother BG</th><th>Father BG</th><th>Baby BG (predicted)</th><th>Due Date</th><th>Risk Advice</th></tr></thead>
+            <tbody id="pregnancyBody"><tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:24px;">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ MENTAL HEALTH FLAGS ══════════ -->
+    <div class="dashboard-view" id="mentalView">
+      <div class="section-header reveal"><h2>Mental Health Flags</h2><p>Review psychological distress flags raised by AI chatbot interactions</p></div>
+      <div class="two-col-grid reveal">
+        <div class="glass-card table-card">
+          <div class="card-header"><div class="card-title"><span class="card-title-icon">🧠</span> Active Flags</div><div class="live-pill small"><span class="dot"></span> Live</div></div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr><th>#</th><th>User</th><th>Flag Type</th><th>Severity</th><th>Keywords</th><th>Referred</th><th>Action</th></tr></thead>
+              <tbody id="mentalHealthBody"><tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:24px;">Loading...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="glass-card alerts-card">
+          <div class="card-header"><div class="card-title"><span class="card-title-icon">📋</span> Referral Summary</div></div>
+          <div id="mentalReferralSummary" style="padding:10px 0;">
+            <div style="padding:14px;color:var(--text-muted);font-size:.82rem;text-align:center;">Loading summary...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ CROSSMATCH TESTS ══════════ -->
+    <div class="dashboard-view" id="crossmatchView">
+      <div class="section-header reveal"><h2>Crossmatch Test Authorization</h2><p>Review and authorize crossmatch compatibility tests for transfusions</p></div>
+      <div class="glass-card reveal" style="display:flex;align-items:flex-end;gap:16px;padding:16px 20px;margin-bottom:20px;flex-wrap:wrap;">
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <label style="font-size:.72rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;">Status</label>
+          <select id="crossmatchFilter" style="background:var(--input-bg);border:1px solid var(--input-border);color:var(--text-primary);padding:8px 12px;border-radius:10px;font-family:Outfit,sans-serif;font-size:.82rem;">
+            <option value="pending">Pending</option><option value="compatible">Compatible</option><option value="incompatible">Incompatible</option><option value="all">All</option>
+          </select>
+        </div>
+        <button id="refreshCrossmatchBtn" style="background:var(--glass-bg);border:1px solid var(--glass-border);padding:9px 16px;border-radius:40px;font-size:.82rem;cursor:pointer;font-family:Outfit,sans-serif;color:var(--text-primary);">🔄 Refresh</button>
+      </div>
+      <div class="glass-card table-card reveal">
+        <div class="card-header"><div class="card-title"><span class="card-title-icon">🔬</span> Crossmatch Tests</div></div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>#</th><th>Recipient</th><th>Blood Bag</th><th>Major</th><th>Minor</th><th>Antibody Screen</th><th>Date</th><th>Action</th></tr></thead>
+            <tbody id="crossmatchBody"><tr><td colspan="8" style="text-align:center;color:var(--text-muted);padding:24px;">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ PROFILE ══════════ -->
+    <div class="dashboard-view" id="profileView">
+      <div class="section-header reveal"><h2>Doctor Profile</h2><p>Your professional information and account settings</p></div>
+      <div class="reveal" style="display:grid;grid-template-columns:260px 1fr;gap:24px;align-items:start;">
+        <div class="glass-card" style="padding:28px 20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;position:sticky;top:88px;">
+          <div style="position:relative;display:inline-block;">
+            <div id="profAvatarCircle" style="width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,#C0162C,#8B0020);display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:800;color:#fff;box-shadow:0 0 32px rgba(192,22,44,.45);overflow:hidden;">DR</div>
+          </div>
+          <div style="font-size:1.15rem;font-weight:700;" id="profNameDisplay">Loading...</div>
+          <div style="font-size:.8rem;color:var(--text-muted);" id="profSpecDisplay">Doctor</div>
+          <div style="font-size:.72rem;color:var(--text-sub);background:rgba(192,22,44,.15);padding:3px 10px;border-radius:50px;border:1px solid rgba(192,22,44,.35);" id="profIdDisplay">ID: --</div>
+          <div style="font-size:.8rem;color:var(--text-muted);" id="profHospDisplay">Hospital: --</div>
+          <div style="font-size:.78rem;color:var(--text-muted);" id="profLicenseDisplay">License: --</div>
+        </div>
+        <div class="glass-card" style="padding:28px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px;">
+            <h3 style="font-size:1.15rem;font-weight:700;">Professional Information</h3>
+            <div style="display:flex;gap:10px;">
+              <button style="background:none;border:1px solid var(--glass-border);padding:7px 16px;border-radius:40px;font-size:.78rem;cursor:pointer;font-family:Outfit,sans-serif;color:var(--text-muted);display:none;" id="cancelProfBtn">Cancel</button>
+              <button style="background:linear-gradient(135deg,#C0162C,#8B0020);color:#fff;border:none;padding:7px 16px;border-radius:40px;font-size:.78rem;font-weight:600;cursor:pointer;font-family:Outfit,sans-serif;" id="editProfBtn">✏️ Edit</button>
+              <button style="background:linear-gradient(135deg,#C0162C,#8B0020);color:#fff;border:none;padding:7px 16px;border-radius:40px;font-size:.78rem;font-weight:600;cursor:pointer;font-family:Outfit,sans-serif;display:none;" id="saveProfBtn">💾 Save</button>
+            </div>
+          </div>
+          <form id="profileForm" novalidate>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+              <div><label style="font-size:.78rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Doctor ID</label><input type="text" id="profUserId" readonly style="width:100%;padding:10px 14px;background:var(--input-bg);border:1px solid var(--input-border);border-radius:10px;color:var(--text-primary);font-size:.85rem;font-family:Outfit,sans-serif;opacity:.6;cursor:not-allowed;"></div>
+              <div><label style="font-size:.78rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Member Since</label><input type="text" id="profCreatedAt" readonly style="width:100%;padding:10px 14px;background:var(--input-bg);border:1px solid var(--input-border);border-radius:10px;color:var(--text-primary);font-size:.85rem;font-family:Outfit,sans-serif;opacity:.6;cursor:not-allowed;"></div>
+              <div><label style="font-size:.78rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Full Name *</label><input type="text" id="profFullName" name="full_name" disabled style="width:100%;padding:10px 14px;background:var(--input-bg);border:1px solid var(--input-border);border-radius:10px;color:var(--text-primary);font-size:.85rem;font-family:Outfit,sans-serif;"><div id="err-fullname" style="font-size:.72rem;color:#f87171;min-height:14px;"></div></div>
+              <div><label style="font-size:.78rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Email *</label><input type="email" id="profEmail" name="email" disabled style="width:100%;padding:10px 14px;background:var(--input-bg);border:1px solid var(--input-border);border-radius:10px;color:var(--text-primary);font-size:.85rem;font-family:Outfit,sans-serif;"><div id="err-email" style="font-size:.72rem;color:#f87171;min-height:14px;"></div></div>
+              <div><label style="font-size:.78rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Phone</label><input type="tel" id="profPhone" name="phone" disabled style="width:100%;padding:10px 14px;background:var(--input-bg);border:1px solid var(--input-border);border-radius:10px;color:var(--text-primary);font-size:.85rem;font-family:Outfit,sans-serif;"></div>
+              <div><label style="font-size:.78rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Specialization</label><input type="text" id="profSpec" name="specialization" disabled style="width:100%;padding:10px 14px;background:var(--input-bg);border:1px solid var(--input-border);border-radius:10px;color:var(--text-primary);font-size:.85rem;font-family:Outfit,sans-serif;"></div>
+              <div><label style="font-size:.78rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">License No.</label><input type="text" id="profLicense" name="license_no" disabled style="width:100%;padding:10px 14px;background:var(--input-bg);border:1px solid var(--input-border);border-radius:10px;color:var(--text-primary);font-size:.85rem;font-family:Outfit,sans-serif;"></div>
+              <div><label style="font-size:.78rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Hospital Affiliation</label><input type="text" id="profHospital" name="hospital_affiliation" disabled style="width:100%;padding:10px 14px;background:var(--input-bg);border:1px solid var(--input-border);border-radius:10px;color:var(--text-primary);font-size:.85rem;font-family:Outfit,sans-serif;"></div>
+            </div>
+            <div id="profFormActions" style="display:none;margin-top:20px;padding-top:20px;border-top:1px solid var(--table-border);display:flex;gap:12px;justify-content:flex-end;">
+              <button type="button" id="cancelProfBtn2" style="background:none;border:1px solid var(--glass-border);padding:10px 22px;border-radius:10px;cursor:pointer;font-family:Outfit,sans-serif;font-size:.88rem;color:var(--text-muted);">Cancel</button>
+              <button type="submit" style="background:linear-gradient(135deg,#C0162C,#8B0020);color:#fff;border:none;padding:10px 28px;border-radius:10px;cursor:pointer;font-family:Outfit,sans-serif;font-size:.88rem;font-weight:600;">💾 Save Profile</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- GLOBAL MODAL -->
+<div id="globalModal" class="modal-overlay">
+  <div class="modal-container glass-card">
+    <div class="modal-header"><h3 id="modalTitle">Action</h3><button class="modal-close" id="closeModalBtn">&times;</button></div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer"><button class="btn-secondary modal-action-btn" id="modalConfirmBtn">Confirm</button><button class="btn-ghost-sm" id="modalCancelBtn">Close</button></div>
+  </div>
+</div>
+
+<div id="toastMessage" class="toast-message"></div>
+
+<script>
+  window._RAK_CONFIG = { auth: true, api: 'chat_api.php' };
+</script>
+<script src="raktosathi_floating.js"></script>
+<script src="doctor_dash.js"></script>
+</body>
+</html>

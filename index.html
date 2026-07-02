@@ -1,0 +1,84 @@
+   <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>BloodBridge — Loading</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="loader">
+  <div class="bg-glow"></div>
+  <div class="grid-bg"></div>
+
+  <div class="loader-inner" id="loaderInner">
+
+    <div class="brand">Blood<span>Bridge</span></div>
+
+    <!-- BLOOD DROP -->
+    <div class="drop-wrap">
+      <div class="pulse-ring"></div>
+      <div class="pulse-ring"></div>
+      <div class="pulse-ring"></div>
+
+      <svg class="drop-svg" id="dropSvg" viewBox="0 0 140 172" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <clipPath id="dropClip">
+            <path d="M70 10 C70 10, 20 78, 20 110 A50 50 0 0 0 120 110 C120 78, 70 10, 70 10Z"/>
+          </clipPath>
+          <linearGradient id="fillGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#FF6B6B"/>
+            <stop offset="100%" stop-color="#7B0018"/>
+          </linearGradient>
+          <linearGradient id="shimmerGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%"   stop-color="rgba(255,255,255,0)"/>
+            <stop offset="50%"  stop-color="rgba(255,255,255,0.18)"/>
+            <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+          </linearGradient>
+        </defs>
+
+        <path d="M70 10 C70 10, 20 78, 20 110 A50 50 0 0 0 120 110 C120 78, 70 10, 70 10Z"
+              fill="rgba(100,5,18,0.18)"
+              stroke="rgba(192,22,44,0.5)"
+              stroke-width="1.5"/>
+
+        <g clip-path="url(#dropClip)">
+          <rect x="0" y="0" width="140" height="172" fill="rgba(55,4,10,0.7)"/>
+          <rect id="bloodFill" x="0" y="172" width="140" height="172" fill="url(#fillGrad)"/>
+          <path id="wave" d="" fill="rgba(255,120,128,0.3)"/>
+          <rect id="shimmerRect" x="-140" y="0" width="140" height="172"
+                fill="url(#shimmerGrad)" opacity="0.7"/>
+        </g>
+
+        <path d="M70 10 C70 10, 20 78, 20 110 A50 50 0 0 0 120 110 C120 78, 70 10, 70 10Z"
+              fill="none" stroke="rgba(255,190,200,0.18)" stroke-width="1"/>
+
+        <ellipse cx="52" cy="82" rx="7" ry="13"
+                 fill="rgba(255,255,255,0.1)" transform="rotate(-20 52 82)"/>
+      </svg>
+    </div>
+
+    <!-- PERCENTAGE -->
+    <div class="pct-block">
+      <div>
+        <span class="pct-num" id="pctNum">0</span><span class="pct-sym">%</span>
+      </div>
+      <div class="pct-label">Loading BloodBridge</div>
+    </div>
+
+    <!-- STATUS TEXT -->
+    <div class="status-line" id="statusLine">Initializing network…</div>
+
+    <!-- PROGRESS BAR -->
+    <div class="bar-wrap">
+      <div class="bar-fill" id="barFill"></div>
+    </div>
+
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
