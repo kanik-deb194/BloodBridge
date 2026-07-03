@@ -236,7 +236,8 @@ bindConfirmCheck('b_password', 'b_confirm_password', 'b_pwMatchError');
     submitBtn.disabled = true;
     agreeCheck.addEventListener('change', function() {
       submitBtn.disabled = !this.checked;
-      this.closest('.checkbox-label')?.querySelector('.check-hint')?.classList.remove('show');
+      const hint = document.getElementById('checkHint');
+      if (hint) hint.style.display = 'none';
     });
   }
 })();
@@ -321,7 +322,8 @@ document.getElementById('signupForm').addEventListener('submit', async function 
   if (!agree.checked) {
     const label = agree.closest('.checkbox-label');
     label.classList.add('shake');
-    label.querySelector('.check-hint')?.classList.add('show');
+    const hint = document.getElementById('checkHint');
+    if (hint) hint.style.display = 'block';
     setTimeout(() => label.classList.remove('shake'), 500);
     return;
   }

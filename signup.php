@@ -1,7 +1,6 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 require_once 'config.php';
-require_once 'mail_config.php';
 
 if ($conn->connect_error) {
     sendJson(false, 'Database connection failed: ' . $conn->connect_error);
@@ -90,12 +89,12 @@ if ($accountType === 'bloodbank') {
 // USER REGISTRATION
 // ------------------------------------------------------------------
 elseif ($accountType === 'user') {
-    $fullName = getPost('full_name');
-    $email    = getPost('user_email');
-    $phone    = getPost('user_phone');
-    $password = getPost('user_password');
+    $fullName  = getPost('full_name');
+    $email     = getPost('user_email');
+    $phone     = getPost('user_phone');
+    $password  = getPost('user_password');
     $confirmPw = getPost('user_confirm_password');
-    $role     = getPost('user_role');
+    $role      = getPost('user_role');
 
     if (empty($fullName) || empty($email) || empty($phone) || empty($password) || empty($role)) {
         sendJson(false, 'Please fill all required user fields.');
@@ -125,12 +124,11 @@ elseif ($accountType === 'user') {
     $check->close();
 
     $passwordHash = password_hash($password, PASSWORD_BCRYPT);
-    $verifToken = bin2hex(random_bytes(32));
-    $tokenExpires = date('Y-m-d H:i:s', time() + 86400); // 24 hours
-    $isActive = 0;
+    // Account is active immediately — no email verification needed
+    $isActive = 1;
 
-    $stmt = $conn->prepare("INSERT INTO users (full_name, email, phone, password_hash, role, is_active, verification_token, token_expires) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param('sssssiss', $fullName, $email, $phone, $passwordHash, $role, $isActive, $verifToken, $tokenExpires);
+    $stmt = $conn->prepare("INSERT INTO users (full_name, email, phone, password_hash, role, is_active) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param('sssssi', $fullName, $email, $phone, $passwordHash, $role, $isActive);
     if (!$stmt->execute()) {
         sendJson(false, 'Failed to create user: ' . $stmt->error);
     }
@@ -152,7 +150,6 @@ elseif ($accountType === 'user') {
         if (empty($bloodGroup) || empty($dob) || empty($gender) || $weight === '' || $height === '' || empty($emergency)) {
             sendJson(false, 'Please fill all Donor & Recipient details.');
         }
-
         if (calculateAge($dob) < 17) {
             sendJson(false, 'You must be at least 17 years old to register.');
         }
@@ -168,6 +165,7 @@ elseif ($accountType === 'user') {
             sendJson(false, 'Failed to save donor & recipient details: ' . $stmt->error);
         }
         $stmt->close();
+
     } elseif ($role === 'doctor') {
         $specialization = getPost('doctor_specialization');
         $license        = getPost('doctor_license');
@@ -176,6 +174,7 @@ elseif ($accountType === 'user') {
         $stmt->bind_param('isss', $userId, $specialization, $license, $hospital);
         if (!$stmt->execute()) sendJson(false, 'Failed to save doctor details: ' . $stmt->error);
         $stmt->close();
+
     } elseif ($role === 'lab_technician') {
         $certification = getPost('lab_certification');
         $labName       = getPost('lab_name');
@@ -183,6 +182,7 @@ elseif ($accountType === 'user') {
         $stmt->bind_param('iss', $userId, $certification, $labName);
         if (!$stmt->execute()) sendJson(false, 'Failed to save lab details: ' . $stmt->error);
         $stmt->close();
+
     } elseif ($role === 'delivery_staff') {
         $vehicle = getPost('delivery_vehicle');
         $license = getPost('delivery_license');
@@ -193,37 +193,8 @@ elseif ($accountType === 'user') {
         $stmt->close();
     }
 
-    // ── Send verification email ──
-    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-    $basePath = dirname($_SERVER['SCRIPT_NAME']);
-    $verifLink = "{$protocol}://{$_SERVER['HTTP_HOST']}{$basePath}/verify_email.php?token={$verifToken}";
-    $subject = 'Verify your BloodBridge account';
-    $htmlBody = '
-    <div style="max-width:560px;margin:0 auto;font-family:\'Outfit\',Arial,sans-serif;background:#0e0a0b;border-radius:20px;overflow:hidden;border:1px solid rgba(192,22,44,0.2);">
-      <div style="background:linear-gradient(135deg,#C0162C,#8B0020);padding:30px;text-align:center;">
-        <h1 style="color:#fff;margin:0;font-size:22px;font-weight:800;letter-spacing:-0.03em;">Blood<span style="color:#f5a0a8;">Bridge</span></h1>
-        <p style="color:rgba(255,255,255,0.85);margin:6px 0 0;font-size:14px;">Verify your email address</p>
-      </div>
-      <div style="padding:32px 30px;color:#F5F0EE;">
-        <p style="font-size:15px;margin:0 0 16px;">Hi <strong>' . htmlspecialchars($fullName) . '</strong>,</p>
-        <p style="font-size:14px;color:rgba(245,240,238,0.7);margin:0 0 20px;line-height:1.7;">
-          Thank you for joining BloodBridge! Please verify your email address by clicking the button below. This link expires in <strong>24 hours</strong>.
-        </p>
-        <div style="text-align:center;margin:24px 0;">
-          <a href="' . $verifLink . '" style="display:inline-block;padding:14px 36px;border-radius:50px;background:linear-gradient(135deg,#C0162C,#8B0020);color:#fff;text-decoration:none;font-weight:700;font-size:15px;box-shadow:0 6px 24px rgba(192,22,44,0.4);">Verify My Email</a>
-        </div>
-        <p style="font-size:13px;color:rgba(245,240,238,0.5);margin:20px 0 0;line-height:1.6;">
-          If the button doesn\'t work, copy and paste this link into your browser:<br>
-          <span style="color:rgba(245,240,238,0.4);word-break:break-all;font-size:12px;">' . $verifLink . '</span>
-        </p>
-      </div>
-      <div style="border-top:1px solid rgba(192,22,44,0.15);padding:18px 30px;text-align:center;">
-        <p style="font-size:12px;color:rgba(245,240,238,0.35);margin:0;">🇧🇩 BloodBridge Bangladesh — Saving lives, one drop at a time.</p>
-      </div>
-    </div>';
-    sendMail($email, $subject, $htmlBody);
+    sendJson(true, 'Account created successfully! You can now log in.', 'login.html');
 
-    sendJson(true, 'Verification email sent! Please check your inbox.', 'verify_sent.html?email=' . urlencode($email));
 } else {
     sendJson(false, 'Invalid account type.');
 }

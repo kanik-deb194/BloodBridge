@@ -22,3 +22,33 @@ Stack trace:
 #1 C:\xampp\htdocs\BloodBridge\final\bank_api.php(489): handleEmergencyRequestsList()
 #2 {main}
   thrown in C:\xampp\htdocs\BloodBridge\final\bank_api.php on line 508
+[03-Jul-2026 02:14:42 Europe/Berlin] PHP Warning:  require_once(C:\xampp\htdocs\BloodBridge\BloodBridge/vendor/phpmailer/src/PHPMailer.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\BloodBridge\BloodBridge\mail_config.php on line 16
+[03-Jul-2026 02:14:42 Europe/Berlin] PHP Fatal error:  Uncaught Error: Failed opening required 'C:\xampp\htdocs\BloodBridge\BloodBridge/vendor/phpmailer/src/PHPMailer.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\BloodBridge\BloodBridge\mail_config.php:16
+Stack trace:
+#0 C:\xampp\htdocs\BloodBridge\BloodBridge\signup.php(4): require_once()
+#1 {main}
+  thrown in C:\xampp\htdocs\BloodBridge\BloodBridge\mail_config.php on line 16
+[03-Jul-2026 02:14:48 Europe/Berlin] PHP Warning:  require_once(C:\xampp\htdocs\BloodBridge\BloodBridge/vendor/phpmailer/src/PHPMailer.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\BloodBridge\BloodBridge\mail_config.php on line 16
+[03-Jul-2026 02:14:48 Europe/Berlin] PHP Fatal error:  Uncaught Error: Failed opening required 'C:\xampp\htdocs\BloodBridge\BloodBridge/vendor/phpmailer/src/PHPMailer.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\BloodBridge\BloodBridge\mail_config.php:16
+Stack trace:
+#0 C:\xampp\htdocs\BloodBridge\BloodBridge\signup.php(4): require_once()
+#1 {main}
+  thrown in C:\xampp\htdocs\BloodBridge\BloodBridge\mail_config.php on line 16
+[03-Jul-2026 02:14:50 Europe/Berlin] PHP Warning:  require_once(C:\xampp\htdocs\BloodBridge\BloodBridge/vendor/phpmailer/src/PHPMailer.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\BloodBridge\BloodBridge\mail_config.php on line 16
+[03-Jul-2026 02:14:50 Europe/Berlin] PHP Fatal error:  Uncaught Error: Failed opening required 'C:\xampp\htdocs\BloodBridge\BloodBridge/vendor/phpmailer/src/PHPMailer.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\BloodBridge\BloodBridge\mail_config.php:16
+Stack trace:
+#0 C:\xampp\htdocs\BloodBridge\BloodBridge\signup.php(4): require_once()
+#1 {main}
+  thrown in C:\xampp\htdocs\BloodBridge\BloodBridge\mail_config.php on line 16
+[03-Jul-2026 02:14:51 Europe/Berlin] PHP Warning:  require_once(C:\xampp\htdocs\BloodBridge\BloodBridge/vendor/phpmailer/src/PHPMailer.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\BloodBridge\BloodBridge\mail_config.php on line 16
+[03-Jul-2026 02:14:51 Europe/Berlin] PHP Fatal error:  Uncaught Error: Failed opening required 'C:\xampp\htdocs\BloodBridge\BloodBridge/vendor/phpmailer/src/PHPMailer.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\BloodBridge\BloodBridge\mail_config.php:16
+Stack trace:
+#0 C:\xampp\htdocs\BloodBridge\BloodBridge\signup.php(4): require_once()
+#1 {main}
+  thrown in C:\xampp\htdocs\BloodBridge\BloodBridge\mail_config.php on line 16
+[03-Jul-2026 02:14:51 Europe/Berlin] PHP Warning:  require_once(C:\xampp\htdocs\BloodBridge\BloodBridge/vendor/phpmailer/src/PHPMailer.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\BloodBridge\BloodBridge\mail_config.php on line 16
+[03-Jul-2026 02:14:51 Europe/Berlin] PHP Fatal error:  Uncaught Error: Failed opening required 'C:\xampp\htdocs\BloodBridge\BloodBridge/vendor/phpmailer/src/PHPMailer.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\BloodBridge\BloodBridge\mail_config.php:16
+Stack trace:
+#0 C:\xampp\htdocs\BloodBridge\BloodBridge\signup.php(4): require_once()
+#1 {main}
+  thrown in C:\xampp\htdocs\BloodBridge\BloodBridge\mail_config.php on line 16

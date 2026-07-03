@@ -1112,7 +1112,7 @@
               </div>
 
               <div class="form-bottom">
-                <label class="checkbox-label">
+                <label class="checkbox-label" for="agreeTerms">
                   <input
                     type="checkbox"
                     id="agreeTerms"
@@ -1121,11 +1121,11 @@
                   <span class="checkbox-custom"></span>
                   <span class="checkbox-text"
                     >I agree to the
-                    <a href="terms.php" class="form-link">Terms of Service</a> and
-                    <a href="privacy.php" class="form-link">Privacy Policy</a></span
+                    <a href="terms.php" class="form-link" onclick="event.stopPropagation()">Terms of Service</a> and
+                    <a href="privacy.php" class="form-link" onclick="event.stopPropagation()">Privacy Policy</a></span
                   >
-                  <span class="check-hint">Please agree to the terms to continue</span>
                 </label>
+                <span class="check-hint" id="checkHint" style="display:none;font-size:0.72rem;color:#f87171;margin-top:4px;">Please agree to the terms to continue</span>
                 <button type="submit" class="btn-submit" id="submitBtn">
                   <span class="btn-submit-text">Create Account</span>
                   <span class="btn-submit-icon"
