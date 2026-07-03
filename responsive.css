@@ -1,0 +1,691 @@
+/* ============================================================
+   BloodBridge — responsive.css
+   Global responsive patch for ALL pages.
+   Link this AFTER every page's own CSS file.
+   ============================================================ */
+
+/* ── GLOBAL BASE ── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+img, video, svg { max-width: 100%; }
+
+/* Prevent horizontal scroll on every page */
+body { overflow-x: hidden; }
+
+/* ============================================================
+   1. DASHBOARD PAGES
+   Applies to: admindash, bankdash, doctor_dash,
+   delivery_staff_dash, hospital_dash, lab_technician_dash,
+   medical_college_dash
+   ============================================================ */
+
+/* ── Sidebar always off-canvas on mobile ── */
+@media (max-width: 1023px) {
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    width: 270px !important;
+    transform: translateX(-100%);
+    z-index: 300;
+    transition: transform 0.32s cubic-bezier(0.4,0,0.2,1);
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+    box-shadow: 4px 0 40px rgba(0,0,0,0.5);
+  }
+
+  .sidebar-close {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: rgba(192,22,44,0.1);
+    border: 1px solid rgba(192,22,44,0.2);
+    color: #E8294A;
+    cursor: pointer;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 299;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+  }
+
+  .sidebar-overlay.active { display: block; }
+
+  .main-wrapper {
+    margin-left: 0 !important;
+    width: 100%;
+  }
+
+  /* Hamburger always visible on mobile */
+  .hamburger {
+    display: flex !important;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+
+  .hamburger span {
+    display: block;
+    width: 22px; height: 2px;
+    background: var(--text-primary, #F5F0EE);
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+
+  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+}
+
+/* Desktop: sidebar always visible */
+@media (min-width: 1024px) {
+  .sidebar {
+    transform: translateX(0) !important;
+    position: fixed;
+  }
+
+  .sidebar.open ~ .main-wrapper,
+  .sidebar ~ .main-wrapper {
+    margin-left: 270px;
+  }
+
+  .sidebar-close { display: none !important; }
+  .sidebar-overlay { display: none !important; }
+  .hamburger { display: none !important; }
+}
+
+/* ── Topnav ── */
+@media (max-width: 1023px) {
+  .topnav {
+    padding: 10px 16px !important;
+    gap: 10px;
+  }
+
+  .topnav-left { gap: 10px; flex-shrink: 0; }
+
+  .topnav-right {
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: flex-end;
+    min-width: 0;
+  }
+
+  .topnav-title { display: none !important; }
+
+  .topnav-brand img,
+  .topnav-logo-img {
+    height: 28px !important;
+    width: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .topnav { padding: 8px 12px !important; }
+
+  .topnav-right .theme-toggle,
+  .topnav-right .toggle-btn { transform: scale(0.85); }
+
+  /* Hide secondary topnav items on small screens */
+  .topnav-search { display: none; }
+}
+
+/* ── Content area ── */
+@media (max-width: 1023px) {
+  .content {
+    padding: 20px 16px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .content {
+    padding: 16px 12px !important;
+  }
+}
+
+/* ── Stats / metrics grids ── */
+@media (max-width: 1100px) {
+  .metrics-grid,
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .metrics-grid,
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .metric-card,
+  .stat-card {
+    padding: 16px 14px !important;
+  }
+
+  .metric-num { font-size: 1.8rem !important; }
+}
+
+/* ── Two-column grids → single column ── */
+@media (max-width: 900px) {
+  .two-col,
+  .two-col-grid,
+  .alerts-grid,
+  .profile-layout {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── Page header ── */
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+
+  .page-header .btn,
+  .page-header button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ── Tables ── */
+.table-wrap,
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 768px) {
+  .data-table {
+    min-width: 600px;
+  }
+
+  .data-table thead th,
+  .data-table tbody td {
+    padding: 10px 10px !important;
+    font-size: 0.78rem !important;
+    white-space: nowrap;
+  }
+}
+
+/* ── Action cards ── */
+@media (max-width: 640px) {
+  .actions-grid { grid-template-columns: 1fr 1fr !important; }
+  .action-card { padding: 14px !important; }
+  .action-card-icon { font-size: 1.4rem !important; }
+}
+
+@media (max-width: 400px) {
+  .actions-grid { grid-template-columns: 1fr !important; }
+}
+
+/* ── Blood group grids ── */
+@media (max-width: 600px) {
+  .blood-grid { grid-template-columns: repeat(4, 1fr) !important; gap: 6px !important; }
+}
+
+@media (max-width: 380px) {
+  .blood-grid { grid-template-columns: repeat(4, 1fr) !important; }
+}
+
+/* ── Greeting section ── */
+@media (max-width: 900px) {
+  .greeting-section {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+}
+
+/* ── Cards — prevent overflow ── */
+.glass-card {
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* ── Modal / overlay ── */
+@media (max-width: 640px) {
+  .modal-content,
+  .modal-box,
+  .modal-card {
+    width: 95vw !important;
+    max-width: 95vw !important;
+    padding: 20px 16px !important;
+    border-radius: 16px !important;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .modal-header { flex-wrap: wrap; gap: 8px; }
+}
+
+/* ── Quick panel ── */
+@media (max-width: 768px) {
+  .quick-panel { flex-direction: column !important; }
+  .quick-card { width: 100% !important; }
+}
+
+/* ── Alert critical cards ── */
+@media (max-width: 640px) {
+  .alert-critical-card {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+  }
+}
+
+/* ── Drone / delivery items ── */
+@media (max-width: 640px) {
+  .drone-item {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+}
+
+/* ── Inventory analytics ── */
+@media (max-width: 1100px) {
+  .inv-analytics-row { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+@media (max-width: 480px) {
+  .inv-analytics-row { grid-template-columns: repeat(2, 1fr) !important; }
+  .inv-type-grid { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+/* ── Profile layout ── */
+@media (max-width: 900px) {
+  .profile-section,
+  .profile-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ============================================================
+   2. LANDING PAGE
+   ============================================================ */
+
+@media (max-width: 900px) {
+  /* Mobile nav */
+  .nav-links {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: var(--mobile-nav-bg, rgba(10,4,6,0.98));
+    flex-direction: column;
+    padding: 80px 24px 32px;
+    z-index: 400;
+    gap: 4px;
+    border-bottom: 1px solid rgba(192,22,44,0.15);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    overflow-y: auto;
+    max-height: 100vh;
+  }
+
+  .nav-links.open {
+    display: flex !important;
+    animation: slideDown 0.3s ease;
+  }
+
+  .nav-links li { list-style: none; }
+
+  .nav-links a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+
+  nav { padding: 12px 16px !important; }
+
+  .hamburger { display: flex !important; }
+
+  .nav-cta { display: none !important; }
+
+  .hero-stats-card { display: none !important; }
+  .mobile-stats-section { display: block !important; }
+
+  .dashboard-grid { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+@media (max-width: 640px) {
+  nav { padding: 10px 14px !important; overflow: visible; }
+
+  .nav-logo img { height: 34px; }
+  .logo-title { font-size: 1rem; }
+
+  .hero {
+    min-height: auto !important;
+    padding: 40px 16px 32px !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  .hero-content { max-width: 100% !important; }
+
+  .hero h1 { font-size: clamp(1.8rem, 8vw, 2.6rem) !important; }
+
+  .hero p { font-size: 0.92rem !important; margin-bottom: 24px !important; }
+
+  .hero-actions {
+    gap: 10px !important;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary, .btn-ghost {
+    padding: 12px 20px !important;
+    font-size: 0.88rem !important;
+  }
+
+  .section { padding: 40px 16px !important; }
+
+  .section-title { font-size: clamp(1.5rem, 6vw, 2rem) !important; }
+
+  .features-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
+
+  .feature-card { padding: 20px 16px !important; }
+
+  .steps { flex-direction: column !important; gap: 24px !important; }
+  .steps::before { display: none !important; }
+
+  .dashboard-grid { grid-template-columns: 1fr !important; }
+
+  .cta-section { padding: 28px 14px !important; }
+
+  .cta-inner { padding: 28px 18px !important; border-radius: 18px !important; }
+
+  .cta-actions {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+  }
+
+  .cta-actions .btn-primary,
+  .cta-actions .btn-ghost {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  footer {
+    padding: 20px 16px !important;
+    flex-direction: column !important;
+    text-align: center !important;
+    gap: 10px !important;
+  }
+
+  .footer-links { justify-content: center !important; flex-wrap: wrap; }
+
+  .mobile-stats-card { margin: 0 14px 20px !important; padding: 18px 14px !important; }
+
+  .ticker-item { font-size: 0.75rem !important; padding: 0 16px !important; }
+}
+
+@media (max-width: 480px) {
+  .lang-toggle, .theme-toggle { transform: scale(0.75); }
+  .nav-right { gap: 2px !important; }
+  .nav-login { padding: 4px 8px !important; font-size: 0.7rem !important; }
+}
+
+@media (min-width: 641px) and (max-width: 900px) {
+  .features-grid { grid-template-columns: 1fr 1fr !important; }
+}
+
+/* ============================================================
+   3. LOGIN PAGE
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .login-container {
+    padding: 16px !important;
+    padding-top: 40px !important;
+    padding-bottom: 40px !important;
+    align-items: flex-start;
+  }
+
+  .login-card {
+    padding: 28px 20px !important;
+    max-width: 100% !important;
+    border-radius: 18px !important;
+  }
+
+  .logo-section img { width: 80px !important; }
+  .logo-section h1 { font-size: 1.5rem !important; }
+
+  .options {
+    flex-direction: column !important;
+    gap: 12px !important;
+    align-items: flex-start !important;
+  }
+
+  .option-links { width: 100%; justify-content: flex-start !important; }
+
+  .social-login { flex-direction: column !important; gap: 10px !important; }
+
+  .social-btn { width: 100% !important; justify-content: center; }
+
+  /* Prevent iOS zoom on input focus */
+  .input-group input,
+  .login-btn,
+  .password-box input {
+    font-size: 16px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-container {
+    padding: 12px !important;
+    padding-top: 32px !important;
+  }
+
+  .login-card {
+    padding: 20px 14px !important;
+    border-radius: 14px !important;
+  }
+
+  .logo-section { margin-bottom: 18px !important; }
+  .logo-section img { width: 64px !important; }
+  .logo-section h1 { font-size: 1.3rem !important; }
+  .logo-section p { font-size: 0.78rem !important; }
+
+  .input-group { margin-bottom: 14px !important; }
+  .input-group label { font-size: 0.82rem !important; }
+  .input-group input { padding: 11px 13px !important; }
+
+  .login-btn { padding: 12px !important; font-size: 0.92rem !important; }
+
+  .social-btn { padding: 11px 12px !important; font-size: 0.82rem !important; }
+}
+
+/* ============================================================
+   4. SIGNUP PAGE
+   ============================================================ */
+
+@media (max-width: 1100px) {
+  .signup-left { width: 340px !important; padding: 36px 28px !important; }
+  .form-card { padding: 26px 26px !important; }
+}
+
+@media (max-width: 900px) {
+  .signup-left { display: none !important; }
+  .signup-right { padding: 28px 16px 56px !important; }
+  .form-card { max-width: 600px !important; }
+  .signup-container { min-height: 100vh; }
+}
+
+@media (max-width: 640px) {
+  nav { padding: 10px 14px !important; }
+  .nav-link-btn { display: none !important; }
+
+  .signup-right { padding: 20px 10px 44px !important; }
+
+  .form-card {
+    padding: 20px 16px !important;
+    border-radius: 16px !important;
+  }
+
+  .form-title { font-size: 1.25rem !important; }
+
+  .type-btn-label { font-size: 0.78rem !important; }
+
+  .form-row.two-col { flex-direction: column !important; gap: 0 !important; }
+  .form-row.three-col { grid-template-columns: 1fr !important; gap: 0 !important; }
+
+  .role-fields { padding: 12px 12px 4px !important; }
+
+  /* Prevent iOS zoom */
+  .field-input,
+  .field-select,
+  .field-textarea {
+    font-size: 16px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .type-selector { grid-template-columns: 1fr !important; }
+}
+
+@media (max-width: 380px) {
+  .type-btn { padding: 11px 10px !important; gap: 5px !important; }
+  .type-btn-icon { font-size: 0.95rem !important; }
+}
+
+/* ============================================================
+   5. RAKTOSATHI FLOATING CHATBOT
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .raktosathi-widget {
+    bottom: 16px !important;
+    right: 16px !important;
+  }
+
+  .raktosathi-window {
+    width: calc(100vw - 24px) !important;
+    max-width: 380px !important;
+    height: 75vh !important;
+    max-height: 520px !important;
+    bottom: 72px !important;
+    right: 0 !important;
+    left: auto !important;
+    border-radius: 18px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .raktosathi-window {
+    width: calc(100vw - 16px) !important;
+    max-width: none !important;
+    height: 80vh !important;
+    max-height: 560px !important;
+    right: 8px !important;
+    bottom: 70px !important;
+  }
+
+  .raktosathi-fab {
+    width: 52px !important;
+    height: 52px !important;
+    font-size: 1.3rem !important;
+  }
+}
+
+/* ============================================================
+   6. FORGOT PASSWORD / VERIFY SENT PAGES
+   ============================================================ */
+
+@media (max-width: 500px) {
+  .forgot-container {
+    padding: 12px !important;
+    padding-top: 32px !important;
+    padding-bottom: 32px !important;
+  }
+
+  .login-card {
+    padding: 22px 16px !important;
+    border-radius: 16px !important;
+  }
+
+  .card {
+    padding: 28px 16px !important;
+    border-radius: 18px !important;
+  }
+
+  .card h1 { font-size: 1.25rem !important; }
+}
+
+/* ============================================================
+   7. GLOBAL UTILITY FIXES
+   ============================================================ */
+
+/* Scrollable tables everywhere */
+.table-wrap,
+.table-responsive,
+[class*="table-container"] {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Orbs — shrink on mobile to prevent layout issues */
+@media (max-width: 640px) {
+  .orb-1 { width: 280px !important; height: 280px !important; }
+  .orb-2 { width: 200px !important; height: 200px !important; }
+  .orb-3 { width: 160px !important; height: 160px !important; }
+}
+
+/* Buttons — no text overflow */
+button, .btn, [class*="btn-"] {
+  white-space: nowrap;
+  min-width: 0;
+}
+
+/* Prevent long words from breaking layout */
+p, span, label, td, th, li {
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Input font-size 16px on mobile prevents iOS zoom */
+@media (max-width: 768px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="date"],
+  input[type="search"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* ── Nav animation for mobile menu ── */
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
