@@ -29,19 +29,19 @@ Bangladesh requires approximately 1 million units of blood annually, yet a subst
 ## 📸 Screenshots
 
 ### Landing Page
-![Landing Page](https://raw.githubusercontent.com/kanik-deb194/project/main/screenshots/landing.png)
+![Landing Page](https://github.com/user-attachments/assets/a82603f5-8672-48ca-843f-3e2016f8be61)
 *Live blood network ticker, real-time stock status, and Emergency Request CTA*
 
 ### Sign In
-![Sign In](https://raw.githubusercontent.com/kanik-deb194/project/main/screenshots/signin.png)
+![Sign In](https://github.com/user-attachments/assets/4cb458c4-4465-414c-9b44-672dfc80b97e)
 *Email/password login with Google and GitHub OAuth*
 
 ### Admin Dashboard
-![Admin Dashboard](https://raw.githubusercontent.com/kanik-deb194/project/main/screenshots/ad.png)
+![Admin Dashboard](https://github.com/user-attachments/assets/01fd836d-2607-48b7-bb0d-190d1f9cc4c1)
 *Real-time KPIs: registered blood banks, suspicious flags, under-rated banks, and blood stock heatmap*
 
 ### Donor & Recipient Dashboard
-![Donor Dashboard](https://raw.githubusercontent.com/kanik-deb194/project/main/screenshots/donor_dashboard.png)
+![Donor Dashboard](https://github.com/user-attachments/assets/dd904927-5147-4ced-ae72-298685aca753)
 *Blood group, donations, trust score, active requests, lives saved, and admin warning alerts*
 
 ### Blood Bank Portal
@@ -279,12 +279,6 @@ The platform uses **MySQL** with a highly normalized (3NF) schema covering **98+
 Department of Computer Science and Engineering  
 United International University (UIU), Dhaka, Bangladesh  
 Course: CSE 3522 — Database Management System Laboratory
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
 
 ---
 
