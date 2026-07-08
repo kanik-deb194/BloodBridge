@@ -73,7 +73,7 @@ BloodBridge covers **71 documented features** across 8 portals. Highlights by ro
 | Layer | Technology |
 |---|---|
 | Backend | PHP 7.4+ |
-| Database | MySQL 5.7+ (98+ tables, 3NF normalized) |
+| Database | MySQL 5.7+ (50+ tables, 3NF normalized) |
 | Frontend | Vanilla JavaScript (ES6+) |
 | Styling | Custom CSS with CSS Variables |
 | Maps | Leaflet.js |
